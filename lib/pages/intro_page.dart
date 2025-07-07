@@ -15,23 +15,25 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(
-              height: 50,
-            ),
+            SizedBox(height: screenHeight * 0.05), // 5% of screen height
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 40.0),
+                  padding: EdgeInsets.only(left: screenWidth * 0.1), // 10% left padding
                   child: Text(
                     'Paws',
                     style: GoogleFonts.notoSerifDisplay(
-                        fontSize: 35,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w900),
+                      fontSize: screenWidth * 0.08, // dynamic font size
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
               ],
@@ -41,15 +43,18 @@ class _IntroPageState extends State<IntroPage> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10),
-                      child: Lottie.asset('assets/lottie/ani1.json'),
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                      child: Lottie.asset(
+                        'assets/lottie/ani1.json',
+                        width: screenWidth * 0.9, // scale to screen
+                      ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 50, right: 50),
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                       child: Text(
                         '"For all your furry family members"',
                         style: GoogleFonts.notoSerifDisplay(
-                          fontSize: 35,
+                          fontSize: screenWidth * 0.06, // scale font
                           fontWeight: FontWeight.w500,
                         ),
                         textAlign: TextAlign.center,
@@ -59,19 +64,20 @@ class _IntroPageState extends State<IntroPage> {
                 ),
                 Column(
                   children: [
-                    const SizedBox(
-                      height: 25,
+                    SizedBox(height: screenHeight * 0.03),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                      child: Lottie.asset(
+                        'assets/lottie/ani2.json',
+                        width: screenWidth * 0.9,
+                      ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: Lottie.asset('assets/lottie/ani2.json'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 50, right: 50),
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                       child: Text(
                         '"Just like a paw, providing comfort and care for all pets"',
                         style: GoogleFonts.notoSerifDisplay(
-                          fontSize: 30,
+                          fontSize: screenWidth * 0.05,
                           fontWeight: FontWeight.w500,
                         ),
                         textAlign: TextAlign.center,
@@ -85,24 +91,22 @@ class _IntroPageState extends State<IntroPage> {
                 enableInfiniteScroll: true,
                 pageSnapping: true,
                 viewportFraction: 1,
-                height: 600,
+                height: screenHeight * 0.65, // dynamic height
                 initialPage: 0,
                 scrollDirection: Axis.horizontal,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: screenHeight * 0.02),
             CTAButton(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const AuthPage(),
-              )),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const AuthPage()),
+              ),
               text: 'Get Started',
             ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Terms & Conditions apply'),
-            )
+            Padding(
+              padding: EdgeInsets.all(screenWidth * 0.02),
+              child: const Text('Terms & Conditions apply'),
+            ),
           ],
         ),
       ),

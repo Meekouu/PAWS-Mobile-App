@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           const SizedBox(height: 20),
                           Text(
-                            'Paws',
+                            'PAWS',
                             style: GoogleFonts.notoSerifDisplay(
                                 fontSize: 35,
                                 fontStyle: FontStyle.italic,
