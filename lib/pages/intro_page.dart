@@ -16,24 +16,16 @@ class _IntroPageState extends State<IntroPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Responsive font size for 'PAWS' text
     final titleFontSize = screenWidth * 0.08;
 
-    // Responsive horizontal padding for content
     final horizontalPadding = screenWidth * 0.1;
 
-    // Heights of fixed elements and paddings
-    final topPadding = screenHeight * 0.05; // SizedBox before 'PAWS'
-    final spaceBetweenTextAndLogo = screenHeight * 0.25; // SizedBox after 'PAWS' text
-    final bottomSafeArea = screenHeight * 0.15; // SafeArea minimum bottom
-    final bottomPadding = screenHeight * 0.02; // vertical padding inside bottomNavigationBar
-    final buttonHeightEstimate = 50.0; // approx height of CTAButton + terms text + spacer
+    final topPadding = screenHeight * 0.05;
+    final spaceBetweenTextAndLogo = screenHeight * 0.25;
+    final bottomSafeArea = screenHeight * 0.15;
+    final bottomPadding = screenHeight * 0.02;
+    final buttonHeightEstimate = 50.0;
 
-    // Calculate available height for logo:
-    // Total screen height minus:
-    // - top padding + text height (approx titleFontSize)
-    // - space between text and logo
-    // - bottom safe area + padding + button height estimate
     final availableHeightForLogo = screenHeight -
         (topPadding +
             titleFontSize +
@@ -42,12 +34,10 @@ class _IntroPageState extends State<IntroPage> {
             bottomPadding +
             buttonHeightEstimate);
 
-    // Clamp logo size between min and max, but also don't exceed available height
     final constrainedLogoSize = availableHeightForLogo.clamp(150.0, 300.0);
 
     return Scaffold(
       body: SingleChildScrollView(
-        // Padding bottom to avoid content hidden behind bottomNavigationBar
         padding: EdgeInsets.only(bottom: bottomSafeArea),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +60,7 @@ class _IntroPageState extends State<IntroPage> {
                 size: constrainedLogoSize,
               ),
             ),
-            SizedBox(height: screenHeight * 0.1), // optional extra bottom spacing
+            SizedBox(height: screenHeight * 0.1),
           ],
         ),
       ),
