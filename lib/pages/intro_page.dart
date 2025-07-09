@@ -13,18 +13,22 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+    final isPortrait = mediaQuery.orientation == Orientation.portrait;
 
-    final titleFontSize = screenWidth * 0.08;
+    // Adjust font size based on orientation
+    final titleFontSize = isPortrait ? screenWidth * 0.08 : screenHeight * 0.08;
 
-    final horizontalPadding = screenWidth * 0.1;
+    final horizontalPadding = isPortrait ? screenWidth * 0.1 : screenWidth * 0.15;
 
-    final topPadding = screenHeight * 0.05;
-    final spaceBetweenTextAndLogo = screenHeight * 0.25;
-    final bottomSafeArea = screenHeight * 0.15;
-    final bottomPadding = screenHeight * 0.02;
-    final buttonHeightEstimate = 50.0;
+    // Adjust spacings for orientation
+    final topPadding = isPortrait ? screenHeight * 0.05 : screenHeight * 0.02;
+    final spaceBetweenTextAndLogo = isPortrait ? screenHeight * 0.25 : screenHeight * 0.1;
+    final bottomSafeArea = mediaQuery.padding.bottom + (isPortrait ? screenHeight * 0.1 : screenHeight * 0.05);
+    final bottomPadding = isPortrait ? screenHeight * 0.02 : screenHeight * 0.01;
+    final buttonHeightEstimate = isPortrait ? 50.0 : 40.0;
 
     final availableHeightForLogo = screenHeight -
         (topPadding +
@@ -60,7 +64,7 @@ class _IntroPageState extends State<IntroPage> {
                 size: constrainedLogoSize,
               ),
             ),
-            SizedBox(height: screenHeight * 0.1),
+            SizedBox(height: isPortrait ? screenHeight * 0.1 : screenHeight * 0.05),
           ],
         ),
       ),
@@ -80,7 +84,7 @@ class _IntroPageState extends State<IntroPage> {
                 ),
                 text: 'Get Started',
               ),
-              SizedBox(height: screenHeight * 0.01),
+              SizedBox(height: isPortrait ? screenHeight * 0.01 : screenHeight * 0.005),
               const Text('Terms & Conditions apply'),
             ],
           ),
