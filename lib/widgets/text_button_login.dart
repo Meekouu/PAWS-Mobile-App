@@ -23,7 +23,7 @@ class LoginBtn1 extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Container(
         // Adjust height if needed, validation errors might need extra space
-        height: 60,
+        height: 80,
         foregroundDecoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           borderRadius: const BorderRadius.horizontal(
@@ -55,8 +55,8 @@ class LoginBtn1 extends StatelessWidget {
               suffixIcon: icon,
               suffixIconColor: black,
               errorStyle: const TextStyle(
-                height: 0.1, // reduces vertical space of error text
-                fontSize: 8,
+                height: 0.8, // reduces vertical space of error text
+                fontSize: 12,
                 color: Colors.redAccent,
               ),
             ),
