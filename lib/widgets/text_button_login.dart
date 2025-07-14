@@ -3,7 +3,7 @@ import 'package:paws/themes/themes.dart';
 
 class LoginBtn1 extends StatelessWidget {
   final String hintText;
-  final Icon? icon;
+  final Widget? icon;
   final bool obscureText;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
@@ -22,7 +22,6 @@ class LoginBtn1 extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        // Removed fixed height for flexibility
         foregroundDecoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           borderRadius: const BorderRadius.horizontal(
@@ -58,13 +57,13 @@ class LoginBtn1 extends StatelessWidget {
                   suffixIcon: icon,
                   suffixIconColor: black,
                   errorStyle: const TextStyle(
-                    height: 1.2, // adjusts spacing between field and error text
+                    height: 1.2,
                     fontSize: 14,
                     color: Colors.redAccent,
                   ),
                 ),
               ),
-              const SizedBox(height: 4), // spacing between input and error (if visible)
+              const SizedBox(height: 4),
             ],
           ),
         ),

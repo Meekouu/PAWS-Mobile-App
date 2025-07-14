@@ -4,14 +4,38 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/pages/news.dart';
 import 'package:paws/pages/gallery.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+Route createSlideRoute(Widget page) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => page,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+  );
+}
 
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  void logOut() {
-    FirebaseAuth.instance.signOut();
-  }
+void logOut(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear(); 
+
+  await FirebaseAuth.instance.signOut();
+  Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+}
 
   final List<IconData> petIcons = [
     Icons.pets,
@@ -25,7 +49,6 @@ class HomePage extends StatelessWidget {
     'Pet Name',
   ];
 
-  // Placeholder data (instead of widgets)
   final List<_PlaceholderItem> placeholders = [
     _PlaceholderItem(
       label: 'News Outlet',
@@ -59,7 +82,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.blue[100],
         automaticallyImplyLeading: false,
         title: Text(
-          'Paws',
+          'PAWS',
           style: GoogleFonts.notoSerifDisplay(
             fontSize: 35,
             fontWeight: FontWeight.bold,
@@ -70,7 +93,7 @@ class HomePage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
-              onPressed: logOut,
+              onPressed: () => logOut(context),
               icon: const Icon(
                 Icons.logout_rounded,
                 size: 30,
@@ -82,23 +105,20 @@ class HomePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Pets horizontal slider
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
               child: SizedBox(
-                height: 160, // Height for circles + text
+                height: 160,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  itemCount: 4, // 3 pets + 1 add button
+                  itemCount: 4, 
                   itemBuilder: (context, index) {
                     if (index == 3) {
-                      // Add button
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: GestureDetector(
                           onTap: () {
-                            // TODO: Handle Add button tap
                           },
                           child: Column(
                             children: [
@@ -136,12 +156,10 @@ class HomePage extends StatelessWidget {
                         ),
                       );
                     } else {
-                      // Pet icons with names
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: GestureDetector(
                           onTap: () {
-                            // TODO: Handle pet icon tap
                           },
                           child: Column(
                             children: [
@@ -188,11 +206,10 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            // Vertical staggered placeholder list
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SizedBox(
-                height: 600, // Adjust height or use Expanded if inside Column with Flexible
+                height: 600,
                 child: MasonryGridView.count(
                   physics: const BouncingScrollPhysics(),
                   crossAxisCount: 2,
@@ -202,7 +219,6 @@ class HomePage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = placeholders[index];
 
-                    // Vary height like before
                     final double height = 250 + (index % 3) * 40;
 
                     return GestureDetector(
@@ -210,7 +226,7 @@ class HomePage extends StatelessWidget {
                         if (item.onTapRoute != null) {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => item.onTapRoute!),
+                            createSlideRoute(item.onTapRoute!),
                           );
                         } else if (item.onTap != null) {
                           item.onTap!();
@@ -261,7 +277,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// Helper class to hold placeholder info
 class _PlaceholderItem {
   final String label;
   final Color color;

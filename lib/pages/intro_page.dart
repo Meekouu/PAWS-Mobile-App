@@ -28,11 +28,7 @@ class _IntroPageState extends State<IntroPage> {
 
     final aspectRatio = size.width / size.height;
     final baseSize = isPortrait ? size.height : size.width;
-
-    // Scale logo size inversely proportional to aspect ratio (with clamps)
     final scaleFactor = (1 / aspectRatio).clamp(0.7, 1.3);
-
-    // Calculate logo size using baseSize and scaleFactor, clamp between min/max
     final logoSize = (baseSize * 0.3 * scaleFactor).clamp(150.0, 300.0);
 
     return Scaffold(

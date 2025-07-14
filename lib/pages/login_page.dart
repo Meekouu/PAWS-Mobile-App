@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:paws/pages/home_page.dart';
 import 'package:paws/pages/signup_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/cta_buton.dart';
+import 'package:paws/widgets/new_user_onboard.dart'; 
 import 'package:paws/widgets/show_message.dart';
-import 'package:paws/widgets/text_button_login.dart'; // LoginBtn1 widget
+import 'package:paws/widgets/text_button_login.dart';
+import 'package:shared_preferences/shared_preferences.dart';  
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +18,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _passwordVisible = false;
+
   final TextEditingController emailController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
@@ -23,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signIn() async {
     if (!_formKey.currentState!.validate()) {
-      // Form not valid, don't proceed
       return;
     }
 
@@ -39,54 +43,83 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text.trim(),
         password: passwordController.text,
       );
-      if (context.mounted) {
-        Navigator.pop(context);
+
+      if (!context.mounted) return;
+
+      Navigator.pop(context); 
+
+      final prefs = await SharedPreferences.getInstance();
+      final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+
+      if (hasSeenOnboarding) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OnboardingPage1(
+              onFinish: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('hasSeenOnboarding', true);
+
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                }
+              },
+            ),
+          ),
+        );
       }
     } on FirebaseAuthException catch (e) {
-  Navigator.pop(context);
+      Navigator.pop(context);
 
-  String errorMessage;
-  switch (e.code) {
-    case 'invalid-email':
-      errorMessage = 'The email address is badly formatted.';
-      break;
-    case 'user-disabled':
-      errorMessage = 'This user account has been disabled.';
-      break;
-    case 'user-not-found':
-      errorMessage = 'No user found with this email.';
-      break;
-    case 'wrong-password':
-      errorMessage = 'Incorrect password. Please try again.';
-      break;
-    case 'invalid-credential':
-      errorMessage = 'Invalid login credentials.';
-      break;
-    default:
-      errorMessage = 'Login failed. Please try again.';
-  }
+      String errorMessage;
+      switch (e.code) {
+        case 'invalid-email':
+          errorMessage = 'The email address is badly formatted.';
+          break;
+        case 'user-disabled':
+          errorMessage = 'This user account has been disabled.';
+          break;
+        case 'user-not-found':
+          errorMessage = 'No user found with this email.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Incorrect password. Please try again.';
+          break;
+        case 'invalid-credential':
+          errorMessage = 'Invalid login credentials.';
+          break;
+        default:
+          errorMessage = 'Login failed. Please try again.';
+      }
 
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Login Error'),
-      content: Text(errorMessage),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('OK'),
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Login Error'),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
-}
+      );
+    }
   }
 
   String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
     }
-    // Basic email regex validation
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
     if (!emailRegex.hasMatch(value)) {
       return 'Enter a valid email address';
@@ -122,15 +155,24 @@ class _LoginPageState extends State<LoginPage> {
           hintText: 'happypaws@paws.com',
           obscureText: false,
           validator: emailValidator,
-          
         ),
         const SizedBox(height: 20),
         LoginBtn1(
           controller: passwordController,
           hintText: 'Password',
-          icon: const Icon(Icons.lock_outline_rounded),
-          obscureText: true,
+          obscureText: !_passwordVisible,  // hide password when false
           validator: passwordValidator,
+          icon: GestureDetector(
+            onTap: () {
+              setState(() {
+                _passwordVisible = !_passwordVisible; // toggle visibility
+              });
+            },
+            child: Icon(
+              _passwordVisible ? Icons.lock_open_rounded : Icons.lock_outline_rounded,
+              color: Colors.grey,
+            ),
+          ),
         ),
         const SizedBox(height: 20),
         CTAButton(
@@ -173,7 +215,6 @@ class _LoginPageState extends State<LoginPage> {
     final mediaQuery = MediaQuery.of(context);
     final isPortrait = mediaQuery.orientation == Orientation.portrait;
     final screenHeight = mediaQuery.size.height;
-    final screenWidth = mediaQuery.size.width;
 
     return Scaffold(
       backgroundColor: white,

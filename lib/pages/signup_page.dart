@@ -17,6 +17,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
 
   Future<void> signUp() async {
     showDialog(
@@ -82,15 +84,35 @@ class _SignUpPageState extends State<SignUpPage> {
         LoginBtn1(
           controller: passwordController,
           hintText: 'Password',
-          icon: const Icon(Icons.lock_outline_rounded),
-          obscureText: true,
+          obscureText: !_passwordVisible,
+          icon: GestureDetector(
+            onTap: () {
+              setState(() {
+                _passwordVisible = !_passwordVisible;
+              });
+            },
+            child: Icon(
+              _passwordVisible ? Icons.lock_open_rounded : Icons.lock_outline_rounded,
+              color: Colors.grey,
+            ),
+          ),
         ),
         const SizedBox(height: 20),
         LoginBtn1(
           controller: confirmPasswordController,
           hintText: 'Confirm Password',
-          icon: const Icon(Icons.lock_outline_rounded),
-          obscureText: true,
+          obscureText: !_confirmPasswordVisible,
+          icon: GestureDetector(
+            onTap: () {
+              setState(() {
+                _confirmPasswordVisible = !_confirmPasswordVisible;
+              });
+            },
+            child: Icon(
+              _confirmPasswordVisible ? Icons.lock_open_rounded : Icons.lock_outline_rounded,
+              color: Colors.grey,
+            ),
+          ),
         ),
         const SizedBox(height: 20),
         CTAButton(

@@ -99,7 +99,6 @@ class NewsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
@@ -134,7 +133,6 @@ class NewsCard extends StatelessWidget {
             ),
           ),
 
-          // Image
           if (post['image'] != null)
             ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
@@ -146,7 +144,6 @@ class NewsCard extends StatelessWidget {
               ),
             ),
 
-          // Body Text
           Padding(
             padding: const EdgeInsets.all(14.0),
             child: Text(

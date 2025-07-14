@@ -1,8 +1,13 @@
-2025/07/14-13:31:24.132 32a4 Reusing MANIFEST C:\Users\matma\AppData\Local\Temp\flutter_tools.75fc9fa5\flutter_tools_chrome_device.217cc047\Default\shared_proto_db/MANIFEST-000001
-2025/07/14-13:31:24.133 32a4 Recovering log #16
-2025/07/14-13:31:24.134 32a4 Reusing old log C:\Users\matma\AppData\Local\Temp\flutter_tools.75fc9fa5\flutter_tools_chrome_device.217cc047\Default\shared_proto_db/000016.log 
-2025/07/14-13:31:24.135 32a4 Delete type=0 #3
-2025/07/14-13:31:24.135 32a4 Delete type=0 #4
-2025/07/14-13:31:24.135 32a4 Delete type=0 #7
-2025/07/14-13:31:24.135 32a4 Delete type=0 #10
-2025/07/14-13:31:24.135 32a4 Delete type=0 #13
+2025/07/14-17:24:15.755 4320 Reusing MANIFEST C:\Users\matma\AppData\Local\Temp\flutter_tools.52d0c2df\flutter_tools_chrome_device.cd2c70ad\Default\shared_proto_db/MANIFEST-000001
+2025/07/14-17:24:15.756 4320 Recovering log #19
+2025/07/14-17:24:15.757 4320 Reusing old log C:\Users\matma\AppData\Local\Temp\flutter_tools.52d0c2df\flutter_tools_chrome_device.cd2c70ad\Default\shared_proto_db/000019.log 
+2025/07/14-17:24:15.758 4320 Delete type=0 #3
+2025/07/14-17:24:15.758 4320 Delete type=0 #4
+2025/07/14-17:24:15.758 4320 Delete type=0 #7
+2025/07/14-17:24:15.758 4320 Delete type=2 #8
+2025/07/14-17:24:15.758 4320 Delete type=0 #10
+2025/07/14-17:24:15.758 4320 Delete type=2 #11
+2025/07/14-17:24:15.758 4320 Delete type=0 #13
+2025/07/14-17:24:15.758 4320 Delete type=2 #14
+2025/07/14-17:24:15.759 4320 Delete type=0 #16
+2025/07/14-17:24:15.759 4320 Delete type=2 #17
