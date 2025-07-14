@@ -16,165 +16,189 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   Future<void> signUp() async {
-    //show loading circle
     showDialog(
-        context: context,
-        builder: (context) => const Center(
-              child: CircularProgressIndicator(),
-            ));
-    //make sure the password match
+      context: context,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
     if (passwordController.text != confirmPasswordController.text) {
       Navigator.pop(context);
-      //show error message
-      showMessage('Passwords dosen\'t match', context);
+      showMessage('Signup Error', 'Passwords don\'t match', context);
+      return;
     }
-    //create user using firebase auth
-    else {
-      try {
-        //UserCredential? userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: emailController.text,
-            password: confirmPasswordController.text);
 
-        //remove loading circle
-        Navigator.pop(context);
-        //show account created
-        showMessage('Account Created Successfully', context);
-      } on FirebaseAuthException catch (e) {
-        //pop the loading circle
-        Navigator.pop(context);
-        //show the error message to the user
-        showMessage('$e', context);
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: confirmPasswordController.text,
+      );
+
+      Navigator.pop(context);
+      showMessage('Success', 'Account created successfully', context);
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+
+      String errorMessage;
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMessage = 'This email is already in use.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'The email address is invalid.';
+          break;
+        case 'weak-password':
+          errorMessage = 'The password provided is too weak.';
+          break;
+        default:
+          errorMessage = 'An unexpected error occurred.';
       }
+
+      showMessage('Signup Error', errorMessage, context);
     }
+  }
+
+  Widget _buildSignUpForm() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Paws',
+          style: GoogleFonts.notoSerifDisplay(
+            fontSize: 36,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(height: 20),
+        LoginBtn1(
+          controller: emailController,
+          hintText: 'happypaws@paws.com',
+          obscureText: false,
+        ),
+        const SizedBox(height: 20),
+        LoginBtn1(
+          controller: passwordController,
+          hintText: 'Password',
+          icon: const Icon(Icons.lock_outline_rounded),
+          obscureText: true,
+        ),
+        const SizedBox(height: 20),
+        LoginBtn1(
+          controller: confirmPasswordController,
+          hintText: 'Confirm Password',
+          icon: const Icon(Icons.lock_outline_rounded),
+          obscureText: true,
+        ),
+        const SizedBox(height: 20),
+        CTAButton(
+          text: 'Signup',
+          onTap: signUp,
+        ),
+        const SizedBox(height: 20),
+        const Divider(
+          color: grey,
+          indent: 20,
+          endIndent: 20,
+          thickness: 1,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Have an account? '),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Signin now',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final isPortrait = mediaQuery.orientation == Orientation.portrait;
+    final screenHeight = mediaQuery.size.height;
+
     return Scaffold(
       backgroundColor: white,
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
-              children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                const Center(
-                    child: Text(
-                  'English',
-                  style: TextStyle(fontWeight: FontWeight.w200),
-                )),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'Your pet\'s happy place',
-                  style: GoogleFonts.notoSerifDisplay(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
-                  child: Image.asset(
-                      'assets/images/dog_training_login_screen.png'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: Container(
-                    height: 500,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: isPortrait
+              ? Column(
+                  children: [
+                    const SizedBox(height: 50),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 30, 10, 20),
+                      child: Image.asset(
+                        'assets/images/paw-placeholder.png',
+                        height: screenHeight * 0.3,
+                        fit: BoxFit.contain,
                       ),
                     ),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          Text(
-                            'Paws',
-                            style: GoogleFonts.notoSerifDisplay(
-                                fontSize: 35,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w900),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          LoginBtn1(
-                            controller: emailController,
-                            hintText: 'happypaws@paws.com',
-                            obscureText: false,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          LoginBtn1(
-                            controller: passwordController,
-                            hintText: 'Password',
-                            icon: const Icon(Icons.lock_outline_rounded),
-                            obscureText: false,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          LoginBtn1(
-                            controller: confirmPasswordController,
-                            hintText: 'Confirm Password',
-                            icon: const Icon(Icons.lock_outline_rounded),
-                            obscureText: false,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          CTAButton(
-                            text: 'Signup',
-                            onTap: signUp,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Divider(
-                            color: grey,
-                            indent: 20,
-                            endIndent: 20,
-                            thickness: 1,
-                          ),
-                          Row(
+                    Container(
+                      height: screenHeight * 0.55,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40),
+                        ),
+                      ),
+                      child: Center(child: _buildSignUpForm()),
+                    ),
+                  ],
+                )
+              : SizedBox(
+                  height: screenHeight,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 30),
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('Have an account? '),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pop(
-                                    MaterialPageRoute(
-                                      builder: (context) => const SignUpPage(),
-                                    ),
-                                  );
-                                },
-                                child: const Text(
-                                  'Signin now',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                              const SizedBox(height: 10),
+                              Expanded(
+                                child: Image.asset(
+                                  'assets/images/paw-placeholder.png',
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      Expanded(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(40),
+                              topRight: Radius.circular(40),
+                            ),
+                            color: white,
+                          ),
+                          child: Center(
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: _buildSignUpForm(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ],
         ),
       ),
     );

@@ -43,9 +43,43 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      showMessage('$e', context);
-    }
+  Navigator.pop(context);
+
+  String errorMessage;
+  switch (e.code) {
+    case 'invalid-email':
+      errorMessage = 'The email address is badly formatted.';
+      break;
+    case 'user-disabled':
+      errorMessage = 'This user account has been disabled.';
+      break;
+    case 'user-not-found':
+      errorMessage = 'No user found with this email.';
+      break;
+    case 'wrong-password':
+      errorMessage = 'Incorrect password. Please try again.';
+      break;
+    case 'invalid-credential':
+      errorMessage = 'Invalid login credentials.';
+      break;
+    default:
+      errorMessage = 'Login failed. Please try again.';
+  }
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Login Error'),
+      content: Text(errorMessage),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
+}
   }
 
   String? emailValidator(String? value) {
@@ -77,17 +111,18 @@ class _LoginPageState extends State<LoginPage> {
         Text(
           'PAWS',
           style: GoogleFonts.notoSerifDisplay(
-            fontSize: 35,
+            fontSize: 36,
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         LoginBtn1(
           controller: emailController,
           hintText: 'happypaws@paws.com',
           obscureText: false,
           validator: emailValidator,
+          
         ),
         const SizedBox(height: 20),
         LoginBtn1(
@@ -150,26 +185,11 @@ class _LoginPageState extends State<LoginPage> {
             child: isPortrait
                 ? Column(
                     children: [
-                      const SizedBox(height: 50),
-                      const Center(
-                        child: Text(
-                          'English',
-                          style: TextStyle(fontWeight: FontWeight.w200),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Your pet\'s happy place',
-                        style: GoogleFonts.notoSerifDisplay(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
+                      const SizedBox(height: 75),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 30, 10, 20),
                         child: Image.asset(
-                          'assets/images/dog_training_login_screen.png',
+                          'assets/images/paw-placeholder.png',
                           height: screenHeight * 0.3,
                           fit: BoxFit.contain,
                         ),
@@ -196,24 +216,10 @@ class _LoginPageState extends State<LoginPage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
-                                  'English',
-                                  style: TextStyle(fontWeight: FontWeight.w200),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Your pet\'s happy place',
-                                  style: GoogleFonts.notoSerifDisplay(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
                                 const SizedBox(height: 10),
                                 Expanded(
                                   child: Image.asset(
-                                    'assets/images/dog_training_login_screen.png',
+                                    'assets/images/paw-placeholder.png',
                                     fit: BoxFit.contain,
                                   ),
                                 ),

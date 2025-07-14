@@ -14,31 +14,26 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final screenWidth = mediaQuery.size.width;
-    final screenHeight = mediaQuery.size.height;
+    final size = mediaQuery.size;
     final isPortrait = mediaQuery.orientation == Orientation.portrait;
 
-    // Adjust font size based on orientation
-    final titleFontSize = isPortrait ? screenWidth * 0.08 : screenHeight * 0.08;
+    final horizontalPadding = isPortrait ? size.width * 0.1 : size.width * 0.15;
+    final topPadding = isPortrait ? size.height * 0.05 : size.height * 0.02;
+    final spaceBetweenTextAndLogo = isPortrait ? size.height * 0.15 : size.height * 0.1;
+    final bottomPadding = isPortrait ? size.height * 0.02 : size.height * 0.01;
+    final bottomSafeArea = mediaQuery.padding.bottom + (isPortrait ? size.height * 0.1 : size.height * 0.05);
+    final buttonHeight = isPortrait ? 50.0 : 40.0;
 
-    final horizontalPadding = isPortrait ? screenWidth * 0.1 : screenWidth * 0.15;
+    final titleFontSize = isPortrait ? size.width * 0.08 : size.height * 0.08;
 
-    // Adjust spacings for orientation
-    final topPadding = isPortrait ? screenHeight * 0.05 : screenHeight * 0.02;
-    final spaceBetweenTextAndLogo = isPortrait ? screenHeight * 0.25 : screenHeight * 0.1;
-    final bottomSafeArea = mediaQuery.padding.bottom + (isPortrait ? screenHeight * 0.1 : screenHeight * 0.05);
-    final bottomPadding = isPortrait ? screenHeight * 0.02 : screenHeight * 0.01;
-    final buttonHeightEstimate = isPortrait ? 50.0 : 40.0;
+    final aspectRatio = size.width / size.height;
+    final baseSize = isPortrait ? size.height : size.width;
 
-    final availableHeightForLogo = screenHeight -
-        (topPadding +
-            titleFontSize +
-            spaceBetweenTextAndLogo +
-            bottomSafeArea +
-            bottomPadding +
-            buttonHeightEstimate);
+    // Scale logo size inversely proportional to aspect ratio (with clamps)
+    final scaleFactor = (1 / aspectRatio).clamp(0.7, 1.3);
 
-    final constrainedLogoSize = availableHeightForLogo.clamp(150.0, 300.0);
+    // Calculate logo size using baseSize and scaleFactor, clamp between min/max
+    final logoSize = (baseSize * 0.3 * scaleFactor).clamp(150.0, 300.0);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -60,21 +55,21 @@ class _IntroPageState extends State<IntroPage> {
             ),
             SizedBox(height: spaceBetweenTextAndLogo),
             Center(
-              child: FlutterLogo(
-                size: constrainedLogoSize,
+              child: Image.asset(
+                'assets/images/paw-placeholder.png',
+                width: logoSize,
+                height: logoSize,
+                fit: BoxFit.contain,
               ),
             ),
-            SizedBox(height: isPortrait ? screenHeight * 0.1 : screenHeight * 0.05),
+            SizedBox(height: isPortrait ? size.height * 0.1 : size.height * 0.05),
           ],
         ),
       ),
       bottomNavigationBar: SafeArea(
         minimum: EdgeInsets.only(bottom: bottomSafeArea),
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: bottomPadding,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: bottomPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -84,7 +79,7 @@ class _IntroPageState extends State<IntroPage> {
                 ),
                 text: 'Get Started',
               ),
-              SizedBox(height: isPortrait ? screenHeight * 0.01 : screenHeight * 0.005),
+              SizedBox(height: isPortrait ? size.height * 0.01 : size.height * 0.005),
               const Text('Terms & Conditions apply'),
             ],
           ),

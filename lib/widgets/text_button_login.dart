@@ -20,10 +20,9 @@ class LoginBtn1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        // Adjust height if needed, validation errors might need extra space
-        height: 80,
+        // Removed fixed height for flexibility
         foregroundDecoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           borderRadius: const BorderRadius.horizontal(
@@ -38,28 +37,35 @@ class LoginBtn1 extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(left: 5, right: 5),
-          child: TextFormField(
-            controller: controller,
-            obscureText: obscureText,
-            validator: validator,
-            textAlign: TextAlign.left,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(20),
-              hintText: hintText,
-              hintStyle: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: controller,
+                obscureText: obscureText,
+                validator: validator,
+                textAlign: TextAlign.left,
+                style: const TextStyle(fontSize: 18), // input text size
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(20),
+                  hintText: hintText,
+                  hintStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  border: InputBorder.none,
+                  suffixIcon: icon,
+                  suffixIconColor: black,
+                  errorStyle: const TextStyle(
+                    height: 1.2, // adjusts spacing between field and error text
+                    fontSize: 14,
+                    color: Colors.redAccent,
+                  ),
+                ),
               ),
-              border: InputBorder.none,
-              suffixIcon: icon,
-              suffixIconColor: black,
-              errorStyle: const TextStyle(
-                height: 0.8, // reduces vertical space of error text
-                fontSize: 12,
-                color: Colors.redAccent,
-              ),
-            ),
+              const SizedBox(height: 4), // spacing between input and error (if visible)
+            ],
           ),
         ),
       ),
