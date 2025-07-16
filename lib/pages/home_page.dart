@@ -54,13 +54,13 @@ void logOut(BuildContext context) async {
       label: 'News Outlet',
       color: Colors.blue.shade200,
       icon: Icons.newspaper,
-      onTapRoute: NewsFeedPage(),
+      onTapRoute:  NewsFeedPage(),
     ),
     _PlaceholderItem(
       label: 'Gallery',
       color: Colors.purple.shade200,
       icon: Icons.photo_album,
-      onTapRoute: GalleryPage(),
+      onTapRoute:  GalleryPage(),
     ),
     _PlaceholderItem(
       label: 'Vaccination Status',
@@ -285,10 +285,10 @@ class _PlaceholderItem {
   final Widget? onTapRoute;
 
   _PlaceholderItem({
+    this.onTap,
     required this.label,
     required this.color,
     required this.icon,
-    this.onTap,
     this.onTapRoute,
   });
 }

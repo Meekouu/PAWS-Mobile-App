@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class GalleryPage extends StatelessWidget {
@@ -15,16 +13,17 @@ class GalleryPage extends StatelessWidget {
     'assets/images/cat1.jpeg',
   ];
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Gallery"),
+        title: const Text("Gallery"),
         backgroundColor: Colors.teal,
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.photo_library_outlined),
+            icon: const Icon(Icons.photo_library_outlined),
             tooltip: "Gallery",
             onPressed: () {},
           ),
@@ -51,7 +50,7 @@ class GalleryPage extends StatelessWidget {
                       SnackBar(
                         content: Text("Tapped image ${index + 1}"),
                         backgroundColor: Colors.teal,
-                        duration: Duration(seconds: 1),
+                        duration: const Duration(seconds: 1),
                       ),
                     );
                   },

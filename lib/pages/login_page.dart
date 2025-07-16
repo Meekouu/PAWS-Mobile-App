@@ -6,7 +6,6 @@ import 'package:paws/pages/signup_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/cta_buton.dart';
 import 'package:paws/widgets/new_user_onboard.dart'; 
-import 'package:paws/widgets/show_message.dart';
 import 'package:paws/widgets/text_button_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';  
 

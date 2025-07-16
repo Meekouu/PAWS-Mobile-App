@@ -1,7 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class NewsFeedPage extends StatelessWidget {
   final List<Map<String, String>> newsPosts = [
@@ -28,12 +25,13 @@ class NewsFeedPage extends StatelessWidget {
     },
   ];
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text("Vet News & Updates"),
+        title: const Text("Vet News & Updates"),
         backgroundColor: Colors.teal,
         centerTitle: true,
         elevation: 0,
@@ -44,11 +42,11 @@ class NewsFeedPage extends StatelessWidget {
               alignment: Alignment.topRight,
               children: [
                 IconButton(
-                  icon: Icon(Icons.notifications_none),
+                  icon: const Icon(Icons.notifications_none),
                   tooltip: "Notifications",
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text("No new notifications."),
                         backgroundColor: Colors.teal,
                         duration: Duration(seconds: 1),
@@ -60,12 +58,12 @@ class NewsFeedPage extends StatelessWidget {
                   right: 10,
                   top: 10,
                   child: Container(
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
                       color: Colors.pinkAccent,
                       shape: BoxShape.circle,
                     ),
-                    constraints: BoxConstraints(minWidth: 8, minHeight: 8),
+                    constraints: const BoxConstraints(minWidth: 8, minHeight: 8),
                   ),
                 ),
               ],
@@ -75,7 +73,7 @@ class NewsFeedPage extends StatelessWidget {
       ),
 
       body: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
         itemCount: newsPosts.length,
         itemBuilder: (context, index) {
           return NewsCard(post: newsPosts[index]);
@@ -88,12 +86,12 @@ class NewsFeedPage extends StatelessWidget {
 class NewsCard extends StatelessWidget {
   final Map<String, String> post;
 
-  const NewsCard({required this.post});
+  const NewsCard({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 3,
       child: Column(
@@ -107,7 +105,7 @@ class NewsCard extends StatelessWidget {
                   backgroundImage: AssetImage(post['avatar']!),
                   radius: 22,
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +118,7 @@ class NewsCard extends StatelessWidget {
                           color: Colors.teal[900],
                         ),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Text(
                         post['time']!,
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
@@ -135,7 +133,7 @@ class NewsCard extends StatelessWidget {
 
           if (post['image'] != null)
             ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(0)),
               child: Image.asset(
                 post['image']!,
                 fit: BoxFit.cover,
