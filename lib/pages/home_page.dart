@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/pages/news.dart';
 import 'package:paws/pages/gallery.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:paws/pages/pet_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Route createSlideRoute(Widget page) {
@@ -211,6 +212,10 @@ void logOut(BuildContext context) async {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: GestureDetector(
                         onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PetPage())
+                          );
                         },
                         child: Column(
                           children: [
