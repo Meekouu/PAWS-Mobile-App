@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paws/pages/home_page.dart'; // make sure black color is defined here
-import 'package:paws/widgets/text_button_login.dart';
+import 'package:paws/widgets/buttons_input_widgets.dart';
 
 Route createRouteToOnboarding(VoidCallback onFinish) {
   return PageRouteBuilder(

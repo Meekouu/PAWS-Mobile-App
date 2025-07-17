@@ -1,6 +1,12 @@
 import 'dart:ui';
 
-const black = Color.fromRGBO(26, 26, 26, 1);
-const grey = Color.fromRGBO(125, 125, 125, 1);
-const white = Color.fromRGBO(245, 255, 250, 1);
-const containerColor = Color.fromRGBO(47, 43, 58, 1);
+const Color primaryBlue = Color(0xFF3674B5);
+const Color lightBlue = Color(0xFF578FCA);
+const Color cream = Color(0xFFF5F0CD);
+const Color accentYellow = Color(0xFFFADA7A);
+
+
+const Color black = Color(0xFF1A1A1A); 
+const Color grey = Color(0xFF7D7D7D);  
+const Color white = cream;            
+const Color containerColor = primaryBlue; 

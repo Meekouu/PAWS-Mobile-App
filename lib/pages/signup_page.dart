@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/themes/themes.dart';
-import 'package:paws/widgets/cta_buton.dart';
+import 'package:paws/widgets/buttons_input_widgets.dart';
 import 'package:paws/widgets/show_message.dart';
-import 'package:paws/widgets/text_button_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpPage extends StatefulWidget {
