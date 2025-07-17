@@ -9,84 +9,72 @@ class PetPage extends StatelessWidget {
 
   final double coverHeight = 280;
   final double profileHeight = 140;
-  
+
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
+      appBar: AppBar(
+        title: Text(animal.name),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: SvgPicture.asset(
+            'assets/images/Arrow - Left 2.svg',
+            height: 20,
+            width: 20,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: ListView(
         padding: EdgeInsets.zero,
-        children: <Widget>[    
-          _buildTop(context),
-          _buildContent()
-      ]),
+        children: [
+          BuildCoverImage(),
+          BuildProfileImage(),
+          const SizedBox(height: 20),
+          _buildContent(),
+        ],
+      ),
     );
   }
 
   Widget _buildContent() {
     return Container(
-      child: Text(animal.name),
       alignment: Alignment.center,
-    );
-  }
-
-  Stack _buildTop(context) {
-    final top = coverHeight - profileHeight /2;
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        
-        BuildCoverImage(),
-        Positioned(
-          top:40,
-          left:15,
-          child: GestureDetector(
-            onTap: (){
-              Navigator.pop(context);
-            },
-            child: Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withAlpha(50),
-                border: Border.all(),
-                shape: BoxShape.circle
-              ),
-              child: SvgPicture.asset(
-                  'assets/images/Arrow - Left 2.svg',
-                  height: 20,
-                  width: 20,
-                  ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: top-10,
-          right: top+20,
-          child: BuildProfileImage()),
-      ],
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        animal.name,
+        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
     );
   }
 
   Widget BuildCoverImage() => Container(
-    color: Colors.white,
-    child: Image.asset(animal.imageCover,
-      width: double.infinity,
-      height: coverHeight,
-      fit: BoxFit.cover,
-    )
-  );
+        color: Colors.white,
+        child: Image.asset(
+          animal.imageCover,
+          width: double.infinity,
+          height: coverHeight,
+          fit: BoxFit.cover,
+        ),
+      );
 
   Widget BuildProfileImage() => Container(
-    padding: EdgeInsets.all(5),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      shape: BoxShape.circle,
-    ),
-      child: CircleAvatar(
-        radius: profileHeight / 2,
-        backgroundColor: Colors.black,
-        backgroundImage: AssetImage(animal.imagePicture),
-      ),
-  );
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(top: profileHeight / 2),
+        child: Container(
+          padding: const EdgeInsets.all(5),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+          child: CircleAvatar(
+            radius: profileHeight / 2,
+            backgroundColor: Colors.black,
+            backgroundImage: AssetImage(animal.imagePicture),
+          ),
+        ),
+      );
 }

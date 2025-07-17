@@ -274,8 +274,27 @@ class _OwnerInfoFormState extends State<OwnerInfoForm> {
 
   String selectedCountry = 'United States';
   final List<String> countries = [
-
-  ];
+  'United States',
+  'Canada',
+  'United Kingdom',
+  'Australia',
+  'Germany',
+  'France',
+  'India',
+  'Philippines',
+  'Singapore',
+  'Japan',
+  'China',
+  'South Korea',
+  'Brazil',
+  'Mexico',
+  'Italy',
+  'Spain',
+  'Russia',
+  'Netherlands',
+  'Sweden',
+  'Switzerland',
+];
 
   final _birthdayController = TextEditingController();
   String? birthdayError;
