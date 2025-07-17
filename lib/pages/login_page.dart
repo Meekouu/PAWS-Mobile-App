@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
         height: 150,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Lottie.asset('assets/lottie/loading.json'),

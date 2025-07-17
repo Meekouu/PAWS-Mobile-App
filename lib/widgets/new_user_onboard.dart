@@ -104,12 +104,19 @@ class _OnboardingPagePresenterState extends State<OnboardingPagePresenter> {
     );
   }
 
-  bool _validateCurrentPage() {
-    if (_currentPage == 0) return ownerFormKey.currentState?.validate() ?? false;
-    if (_currentPage == 1) return petFormKey.currentState?.validate() ?? false;
-    return true;
+bool _validateAndSaveCurrentPage() {
+  if (_currentPage == 0 && ownerFormKey.currentState != null) {
+    final valid = ownerFormKey.currentState!.validate();
+    if (valid) ownerFormKey.currentState!._notifyParent();
+    return valid;
   }
-
+  if (_currentPage == 1 && petFormKey.currentState != null) {
+    final valid = petFormKey.currentState!.validate();
+    if (valid) petFormKey.currentState!._notifyParent();
+    return valid;
+  }
+  return true;
+}
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -213,7 +220,7 @@ class _OnboardingPagePresenterState extends State<OnboardingPagePresenter> {
                           : const SizedBox(width: 70),
                       TextButton.icon(
                         onPressed: () {
-                          if (!_validateCurrentPage()) return;
+                          if (!_validateAndSaveCurrentPage()) return;
 
                           if (_currentPage == widget.pages.length - 1) {
                             widget.onFinish?.call();
