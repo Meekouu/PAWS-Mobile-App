@@ -33,7 +33,6 @@ class LoginBtn1 extends StatelessWidget {
 
     final horizontalPadding = screenWidth * 0.05;
     final fontSize = (isLandscape ? screenHeight : screenWidth).clamp(320, 600) * 0.045;
-
     final maxWidth = screenWidth > 600 ? 500.0 : screenWidth * 0.9;
     final height = isLandscape ? screenHeight * 0.13 : screenHeight * 0.08;
 
@@ -55,9 +54,9 @@ class LoginBtn1 extends StatelessWidget {
             onChanged: onChanged,
             keyboardType: keyboardType,
             style: TextStyle(fontSize: fontSize),
-            textAlignVertical: TextAlignVertical.center, // center vertically
+            textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 20), // control top/bottom
+              contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
               hintText: hintText,
               hintStyle: TextStyle(
                 fontSize: fontSize,
@@ -80,16 +79,16 @@ class LoginBtn1 extends StatelessWidget {
   }
 }
 
-
-
 class CTAButton extends StatelessWidget {
   final Function()? onTap;
   final String text;
+  final Widget? icon;
 
   const CTAButton({
     super.key,
     required this.text,
     required this.onTap,
+    this.icon,
   });
 
   @override
@@ -98,28 +97,38 @@ class CTAButton extends StatelessWidget {
     final screenWidth = screenSize.width;
     final screenHeight = screenSize.height;
 
-    final horizontalPadding = screenWidth * 0.05; // 5% of width
-    final buttonHeight = screenHeight * 0.075; // 7.5% of height
-    final fontSize = screenWidth * 0.05; // ~20 on 400px width
+    final horizontalPadding = screenWidth * 0.05;
+    final buttonHeight = screenHeight * 0.075;
+    final fontSize = screenWidth * 0.05;
 
     return GestureDetector(
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         child: Container(
-          height: buttonHeight.clamp(48.0, 70.0), // optional max/min height
+          height: buttonHeight.clamp(48.0, 70.0),
           decoration: BoxDecoration(
-            color: black, // from your theme
+            color: black,
             borderRadius: BorderRadius.circular(40),
           ),
           child: Center(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: fontSize.clamp(16.0, 24.0),
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null) ...[
+                  icon!,
+                  const SizedBox(width: 10),
+                ],
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: fontSize.clamp(16.0, 24.0),
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

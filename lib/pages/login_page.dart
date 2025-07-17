@@ -9,6 +9,7 @@ import 'package:paws/pages/signup_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/new_user_onboard.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,44 +27,73 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> signIn() async {
     if (!_formKey.currentState!.validate()) return;
 
-    showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => Center(
-      child: Container(
-        width: 150,
-        height: 150,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Lottie.asset('assets/lottie/loading.json'),
-      ),
-    ),
-  );
-
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text,
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
+        ),
       );
 
-      if (!context.mounted) return;
-      Navigator.pop(context);
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
       final prefs = await SharedPreferences.getInstance();
       final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+      final nextPage = hasSeenOnboarding ? HomePage() : const OnboardingScreen();
 
-      final nextPage = hasSeenOnboarding
-          ?  HomePage()
-          : const OnboardingScreen();
-
+      if (!context.mounted) return;
+      Navigator.pop(context);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => nextPage));
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
-      final error = _mapFirebaseError(e.code);
-      _showErrorDialog(error);
+      _showErrorDialog(_mapFirebaseError(e.code));
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
+        ),
+      );
+
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        Navigator.pop(context);
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      final prefs = await SharedPreferences.getInstance();
+      final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+      final nextPage = hasSeenOnboarding ? HomePage() : const OnboardingScreen();
+
+      if (!context.mounted) return;
+      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => nextPage));
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      _showErrorDialog('Google sign-in failed: ${e.message}');
+    } catch (e) {
+      Navigator.pop(context);
+      _showErrorDialog('An unexpected error occurred.');
     }
   }
 
@@ -89,7 +119,10 @@ class _LoginPageState extends State<LoginPage> {
         title: const Text('Login Error'),
         content: Text(message),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
         ],
       ),
     );
@@ -143,6 +176,12 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(height: 30),
         const Text('Forgot Login Details? Get Help Logging in'),
         const Divider(color: grey, indent: 20, endIndent: 20),
+        CTAButton(
+          text: 'Sign In with Google',
+          onTap: signInWithGoogle,
+          icon: Image.asset('assets/images/google_logo.png', height: 24),
+        ),
+        const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -173,64 +212,59 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Center(
           child: isPortrait
-            ? SingleChildScrollView(
-                child: Column(
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      Lottie.asset(
+                        'assets/lottie/starting.json',
+                        height: size.height * 0.25,
+                        fit: BoxFit.contain,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                        decoration: const BoxDecoration(
+                          color: cream,
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                        ),
+                        child: Form(key: _formKey, child: _buildLoginForm()),
+                      ),
+                    ],
+                  ),
+                )
+              : Row(
                   children: [
-                    const SizedBox(height: 40),
-                    Lottie.asset(
-                      'assets/lottie/starting.json',
-                      height: size.height * 0.25,
-                      fit: BoxFit.contain,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-                      decoration: const BoxDecoration(
-                        color: cream,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40),
-                          bottomLeft: Radius.circular(40),
-                          bottomRight: Radius.circular(40),
+                    Expanded(
+                      child: Center(
+                        child: Lottie.asset(
+                          'assets/lottie/starting.json',
+                          height: size.height * 0.5,
                         ),
                       ),
-                      child: Form(key: _formKey, child: _buildLoginForm()),
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: const BoxDecoration(
+                          color: cream,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(40),
+                            bottomLeft: Radius.circular(40),
+                          ),
+                        ),
+                        child: Center(
+                          child: SingleChildScrollView(
+                            child: Form(key: _formKey, child: _buildLoginForm()),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              )
-            : Row(
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Lottie.asset(
-                        'assets/lottie/starting.json',
-                        height: size.height * 0.5,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: const BoxDecoration(
-                        color: cream,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          bottomLeft: Radius.circular(40),
-                        ),
-                      ),
-                      child: Center(
-                        child: SingleChildScrollView(
-                          child: Form(key: _formKey, child: _buildLoginForm()),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-          ),
         ),
-        
+      ),
     );
   }
 }
+
