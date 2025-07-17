@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/pages/news.dart';
+import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/gallery.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:paws/pages/pet_page.dart';
@@ -37,16 +38,7 @@ void logOut(BuildContext context) async {
   await FirebaseAuth.instance.signOut();
   Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
 }
-
-  final List<IconData> petIcons = [
-    Icons.pets,
-    Icons.pets,
-    Icons.pets,
-  ];
-
-  final List<String> petNames = [
-    'Pet Name',
-  ];
+  final List<Animal> animal = Animal.getAnimal();
 
   final List<_PlaceholderItem> placeholders = [
     _PlaceholderItem(
@@ -162,9 +154,9 @@ void logOut(BuildContext context) async {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                itemCount: petNames.length + 1, 
+                itemCount: animal.length + 1, 
                 itemBuilder: (context, index) {
-                  if (index == petNames.length) {
+                  if (index == animal.length) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: GestureDetector(
@@ -212,7 +204,7 @@ void logOut(BuildContext context) async {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => PetPage())
+                            MaterialPageRoute(builder: (context) => PetPage(animal: animal[index]))
                           );
                         },
                         child: Column(
@@ -230,18 +222,14 @@ void logOut(BuildContext context) async {
                               child: CircleAvatar(
                                 radius: 48,
                                 backgroundColor: Colors.grey.shade200,
-                                child: Icon(
-                                  petIcons[index],
-                                  size: 60,
-                                  color: Colors.brown.shade700,
-                                ),
+                                backgroundImage: AssetImage(animal[index].imagePicture),
                               ),
                             ),
                             const SizedBox(height: 8),
                             SizedBox(
                               width: 80,
                               child: Text(
-                                petNames[index],
+                                animal[index].name,
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
