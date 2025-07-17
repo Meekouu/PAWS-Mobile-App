@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: accentYellow,
         brightness: Brightness.light,
         useMaterial3: true,
+        progressIndicatorTheme: 
       ),
 
       initialRoute: showIntro ? '/intro' : '/auth',
