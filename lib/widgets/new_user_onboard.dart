@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paws/pages/home_page.dart';
+import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -112,28 +113,53 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ];
   }
 
-  Widget _buildFormPage({required String title, required Widget content, required Color backgroundColor}) {
-    return Container(
-      color: backgroundColor,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: SafeArea(
-        child: Column(
-          children: [
-            Text(title, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
-            const SizedBox(height: 24),
-            Expanded(child: SingleChildScrollView(child: content)),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _nextPage,
-              icon: Icon(_currentPage == 2 ? Icons.check : Icons.arrow_forward),
-              label: Text(_currentPage == 2 ? 'Finish' : 'Next'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: backgroundColor),
+  Widget _buildFormPage({
+  required String title,
+  required Widget content,
+  required Color backgroundColor,
+}) {
+  return Container(
+    color: backgroundColor,
+    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+    child: SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    content,
+                  ],
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+          ElevatedButton.icon(
+            onPressed: _nextPage,
+            icon: Icon(_currentPage == 2 ? Icons.check : Icons.arrow_forward),
+            label: Text(_currentPage == 2 ? 'Finish' : 'Next'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              foregroundColor: white,
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {

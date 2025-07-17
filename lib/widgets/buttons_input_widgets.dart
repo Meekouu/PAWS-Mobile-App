@@ -28,63 +28,59 @@ class LoginBtn1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isLandscape = screenWidth > screenHeight;
 
-    // Adjust sizes based on screen width
-    final horizontalPadding = screenWidth * 0.05; // e.g. 20 on 400px screen
-    final contentPadding = screenWidth * 0.035; // ~14 on 400px
-    final fontSize = screenWidth.clamp(320, 600) * 0.045;
- // ~18 on 400px
+    final horizontalPadding = screenWidth * 0.05;
+    final fontSize = (isLandscape ? screenHeight : screenWidth).clamp(320, 600) * 0.045;
+
+    final maxWidth = screenWidth > 600 ? 500.0 : screenWidth * 0.9;
+    final height = isLandscape ? screenHeight * 0.13 : screenHeight * 0.08;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: Container(
-        foregroundDecoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(40),
-        ),
-        decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.white,
-          borderRadius: BorderRadius.circular(40),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: contentPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: controller,
-                obscureText: obscureText,
-                validator: validator,
-                onChanged: onChanged,
-                keyboardType: keyboardType,
-                textAlign: TextAlign.left,
-                style: TextStyle(fontSize: fontSize),
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(contentPadding),
-                  hintText: hintText,
-                  hintStyle: TextStyle(
-                    fontSize: fontSize,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  border: InputBorder.none,
-                  suffixIcon: icon,
-                  suffixIconColor: black,
-                  errorText: errorText,
-                  errorStyle: TextStyle(
-                    height: 0.8,
-                    fontSize: fontSize * 0.8,
-                    color: Colors.redAccent,
-                  ),
-                ),
+      child: Center(
+        child: Container(
+          height: height.clamp(56.0, 100.0),
+          width: maxWidth,
+          decoration: BoxDecoration(
+            color: backgroundColor ?? Colors.white,
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(40),
+          ),
+          child: TextFormField(
+            controller: controller,
+            obscureText: obscureText,
+            validator: validator,
+            onChanged: onChanged,
+            keyboardType: keyboardType,
+            style: TextStyle(fontSize: fontSize),
+            textAlignVertical: TextAlignVertical.center, // center vertically
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 20), // control top/bottom
+              hintText: hintText,
+              hintStyle: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.w400,
               ),
-              SizedBox(height: screenWidth * 0.01), // small bottom spacing
-            ],
+              border: InputBorder.none,
+              suffixIcon: icon,
+              suffixIconColor: black,
+              errorText: errorText,
+              errorStyle: TextStyle(
+                height: 1.2,
+                fontSize: fontSize * 0.75,
+                color: Colors.redAccent,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+
 
 class CTAButton extends StatelessWidget {
   final Function()? onTap;
