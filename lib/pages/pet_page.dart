@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:paws/model/animal_model.dart';
 
 class PetPage extends StatelessWidget {
-  const PetPage({super.key});
+  final Animal animal;
+
+  const PetPage({Key? key, required this.animal}) : super(key: key);
 
   final double coverHeight = 280;
   final double profileHeight = 140;
@@ -22,7 +25,7 @@ class PetPage extends StatelessWidget {
 
   Widget _buildContent() {
     return Container(
-      child: Text('test'),
+      child: Text(animal.name),
       alignment: Alignment.center,
     );
   }
@@ -67,7 +70,7 @@ class PetPage extends StatelessWidget {
 
   Widget BuildCoverImage() => Container(
     color: Colors.white,
-    child: Image.asset('assets/images/cat1.jpeg',
+    child: Image.asset(animal.imageCover,
       width: double.infinity,
       height: coverHeight,
       fit: BoxFit.cover,
@@ -83,7 +86,7 @@ class PetPage extends StatelessWidget {
       child: CircleAvatar(
         radius: profileHeight / 2,
         backgroundColor: Colors.black,
-        backgroundImage: AssetImage('assets/images/dog1.jpeg'),
+        backgroundImage: AssetImage(animal.imagePicture),
       ),
   );
 }
