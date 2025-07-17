@@ -57,14 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
       final nextPage = hasSeenOnboarding
           ?  HomePage()
-          : OnboardingPage1(onFinish: () async {
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setBool('hasSeenOnboarding', true);
-              if (context.mounted) {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) =>  HomePage()));
-              }
-            });
+          : const OnboardingScreen();
 
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => nextPage));
     } on FirebaseAuthException catch (e) {
