@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:paws/pages/home_page.dart';
-import 'package:paws/themes/themes.dart'; // make sure black color is defined here
+import 'package:paws/pages/home_page.dart'; // make sure black color is defined here
 import 'package:paws/widgets/text_button_login.dart';
 
 Route createRouteToOnboarding(VoidCallback onFinish) {
@@ -85,11 +84,24 @@ class _OnboardingPagePresenterState extends State<OnboardingPagePresenter> {
   late OwnerInfoForm ownerInfoForm;
   late PetInfoForm petInfoForm;
 
+  Map<String, dynamic> ownerInfo = {};
+  Map<String, dynamic> petInfo = {};
+
   @override
   void initState() {
     super.initState();
-    ownerInfoForm = OwnerInfoForm(key: ownerFormKey, onSaved: (_) {});
-    petInfoForm = PetInfoForm(key: petFormKey, onSaved: (_) {});
+    ownerInfoForm = OwnerInfoForm(
+      key: ownerFormKey, 
+      onSaved: (data) {
+        ownerInfo = data; //colt owner data
+      }
+    );
+    petInfoForm = PetInfoForm(
+      key: petFormKey, 
+      onSaved: (data) {
+        petInfo = data;  //colt same here, but pet
+      }
+    );
   }
 
   bool _validateCurrentPage() {
@@ -262,11 +274,7 @@ class _OwnerInfoFormState extends State<OwnerInfoForm> {
 
   String selectedCountry = 'United States';
   final List<String> countries = [
-    'United States',
-    'Canada',
-    'United Kingdom',
-    'Australia',
-    'Other',
+
   ];
 
   final _birthdayController = TextEditingController();
@@ -314,6 +322,7 @@ class _OwnerInfoFormState extends State<OwnerInfoForm> {
     return valid;
   }
 
+  //colt - values are sent here.
   void _notifyParent() {
     final ownerData = {
       'name': _nameController.text.trim(),
@@ -331,6 +340,7 @@ class _OwnerInfoFormState extends State<OwnerInfoForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Owner Name Input
+            //colt just in case youre having conflict with the custom made text form input, the widget is located at widgets/text_button_login.dart
           LoginBtn1(
             controller: _nameController,
             hintText: 'Owner Name',
@@ -343,8 +353,19 @@ class _OwnerInfoFormState extends State<OwnerInfoForm> {
             backgroundColor: Colors.white,
           ),
           const SizedBox(height: 12),
-
-          // Country Dropdown
+          LoginBtn1(
+            controller: _birthdayController,
+            hintText: 'Birthday (dd/mm/yyyy)',
+            obscureText: false,
+            errorText: birthdayError,
+            keyboardType: TextInputType.datetime,
+            onChanged: (val) {
+              _notifyParent();
+              if (birthdayError != null) validate();
+            },
+            backgroundColor: Colors.white,
+          ),
+          const SizedBox(height: 12),
           DropdownButtonFormField<String>(
             value: selectedCountry,
             items: countries
@@ -368,21 +389,7 @@ class _OwnerInfoFormState extends State<OwnerInfoForm> {
               border: OutlineInputBorder(),
             ),
           ),
-          const SizedBox(height: 12),
-
-          // Birthday Input (dd/mm/yyyy)
-          LoginBtn1(
-            controller: _birthdayController,
-            hintText: 'Birthday (dd/mm/yyyy)',
-            obscureText: false,
-            errorText: birthdayError,
-            keyboardType: TextInputType.datetime,
-            onChanged: (val) {
-              _notifyParent();
-              if (birthdayError != null) validate();
-            },
-            backgroundColor: Colors.white,
-          ),
+          
         ],
       ),
     );
@@ -456,6 +463,7 @@ class _PetInfoFormState extends State<PetInfoForm> {
     return valid;
   }
 
+  //colt values sent here
   void _notifyParent() {
     // Optionally convert birthday to ISO string or null if invalid/empty
     String? isoBirthday;
@@ -497,6 +505,30 @@ class _PetInfoFormState extends State<PetInfoForm> {
             },
           ),
           const SizedBox(height: 12),
+          LoginBtn1(
+            controller: _breedController,
+            hintText: 'Breed',
+            obscureText: false,
+            errorText: breedError,
+            onChanged: (val) {
+              _notifyParent();
+              if (breedError != null) validate();
+            },
+          ),
+          const SizedBox(height: 12),
+          LoginBtn1(
+            controller: _birthdayController,
+            hintText: 'Birthday (dd/mm/yyyy)',
+            obscureText: false,
+            errorText: birthdayError,
+            keyboardType: TextInputType.datetime,
+            onChanged: (val) {
+              _notifyParent();
+              if (birthdayError != null) validate();
+            },
+            backgroundColor: Colors.white,
+          ),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
@@ -522,30 +554,6 @@ class _PetInfoFormState extends State<PetInfoForm> {
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 12),
-          LoginBtn1(
-            controller: _breedController,
-            hintText: 'Breed',
-            obscureText: false,
-            errorText: breedError,
-            onChanged: (val) {
-              _notifyParent();
-              if (breedError != null) validate();
-            },
-          ),
-          const SizedBox(height: 12),
-          LoginBtn1(
-            controller: _birthdayController,
-            hintText: 'Birthday (dd/mm/yyyy)',
-            obscureText: false,
-            errorText: birthdayError,
-            keyboardType: TextInputType.datetime,
-            onChanged: (val) {
-              _notifyParent();
-              if (birthdayError != null) validate();
-            },
-            backgroundColor: Colors.white,
           ),
         ],
       ),

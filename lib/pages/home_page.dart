@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paws/pages/news.dart';
+import 'package:paws/pages/news/gnews_feed_page.dart';
 import 'package:paws/pages/gallery.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:paws/pages/pet_page.dart';
@@ -32,9 +32,8 @@ class HomePage extends StatelessWidget {
 
 void logOut(BuildContext context) async {
   final prefs = await SharedPreferences.getInstance();
-  await prefs.clear(); 
-
   await FirebaseAuth.instance.signOut();
+
   Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
 }
 
@@ -53,7 +52,7 @@ void logOut(BuildContext context) async {
       label: 'News Outlet',
       color: Colors.blue.shade200,
       icon: Icons.newspaper,
-      onTapRoute:  NewsFeedPage(),
+      onTapRoute:  GNewsFeedPage(),
     ),
     _PlaceholderItem(
       label: 'Gallery',
