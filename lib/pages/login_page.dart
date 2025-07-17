@@ -27,9 +27,21 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
 
     showDialog(
-      context: context,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => Center(
+      child: Container(
+        width: 150,
+        height: 150,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Lottie.asset('assets/lottie/loading.json'),
+      ),
+    ),
+  );
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
