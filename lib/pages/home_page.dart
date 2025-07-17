@@ -1,12 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-<<<<<<< HEAD
 import 'package:paws/pages/news/gnews_feed_page.dart';
-=======
-import 'package:paws/pages/news.dart';
-import 'package:paws/model/animal_model.dart';
->>>>>>> 9358189356636984cb2356ac7cc307254e104269
 import 'package:paws/pages/gallery.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:paws/pages/pet_page.dart';
