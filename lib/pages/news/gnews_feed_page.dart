@@ -1,222 +1,307 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'news_article.dart';
-import 'news_card.dart';
-import 'saved_articles_page.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GNewsFeedPage extends StatefulWidget {
+  const GNewsFeedPage({super.key});
+
   @override
-  _GNewsFeedPageState createState() => _GNewsFeedPageState();
+  State<GNewsFeedPage> createState() => _GNewsFeedPageState();
 }
 
 class _GNewsFeedPageState extends State<GNewsFeedPage> {
-  List<NewsArticle> _articles = [];
-  bool _isLoading = false;
-  bool _hasMore = true;
+  final String apiKey = 'd2d4e3b8c474009c41ca7f7f361e37e5';
+  final String apiUrl = 'https://gnews.io/api/v4/search';
 
-  int _page = 1;
-  int _totalPages = 10;
-
-  String _query = "pet+care";
-  final TextEditingController _searchController = TextEditingController();
-  String _selectedCategory = 'All';
-
-  final String _apiKey = 'd2d4e3b8c474009c41ca7f7f361e37e5';
-  final List<String> _categories = [
-    'All', 'Pets', 'Dog', 'Cat', 'Animal Health', 'Veterinary', 'Pet Nutrition'
+  List articles = [];
+  List<String> recentSearches = [];
+  List<String> likedArticles = [];
+  List bookmarkedArticles = [];
+  int page = 1;
+  String query = 'veterinary';
+  String category = 'pets';
+  bool isLoading = false;
+  int totalPages = 1;
+  final List<String> categories = [
+    'veterinary',
+    'pet health',
+    'animal welfare',
+    'animal nutrition',
+    'pet care',
+    'vaccine',
+    'zoonotic disease'
   ];
 
-  Future<void> fetchNews({bool refresh = false}) async {
-    if (refresh) {
+  @override
+  void initState() {
+    super.initState();
+    fetchArticles();
+    loadRecentSearches();
+    loadBookmarks();
+  }
+
+  Future<void> fetchArticles({bool refresh = false}) async {
+    if (refresh) page = 1;
+    setState(() => isLoading = true);
+    final response = await http.get(Uri.parse(
+        '$apiUrl?q=$query&lang=en&token=$apiKey&max=5&page=$page'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
       setState(() {
-        _page = 1;
-        _articles.clear();
+        totalPages = (data['totalArticles'] / 5).ceil();
+        if (refresh) {
+          articles = data['articles'];
+        } else {
+          articles.addAll(data['articles']);
+        }
       });
     }
+    setState(() => isLoading = false);
+  }
 
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> loadRecentSearches() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() => recentSearches = prefs.getStringList('recentSearches') ?? []);
+  }
 
-    final query = _query.isEmpty
-        ? (_selectedCategory == 'All' ? 'pets' : _selectedCategory)
-        : _query;
-
-    final url =
-        'https://gnews.io/api/v4/search?q=$query&lang=en&max=5&page=$_page&apikey=$_apiKey';
-
-    try {
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final List articles = data['articles'];
-
-        setState(() {
-          _articles = articles.map((json) => NewsArticle.fromJson(json)).toList();
-          _hasMore = _page < _totalPages;
-        });
-      } else {
-        throw Exception('Failed to load news');
-      }
-    } catch (e) {
-      print('❌ Error: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+  Future<void> saveRecentSearch(String search) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!recentSearches.contains(search)) {
+      recentSearches.insert(0, search);
+      if (recentSearches.length > 10) recentSearches = recentSearches.sublist(0, 10);
+      await prefs.setStringList('recentSearches', recentSearches);
     }
   }
 
-  void _onSearch() {
-    setState(() {
-      _query = _searchController.text.trim().replaceAll(' ', '+');
-      _page = 1;
-    });
-    fetchNews(refresh: true);
+  Future<void> loadBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() => bookmarkedArticles = jsonDecode(prefs.getString('bookmarkedArticles') ?? '[]'));
   }
 
-  void _showCategoryBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        color: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.all(16),
-          children: _categories.map((category) {
-            return ListTile(
-              title: Text(category),
-              onTap: () {
-                Navigator.pop(context);
-                setState(() {
-                  _selectedCategory = category;
-                  _query = '';
-                  _searchController.clear();
-                  _page = 1;
-                });
-                fetchNews(refresh: true);
-              },
-            );
-          }).toList(),
+  Future<void> toggleBookmark(article) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (bookmarkedArticles.any((a) => a['url'] == article['url'])) {
+      bookmarkedArticles.removeWhere((a) => a['url'] == article['url']);
+    } else {
+      bookmarkedArticles.add(article);
+    }
+    await prefs.setString('bookmarkedArticles', jsonEncode(bookmarkedArticles));
+    setState(() {});
+  }
+
+  bool isBookmarked(article) => bookmarkedArticles.any((a) => a['url'] == article['url']);
+
+  void openDetails(article) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: Text(article['title'])),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (article['image'] != null)
+                    Image.network(article['image'], errorBuilder: (_, __, ___) => const SizedBox()),
+                  const SizedBox(height: 10),
+                  Text(
+                    article['content'] ?? article['description'] ?? '',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  void _goToNextPage() {
-    if (_hasMore) {
-      setState(() {
-        _page++;
-      });
-      fetchNews();
-    }
+  Widget buildSearchBar() {
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            decoration: const InputDecoration(hintText: 'Search veterinary news'),
+            onSubmitted: (value) {
+              setState(() => query = value);
+              saveRecentSearch(value);
+              fetchArticles(refresh: true);
+            },
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.filter_list),
+          onPressed: () async {
+            final selected = await showDialog<String>(
+              context: context,
+              builder: (context) => SimpleDialog(
+                title: const Text('Select Category'),
+                children: categories.map((c) => SimpleDialogOption(
+                      child: Text(c),
+                      onPressed: () => Navigator.pop(context, c),
+                    )).toList(),
+              ),
+            );
+            if (selected != null) {
+              setState(() {
+                query = selected;
+                saveRecentSearch(selected);
+              });
+              fetchArticles(refresh: true);
+            }
+          },
+        )
+      ],
+    );
   }
 
-  void _goToPreviousPage() {
-    if (_page > 1) {
-      setState(() {
-        _page--;
-      });
-      fetchNews();
-    }
+  Widget buildArticleCard(article) {
+    return Dismissible(
+      key: Key(article['url']),
+      onDismissed: (_) => setState(() => articles.remove(article)),
+      background: Container(color: Colors.red),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: InkWell(
+          onTap: () => openDetails(article),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (article['image'] != null)
+                Image.network(
+                  article['image'],
+                  errorBuilder: (_, __, ___) => Container(
+                    height: 100,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(8),
+                    child: Text(article['title'] ?? '', style: const TextStyle(fontSize: 16)),
+                  ),
+                ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  article['title'] ?? '',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              ButtonBar(
+                alignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      isBookmarked(article) ? Icons.bookmark : Icons.bookmark_border,
+                    ),
+                    onPressed: () => toggleBookmark(article),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      likedArticles.contains(article['url'])
+                          ? Icons.thumb_up_alt
+                          : Icons.thumb_up_alt_outlined,
+                      color: likedArticles.contains(article['url']) ? Colors.teal : null,
+                    ),
+                    onPressed: () => toggleLike(article['url']),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    fetchNews();
+  void toggleLike(String url) {
+    setState(() {
+      if (likedArticles.contains(url)) {
+        likedArticles.remove(url);
+      } else {
+        likedArticles.add(url);
+      }
+    });
+  }
+
+  Widget buildPagination() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: page > 1
+              ? () {
+                  setState(() => page--);
+                  fetchArticles();
+                }
+              : null,
+        ),
+        Text('Page $page of $totalPages'),
+        IconButton(
+          icon: const Icon(Icons.arrow_forward),
+          onPressed: page < totalPages
+              ? () {
+                  setState(() => page++);
+                  fetchArticles();
+                }
+              : null,
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF7F9FC),
+      backgroundColor: Colors.blueGrey[50],
       appBar: AppBar(
-        title: Text("Vet News"),
-        backgroundColor: Color(0xFF4A90E2),
-        centerTitle: true,
+        backgroundColor: Colors.teal,
+        title: const Text('Veterinary News'),
         actions: [
           IconButton(
-            icon: Icon(Icons.bookmark),
+            icon: const Icon(Icons.bookmarks),
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => SavedArticlesPage()),
+              MaterialPageRoute(
+                builder: (_) => Scaffold(
+                  appBar: AppBar(title: const Text('Saved Articles')),
+                  body: ListView(
+                    children: bookmarkedArticles.map(buildArticleCard).toList(),
+                  ),
+                ),
+              ),
             ),
           )
         ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    onSubmitted: (value) => _onSearch(),
-                    decoration: InputDecoration(
-                      hintText: 'Search news...',
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () => _searchController.clear(),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                IconButton(
-                  icon: Icon(Icons.filter_alt_rounded, color: Colors.white),
-                  onPressed: _showCategoryBottomSheet,
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
       body: RefreshIndicator(
-        onRefresh: () => fetchNews(refresh: true),
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : _articles.isEmpty
-                ? Center(child: Text("No news articles found."))
-                : Column(
-                    children: [
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: _articles.length,
-                          itemBuilder: (context, index) {
-                            return NewsCard(post: _articles[index]);
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.arrow_back_ios_new),
-                              onPressed: _page > 1 ? _goToPreviousPage : null,
-                            ),
-                            Text('Page $_page'),
-                            IconButton(
-                              icon: Icon(Icons.arrow_forward_ios),
-                              onPressed: _hasMore ? _goToNextPage : null,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-          }
+        onRefresh: () => fetchArticles(refresh: true),
+        child: ListView(
+          padding: const EdgeInsets.all(8),
+          children: [
+            buildSearchBar(),
+            Wrap(
+              spacing: 8,
+              children: recentSearches
+                  .map((s) => ActionChip(
+                        label: Text(s),
+                        onPressed: () {
+                          setState(() => query = s);
+                          fetchArticles(refresh: true);
+                        },
+                      ))
+                  .toList(),
+            ),
+            const SizedBox(height: 10),
+            ...articles.map(buildArticleCard),
+            if (isLoading) const Center(child: CircularProgressIndicator()),
+            if (!isLoading) buildPagination(),
+          ],
+        ),
+      ),
+    );
+  }
+}
