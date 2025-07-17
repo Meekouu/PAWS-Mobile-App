@@ -46,8 +46,6 @@ void logOut(BuildContext context) async {
 
   final List<String> petNames = [
     'Pet Name',
-    'Pet Name',
-    'Pet Name',
   ];
 
   final List<_PlaceholderItem> placeholders = [
@@ -164,9 +162,9 @@ void logOut(BuildContext context) async {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                itemCount: 4, 
+                itemCount: petNames.length + 1, 
                 itemBuilder: (context, index) {
-                  if (index == 3) {
+                  if (index == petNames.length) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: GestureDetector(
