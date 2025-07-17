@@ -14,7 +14,9 @@
         "flutter",
         "flutter_screenutil",
         "flutter_staggered_grid_view",
+        "flutter_svg",
         "google_fonts",
+        "http",
         "lottie",
         "shared_preferences"
       ],
@@ -90,6 +92,27 @@
       "name": "cupertino_icons",
       "version": "1.0.8",
       "dependencies": []
+    },
+    {
+      "name": "http",
+      "version": "1.4.0",
+      "dependencies": [
+        "async",
+        "http_parser",
+        "meta",
+        "web"
+      ]
+    },
+    {
+      "name": "flutter_svg",
+      "version": "2.2.0",
+      "dependencies": [
+        "flutter",
+        "http",
+        "vector_graphics",
+        "vector_graphics_codec",
+        "vector_graphics_compiler"
+      ]
     },
     {
       "name": "flutter_staggered_grid_view",
@@ -412,13 +435,44 @@
       ]
     },
     {
-      "name": "http",
-      "version": "1.4.0",
+      "name": "web",
+      "version": "0.5.1",
+      "dependencies": []
+    },
+    {
+      "name": "http_parser",
+      "version": "4.1.2",
       "dependencies": [
-        "async",
-        "http_parser",
+        "collection",
+        "source_span",
+        "string_scanner",
+        "typed_data"
+      ]
+    },
+    {
+      "name": "vector_graphics_compiler",
+      "version": "1.1.17",
+      "dependencies": [
+        "args",
         "meta",
-        "web"
+        "path",
+        "path_parsing",
+        "vector_graphics_codec",
+        "xml"
+      ]
+    },
+    {
+      "name": "vector_graphics_codec",
+      "version": "1.1.13",
+      "dependencies": []
+    },
+    {
+      "name": "vector_graphics",
+      "version": "1.1.19",
+      "dependencies": [
+        "flutter",
+        "http",
+        "vector_graphics_codec"
       ]
     },
     {
@@ -529,21 +583,6 @@
       ]
     },
     {
-      "name": "web",
-      "version": "0.5.1",
-      "dependencies": []
-    },
-    {
-      "name": "http_parser",
-      "version": "4.1.2",
-      "dependencies": [
-        "collection",
-        "source_span",
-        "string_scanner",
-        "typed_data"
-      ]
-    },
-    {
       "name": "flutter_web_plugins",
       "version": "0.0.0",
       "dependencies": [
@@ -567,19 +606,27 @@
       ]
     },
     {
+      "name": "typed_data",
+      "version": "1.4.0",
+      "dependencies": [
+        "collection"
+      ]
+    },
+    {
+      "name": "path_parsing",
+      "version": "1.1.0",
+      "dependencies": [
+        "meta",
+        "vector_math"
+      ]
+    },
+    {
       "name": "posix",
       "version": "6.0.3",
       "dependencies": [
         "ffi",
         "meta",
         "path"
-      ]
-    },
-    {
-      "name": "typed_data",
-      "version": "1.4.0",
-      "dependencies": [
-        "collection"
       ]
     },
     {

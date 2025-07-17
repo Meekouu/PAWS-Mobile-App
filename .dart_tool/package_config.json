@@ -158,6 +158,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_svg",
+      "rootUri": "file:///C:/Users/Mico/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_svg-2.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///D:/Visual%20Studio%20Code/Flutter%20Web/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -246,6 +252,12 @@
       "rootUri": "file:///C:/Users/Mico/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "path_parsing",
+      "rootUri": "file:///C:/Users/Mico/AppData/Local/Pub/Cache/hosted/pub.dev/path_parsing-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "path_provider",
@@ -398,6 +410,24 @@
       "languageVersion": "3.5"
     },
     {
+      "name": "vector_graphics",
+      "rootUri": "file:///C:/Users/Mico/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics-1.1.19",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "vector_graphics_codec",
+      "rootUri": "file:///C:/Users/Mico/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_codec-1.1.13",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "vector_graphics_compiler",
+      "rootUri": "file:///C:/Users/Mico/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.17",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
       "name": "vector_math",
       "rootUri": "file:///C:/Users/Mico/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.1.4",
       "packageUri": "lib/",
@@ -440,7 +470,7 @@
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2025-07-16T11:06:13.360849Z",
+  "generated": "2025-07-17T07:36:20.994727Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///D:/Visual%20Studio%20Code/Flutter%20Web/flutter",
