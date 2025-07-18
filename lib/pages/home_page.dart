@@ -7,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:paws/pages/pet_page.dart';
 import 'package:paws/pages/news/news_card_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:paws/widgets/abstract_background_painter.dart';
 
 Route createSlideRoute(Widget page) {
   return PageRouteBuilder(
@@ -27,16 +28,16 @@ Route createSlideRoute(Widget page) {
   );
 }
 
-
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-void logOut(BuildContext context) async {
-  final prefs = await SharedPreferences.getInstance();
-  await FirebaseAuth.instance.signOut();
+  void logOut(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await FirebaseAuth.instance.signOut();
 
-  Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
-}
+    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+  }
+
   final List<Animal> animal = Animal.getAnimal();
 
   final List<_PlaceholderItem> placeholders = [
@@ -49,7 +50,7 @@ void logOut(BuildContext context) async {
       label: 'Gallery',
       color: Colors.purple.shade200,
       icon: Icons.photo_album,
-      onTapRoute:  GalleryPage(),
+      onTapRoute: GalleryPage(),
     ),
     _PlaceholderItem(
       label: 'Vaccination Status',
@@ -75,6 +76,8 @@ void logOut(BuildContext context) async {
             children: [
               _petSlider(),
               const SizedBox(height: 10),
+              _galleryPreview(),
+              const SizedBox(height: 10),
               _bodySlider(),
               const SizedBox(height: 20),
               Padding(
@@ -87,7 +90,7 @@ void logOut(BuildContext context) async {
                   ),
                 ),
               ),
-              NewsCardCarousel(), 
+              NewsCardCarousel(),
               const SizedBox(height: 30),
             ],
           ),
@@ -96,183 +99,112 @@ void logOut(BuildContext context) async {
     );
   }
 
-  Padding _bodySlider() {
-    return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: SizedBox(
-              height: 600,
-              child: MasonryGridView.count(
-                physics: const BouncingScrollPhysics(),
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                itemCount: placeholders.length,
-                itemBuilder: (context, index) {
-                  final item = placeholders[index];
 
-                  final double height = 250 + (index % 3) * 40;
+ Widget _galleryPreview() {
+  final List<Map<String, String>> galleryItems = [
+    {
+      'image': 'assets/images/dog1.jpeg',
+      'date': '20 Jun',
+      'title': 'Visiting a Vet',
+    },
+    {
+      'image': 'assets/images/cat1.jpeg',
+      'date': '18 Jul',
+      'title': 'Cat Vaccination',
+    },
+    {
+      'image': 'assets/images/dog1.jpeg',
+      'date': '10 Aug',
+      'title': 'Puppy Check-up',
+    },
+  ];
 
-                  return GestureDetector(
-                    onTap: () {
-                      if (item.onTapRoute != null) {
-                        Navigator.push(
-                          context,
-                          createSlideRoute(item.onTapRoute!),
-                        );
-                      } else if (item.onTap != null) {
-                        item.onTap!();
-                      }
-                    },
-                    child: Container(
-                      height: height,
-                      decoration: BoxDecoration(
-                        color: item.color,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 4,
-                            offset: Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(item.icon, size: 48, color: Colors.white),
-                          const SizedBox(height: 12),
-                          Text(
-                            item.label,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-  }
-
-  Padding _petSlider() {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+    padding: const EdgeInsets.symmetric(horizontal: 20),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            'Your Pets',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        const Text(
+          'Gallery Preview',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 160,
+          height: 170,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            itemCount: animal.length + 1,
+            itemCount: galleryItems.length,
             itemBuilder: (context, index) {
-              if (index == animal.length) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey.shade600, width: 3),
-                          ),
-                          child: CircleAvatar(
-                            radius: 48,
-                            backgroundColor: Colors.grey.shade300,
-                            child: const Icon(
-                              Icons.add,
-                              size: 50,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const SizedBox(
-                          width: 80,
-                          child: Text(
-                            'Add Pet',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
+              final item = galleryItems[index];
+              return Container(
+                width: 140,
+                margin: const EdgeInsets.only(right: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6,
+                      offset: Offset(0, 4),
                     ),
-                  ),
-                );
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PetPage(animal: animal[index]),
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    // Background abstract shapes
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: CustomPaint(
+                          painter: AbstractBackgroundPainter(),
                         ),
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.brown.shade700,
-                              width: 3,
+                      ),
+                    ),
+
+                    // Main content
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              item['date']!,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 12),
                             ),
                           ),
-                          child: CircleAvatar(
-                            radius: 48,
-                            backgroundColor: Colors.grey.shade200,
-                            backgroundImage: AssetImage(animal[index].imagePicture),
+                          const Spacer(),
+                          Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.asset(
+                                item['image']!,
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: 80,
-                          child: Text(
-                            animal[index].name,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
+                          const SizedBox(height: 10),
+                          Text(
+                            item['title']!,
                             style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                                fontWeight: FontWeight.w600, fontSize: 13),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
+                  ],
+                ),
+              );
             },
           ),
         ),
@@ -281,6 +213,190 @@ void logOut(BuildContext context) async {
   );
 }
 
+
+  Padding _bodySlider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SizedBox(
+        height: 600,
+        child: MasonryGridView.count(
+          physics: const BouncingScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          itemCount: placeholders.length,
+          itemBuilder: (context, index) {
+            final item = placeholders[index];
+            final double height = 250 + (index % 3) * 40;
+
+            return GestureDetector(
+              onTap: () {
+                if (item.onTapRoute != null) {
+                  Navigator.push(
+                    context,
+                    createSlideRoute(item.onTapRoute!),
+                  );
+                } else if (item.onTap != null) {
+                  item.onTap!();
+                }
+              },
+              child: Container(
+                height: height,
+                decoration: BoxDecoration(
+                  color: item.color,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 4,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(item.icon, size: 48, color: Colors.white),
+                    const SizedBox(height: 12),
+                    Text(
+                      item.label,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Padding _petSlider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.0),
+            child: Text(
+              'Your Pets',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 160,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              itemCount: animal.length + 1,
+              itemBuilder: (context, index) {
+                if (index == animal.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.grey.shade600, width: 3),
+                            ),
+                            child: CircleAvatar(
+                              radius: 48,
+                              backgroundColor: Colors.grey.shade300,
+                              child: const Icon(
+                                Icons.add,
+                                size: 50,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const SizedBox(
+                            width: 80,
+                            child: Text(
+                              'Add Pet',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PetPage(animal: animal[index]),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.brown.shade700,
+                                width: 3,
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              radius: 48,
+                              backgroundColor: Colors.grey.shade200,
+                              backgroundImage: AssetImage(animal[index].imagePicture),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            width: 80,
+                            child: Text(
+                              animal[index].name,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   AppBar _AppBar(BuildContext context) {
     return AppBar(
