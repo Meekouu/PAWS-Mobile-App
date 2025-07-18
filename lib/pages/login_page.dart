@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:paws/widgets/loading_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paws/auth/auth.dart';
 import 'package:paws/pages/home_page.dart';
@@ -29,13 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(
-          child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
-        ),
-      );
+      showLoadingDialog(context);
 
       await _authService.signInWithEmail(
         emailController.text.trim(),

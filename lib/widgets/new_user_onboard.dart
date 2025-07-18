@@ -3,6 +3,7 @@ import 'package:paws/pages/home_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
 import 'package:paws/widgets/database_service.dart';
+import 'package:paws/widgets/loading_dialog.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final String? firebaseUID;
@@ -13,6 +14,13 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
+  bool _checking = true;
+  @override
+  void initState() {
+    super.initState();
+    _checkIfUserExists();
+  }
+
   final PageController _controller = PageController();
   int _currentPage = 0;
 
@@ -86,6 +94,36 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  HomePage()));
     }
   }
+
+  void _checkIfUserExists() async {
+  // Show loading dialog AFTER widget has rendered
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    showLoadingDialog(context);
+  });
+
+  await Future.delayed(const Duration(seconds: 2));
+
+  if (widget.firebaseUID != null) {
+    final exists = await DatabaseService().exists(path: 'users/${widget.firebaseUID}');
+
+    if (exists && context.mounted) {
+      // Pop the dialog before navigating
+      Navigator.pop(context);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage()),
+      );
+      return;
+    }
+  }
+
+  if (context.mounted) {
+    Navigator.pop(context);
+    setState(() => _checking = false);
+  }
+}
+
 
   List<Widget> _buildPages() {
     return [
@@ -185,6 +223,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_checking ){
+       return const Scaffold();
+    }
     return Scaffold(
       body: PageView(
         controller: _controller,
