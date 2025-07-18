@@ -55,7 +55,7 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.pop(context);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        MaterialPageRoute(builder: (_) => OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid)),
       );
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
@@ -103,7 +103,7 @@ class _SignUpPageState extends State<SignUpPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => hasSeenOnboarding ? HomePage() : const OnboardingScreen(),
+        builder: (_) => hasSeenOnboarding ? HomePage() : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid,),
       ),
     );
   } on FirebaseAuthException catch (e) {
