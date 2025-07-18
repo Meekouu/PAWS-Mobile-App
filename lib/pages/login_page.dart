@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:paws/auth/auth.dart';
 import 'package:paws/pages/home_page.dart';
 import 'package:paws/pages/signup_page.dart';
 import 'package:paws/themes/themes.dart';
@@ -24,6 +23,8 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
   bool _passwordVisible = false;
 
+  final AuthService _authService = AuthService();
+
   Future<void> signIn() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -36,12 +37,9 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
 
-      final email = emailController.text.trim();
-      final password = passwordController.text.trim();
-
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+      await _authService.signInWithEmail(
+        emailController.text.trim(),
+        passwordController.text.trim(),
       );
 
       final prefs = await SharedPreferences.getInstance();

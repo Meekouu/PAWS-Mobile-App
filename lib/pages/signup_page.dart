@@ -8,7 +8,6 @@ import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
 import 'package:paws/widgets/show_message.dart';
 import 'package:paws/widgets/new_user_onboard.dart';
-import 'package:paws/pages/home_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});

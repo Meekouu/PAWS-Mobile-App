@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/model/animal_model.dart';
-import 'package:paws/pages/news/gnews_feed_page.dart';
 import 'package:paws/pages/gallery.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:paws/pages/pet_page.dart';
+import 'package:paws/pages/news/news_card_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Route createSlideRoute(Widget page) {
@@ -44,7 +44,6 @@ void logOut(BuildContext context) async {
       label: 'News Outlet',
       color: Colors.blue.shade200,
       icon: Icons.newspaper,
-      onTapRoute:  GNewsFeedPage(),
     ),
     _PlaceholderItem(
       label: 'Gallery',
@@ -69,12 +68,29 @@ void logOut(BuildContext context) async {
     return Scaffold(
       appBar: _AppBar(context),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _petSlider(),
-            _bodySlider(),
-            const SizedBox(height: 30),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _petSlider(),
+              const SizedBox(height: 10),
+              _bodySlider(),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  'News',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              NewsCardCarousel(), 
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );
