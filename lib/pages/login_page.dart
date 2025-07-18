@@ -10,7 +10,6 @@ import 'package:paws/pages/signup_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/new_user_onboard.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -47,7 +46,9 @@ class _LoginPageState extends State<LoginPage> {
 
       final prefs = await SharedPreferences.getInstance();
       final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-      final nextPage = hasSeenOnboarding ? HomePage() : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid,);
+      final nextPage = hasSeenOnboarding
+          ? HomePage()
+          : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid);
 
       if (!context.mounted) return;
       Navigator.pop(context);
@@ -55,46 +56,6 @@ class _LoginPageState extends State<LoginPage> {
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       _showErrorDialog(_mapFirebaseError(e.code));
-    }
-  }
-
-  Future<void> signInWithGoogle() async {
-    try {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(
-          child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
-        ),
-      );
-
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        Navigator.pop(context);
-        return;
-      }
-
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      final prefs = await SharedPreferences.getInstance();
-      final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-      final nextPage = hasSeenOnboarding ? HomePage() : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid,);
-
-      if (!context.mounted) return;
-      Navigator.pop(context);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => nextPage));
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      _showErrorDialog('Google sign-in failed: ${e.message}');
-    } catch (e) {
-      Navigator.pop(context);
-      _showErrorDialog('An unexpected error occurred.');
     }
   }
 
@@ -174,16 +135,9 @@ class _LoginPageState extends State<LoginPage> {
         ),
         const SizedBox(height: 10),
         CTAButton(text: 'Sign In', onTap: signIn),
-        const SizedBox(height: 10),
-        CTAButton(
-          text: 'Sign In with Google',
-          onTap: signInWithGoogle,
-          icon: Image.asset('assets/images/google_logo.png', height: 24),
-        ),
         const SizedBox(height: 20),
         const Text('Forgot Login Details? Get Help Logging in'),
         const Divider(color: grey, indent: 20, endIndent: 20),
-        
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -270,4 +224,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-

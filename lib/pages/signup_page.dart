@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -55,66 +54,15 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.pop(context);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid)),
+        MaterialPageRoute(
+          builder: (_) => OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid),
+        ),
       );
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       _showErrorDialog(_mapFirebaseError(e.code));
     }
   }
-
-  Future<void> signUpWithGoogle() async {
-  try {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => Center(
-        child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
-      ),
-    );
-
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: '533716313174-8ucq2ga719im7npmdqer3evhejguagvv.apps.googleusercontent.com',
-      scopes: ['email'],
-);
-
-
-    GoogleSignInAccount? googleUser = await googleSignIn.signInSilently();
-    googleUser ??= await googleSignIn.signIn();
-
-    if (googleUser == null) {
-      Navigator.pop(context);
-      return; 
-    }
-
-    final googleAuth = await googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    await FirebaseAuth.instance.signInWithCredential(credential);
-
-    final prefs = await SharedPreferences.getInstance();
-    final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-
-    if (!context.mounted) return;
-    Navigator.pop(context);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => hasSeenOnboarding ? HomePage() : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid,),
-      ),
-    );
-  } on FirebaseAuthException catch (e) {
-    Navigator.pop(context);
-    _showErrorDialog("Google sign-in failed: ${e.message}");
-  } catch (e) {
-    Navigator.pop(context);
-    _showErrorDialog("An unexpected error occurred: $e");
-  }
-}
-
 
   String _mapFirebaseError(String code) {
     switch (code) {
@@ -207,12 +155,6 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         const SizedBox(height: 20),
         CTAButton(text: 'Sign Up', onTap: signUp),
-        const SizedBox(height: 20),
-        CTAButton(
-          text: 'Sign Up with Google',
-          onTap: signUpWithGoogle,
-          icon: Image.asset('assets/images/google_logo.png', height: 24),
-        ),
         const SizedBox(height: 20),
         const Divider(color: grey, indent: 20, endIndent: 20),
         Row(
