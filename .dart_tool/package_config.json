@@ -3,511 +3,851 @@
   "packages": [
     {
       "name": "_flutterfire_internals",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/_flutterfire_internals-1.3.35",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/_flutterfire_internals-1.3.35",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "archive",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.6.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.6.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "args",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/args-2.7.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/args-2.7.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "async",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.13.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.13.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "boolean_selector",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/boolean_selector-2.1.2",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/boolean_selector-2.1.2",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "carousel_slider",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/carousel_slider-5.1.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/carousel_slider-5.1.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "characters",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/characters-1.4.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/characters-1.4.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "checked_yaml",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/checked_yaml-2.0.3",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/checked_yaml-2.0.3",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "cli_util",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/cli_util-0.4.2",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/cli_util-0.4.2",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "clock",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/clock-1.1.2",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/clock-1.1.2",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "collection",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.19.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.19.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "crypto",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.6",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.6",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "cupertino_icons",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_icons-1.0.8",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_icons-1.0.8",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "fake_async",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/fake_async-1.3.3",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/fake_async-1.3.3",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "ffi",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/ffi-2.1.4",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/ffi-2.1.4",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
       "name": "file",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/file-7.0.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/file-7.0.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "firebase_auth",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth-4.20.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth-4.20.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_auth_platform_interface",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth_platform_interface-7.3.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth_platform_interface-7.3.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_auth_web",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth_web-5.12.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth_web-5.12.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_core",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-2.32.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-2.32.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "firebase_core_platform_interface",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_platform_interface-5.4.2",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_platform_interface-5.4.2",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_core_web",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-2.17.5",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-2.17.5",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "firebase_database",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database-10.5.7",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database-10.5.7",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "firebase_database_platform_interface",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database_platform_interface-0.2.5+35",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database_platform_interface-0.2.5+35",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "firebase_database_web",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database_web-0.2.5+7",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_database_web-0.2.5+7",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "flutter",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/Documents/Flutter%20Projects/src/flutter/packages/flutter",
+=======
+      "rootUri": "file:///C:/tools/flutter/packages/flutter",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
       "name": "flutter_launcher_icons",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_launcher_icons-0.13.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_launcher_icons-0.13.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "flutter_screenutil",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_screenutil-5.9.3",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_screenutil-5.9.3",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "flutter_staggered_grid_view",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_staggered_grid_view-0.7.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_staggered_grid_view-0.7.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "flutter_svg",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_svg-2.2.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_svg-2.2.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "flutter_test",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/Documents/Flutter%20Projects/src/flutter/packages/flutter_test",
+=======
+      "rootUri": "file:///C:/tools/flutter/packages/flutter_test",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
       "name": "flutter_web_plugins",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/Documents/Flutter%20Projects/src/flutter/packages/flutter_web_plugins",
+=======
+      "rootUri": "file:///C:/tools/flutter/packages/flutter_web_plugins",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
       "name": "google_fonts",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-6.2.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/google_fonts-6.2.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "google_identity_services_web",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.3+1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.3+1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "google_sign_in",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-6.3.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in-6.3.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "google_sign_in_android",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-6.2.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-6.2.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "google_sign_in_ios",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_ios-5.9.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_ios-5.9.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "google_sign_in_platform_interface",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_platform_interface-2.5.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_platform_interface-2.5.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "google_sign_in_web",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.4+4",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.4+4",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "http",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.4.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.4.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "http_parser",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.1.2",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.1.2",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "image",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/image-4.3.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/image-4.3.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.15"
     },
     {
       "name": "json_annotation",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "leak_tracker",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker-10.0.9",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker-10.0.9",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "leak_tracker_flutter_testing",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_flutter_testing-3.0.9",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_flutter_testing-3.0.9",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "leak_tracker_testing",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_testing-3.0.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_testing-3.0.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "lottie",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/lottie-2.7.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/lottie-2.7.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "matcher",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.17",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.17",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "material_color_utilities",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.11.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.11.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "meta",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.16.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.16.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "path_parsing",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/path_parsing-1.1.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/path_parsing-1.1.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "path_provider",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.5",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.5",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "path_provider_android",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.17",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.17",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "path_provider_foundation",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_foundation-2.4.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_foundation-2.4.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "path_provider_linux",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_linux-2.2.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_linux-2.2.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "path_provider_platform_interface",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_platform_interface-2.1.2",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_platform_interface-2.1.2",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "path_provider_windows",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_windows-2.3.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_windows-2.3.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "petitparser",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/petitparser-6.1.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/petitparser-6.1.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "platform",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/platform-3.1.6",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/platform-3.1.6",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "plugin_platform_interface",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "shared_preferences",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.5.3",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.5.3",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "shared_preferences_android",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_android-2.4.10",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_android-2.4.10",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "shared_preferences_foundation",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_foundation-2.5.4",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_foundation-2.5.4",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "shared_preferences_linux",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_linux-2.4.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_linux-2.4.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "shared_preferences_platform_interface",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_platform_interface-2.4.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_platform_interface-2.4.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "shared_preferences_web",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_web-2.4.3",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_web-2.4.3",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "shared_preferences_windows",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_windows-2.4.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_windows-2.4.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "sky_engine",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/Documents/Flutter%20Projects/src/flutter/bin/cache/pkg/sky_engine",
+=======
+      "rootUri": "file:///C:/tools/flutter/bin/cache/pkg/sky_engine",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.7"
     },
     {
       "name": "source_span",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.10.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.10.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "stack_trace",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/stack_trace-1.12.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/stack_trace-1.12.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "stream_channel",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/stream_channel-2.1.4",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/stream_channel-2.1.4",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "string_scanner",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/string_scanner-1.4.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/string_scanner-1.4.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "term_glyph",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/term_glyph-1.2.2",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/term_glyph-1.2.2",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "test_api",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.4",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.4",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "typed_data",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/typed_data-1.4.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/typed_data-1.4.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "vector_graphics",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics-1.1.19",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics-1.1.19",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "vector_graphics_codec",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_codec-1.1.13",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_codec-1.1.13",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "vector_graphics_compiler",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.17",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.17",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "vector_math",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.1.4",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.1.4",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "vm_service",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-15.0.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-15.0.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "web",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/web-0.5.1",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/web-0.5.1",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "xdg_directories",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/xdg_directories-1.1.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/xdg_directories-1.1.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "xml",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/xml-6.5.0",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/xml-6.5.0",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "yaml",
+<<<<<<< HEAD
       "rootUri": "file:///C:/Users/matma/AppData/Local/Pub/Cache/hosted/pub.dev/yaml-3.1.3",
+=======
+      "rootUri": "file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/yaml-3.1.3",
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -520,7 +860,13 @@
   ],
   "generator": "pub",
   "generatorVersion": "3.8.1",
+<<<<<<< HEAD
   "flutterRoot": "file:///C:/Users/matma/Documents/Flutter%20Projects/src/flutter",
   "flutterVersion": "3.32.6",
   "pubCache": "file:///C:/Users/matma/AppData/Local/Pub/Cache"
+=======
+  "flutterRoot": "file:///C:/tools/flutter",
+  "flutterVersion": "3.32.6",
+  "pubCache": "file:///C:/Users/Colt/AppData/Local/Pub/Cache"
+>>>>>>> f62249f0a0dd28e358501f846bfb725e10e7baa6
 }

@@ -55,7 +55,7 @@ class _SignUpPageState extends State<SignUpPage> {
       Navigator.pop(context);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        MaterialPageRoute(builder: (_) => OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid)),
       );
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
@@ -79,14 +79,12 @@ class _SignUpPageState extends State<SignUpPage> {
 );
 
 
-    // Try silent sign-in first
     GoogleSignInAccount? googleUser = await googleSignIn.signInSilently();
-    // If no account is found, prompt account picker
     googleUser ??= await googleSignIn.signIn();
 
     if (googleUser == null) {
       Navigator.pop(context);
-      return; // User canceled
+      return; 
     }
 
     final googleAuth = await googleUser.authentication;
@@ -105,7 +103,7 @@ class _SignUpPageState extends State<SignUpPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => hasSeenOnboarding ? HomePage() : const OnboardingScreen(),
+        builder: (_) => hasSeenOnboarding ? HomePage() : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid,),
       ),
     );
   } on FirebaseAuthException catch (e) {

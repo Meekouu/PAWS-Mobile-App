@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:paws/pages/home_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
+import 'package:paws/widgets/database_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final String? firebaseUID;
+  OnboardingScreen({super.key, required this.firebaseUID});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -24,6 +26,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final petBirthdayController = TextEditingController();
   String petType = 'Canine';
 
+  Map<String, dynamic> ownerInput = {};
+  Map<String, dynamic> petInput = {};
+
   String? _validateDate(String value) {
     try {
       final parts = value.split('/');
@@ -41,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _nextPage() {
+  void _nextPage() async {
     if (_currentPage == 0) {
       if (ownerNameController.text.trim().isEmpty || _validateDate(ownerBirthdayController.text.trim()) != null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -55,6 +60,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SnackBar(content: Text('Please complete pet info')),
         );
         return;
+      } else {
+        String? uid = widget.firebaseUID;
+        if (uid == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User not logged in.')),
+          );
+          return;
+        }
+        ownerInput['owner'] = ownerNameController.text.trim();
+        ownerInput['ownerBirthday'] = ownerBirthdayController.text.trim();
+        ownerInput['ownerCountry'] = selectedCountry;
+        petInput['petName'] = petNameController.text.trim();
+        petInput['petBreed'] = petBreedController.text.trim();
+        petInput['petBirthday'] = petBirthdayController.text.trim();
+        petInput['petType'] = petType;
+        await DatabaseService().create(path: 'users/$uid', data: ownerInput);
+        await DatabaseService().create(path: 'pet/$uid', data: petInput);
       }
     }
 

@@ -1,9 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class DatabaseService {
-
-  final FirebaseDatabase _firebaseDatabase = FirebaseDatabase.instance;
-
+  final FirebaseDatabase _firebaseDatabase = FirebaseDatabase.instanceFor(
+    app: Firebase.app(),
+    databaseURL: 'https://paws-clinic-default-rtdb.asia-southeast1.firebasedatabase.app',
+  );
   Future<void> create({
     required String path,
     required Map<String, dynamic> data,
@@ -12,7 +14,7 @@ class DatabaseService {
     await ref.set(data);
   }
 
-  Future<DataSnapshot?> read({required String path}) async {
+  Future<DataSnapshot?> read({required String path}) async { //comi
     final DatabaseReference ref = _firebaseDatabase.ref().child(path);
     final DataSnapshot snapshot = await ref.get();
     return snapshot.exists ? snapshot : null;
@@ -31,6 +33,8 @@ class DatabaseService {
     await ref.remove();
   }
 }
+
+//DITO
 // put async
 
 // await DatabaseService().create(path: 'data1', data:{'name':'colt'});

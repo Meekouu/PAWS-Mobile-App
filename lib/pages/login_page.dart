@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
 
       final prefs = await SharedPreferences.getInstance();
       final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-      final nextPage = hasSeenOnboarding ? HomePage() : const OnboardingScreen();
+      final nextPage = hasSeenOnboarding ? HomePage() : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid,);
 
       if (!context.mounted) return;
       Navigator.pop(context);
@@ -83,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
 
       final prefs = await SharedPreferences.getInstance();
       final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-      final nextPage = hasSeenOnboarding ? HomePage() : const OnboardingScreen();
+      final nextPage = hasSeenOnboarding ? HomePage() : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid,);
 
       if (!context.mounted) return;
       Navigator.pop(context);
