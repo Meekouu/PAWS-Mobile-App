@@ -100,7 +100,6 @@ class CTAButton extends StatelessWidget {
     final horizontalPadding = screenWidth * 0.05;
     final buttonHeight = screenHeight * 0.075;
 
-    // More adaptive font size based on shortest screen side
     final shortestSide = screenSize.shortestSide;
     final fontSize = (shortestSide * 0.04).clamp(14.0, 24.0);
 
