@@ -171,17 +171,19 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         CTAButton(text: 'Sign In', onTap: signIn),
-        const SizedBox(height: 30),
-        const Text('Forgot Login Details? Get Help Logging in'),
-        const Divider(color: grey, indent: 20, endIndent: 20),
+        const SizedBox(height: 10),
         CTAButton(
           text: 'Sign In with Google',
           onTap: signInWithGoogle,
           icon: Image.asset('assets/images/google_logo.png', height: 24),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 20),
+        const Text('Forgot Login Details? Get Help Logging in'),
+        const Divider(color: grey, indent: 20, endIndent: 20),
+        
+        const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

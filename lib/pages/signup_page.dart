@@ -1,9 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
 import 'package:paws/widgets/show_message.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:paws/widgets/new_user_onboard.dart';
+import 'package:paws/pages/home_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -13,52 +19,132 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
 
   Future<void> signUp() async {
-    showDialog(
-      context: context,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
-
+    if (!_formKey.currentState!.validate()) return;
     if (passwordController.text != confirmPasswordController.text) {
-      Navigator.pop(context);
-      showMessage('Signup Error', 'Passwords don\'t match', context);
+      _showErrorDialog("Passwords don't match");
       return;
     }
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: confirmPasswordController.text,
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => Center(
+          child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
+        ),
       );
 
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text,
+      );
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('hasSeenOnboarding', false);
+
+      if (!context.mounted) return;
       Navigator.pop(context);
-      showMessage('Success', 'Account created successfully', context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+      );
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
-
-      String errorMessage;
-      switch (e.code) {
-        case 'email-already-in-use':
-          errorMessage = 'This email is already in use.';
-          break;
-        case 'invalid-email':
-          errorMessage = 'The email address is invalid.';
-          break;
-        case 'weak-password':
-          errorMessage = 'The password provided is too weak.';
-          break;
-        default:
-          errorMessage = 'An unexpected error occurred.';
-      }
-
-      showMessage('Signup Error', errorMessage, context);
+      _showErrorDialog(_mapFirebaseError(e.code));
     }
+  }
+
+  Future<void> signUpWithGoogle() async {
+  try {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Center(
+        child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
+      ),
+    );
+
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: '533716313174-8ucq2ga719im7npmdqer3evhejguagvv.apps.googleusercontent.com',
+      scopes: ['email'],
+);
+
+
+    // Try silent sign-in first
+    GoogleSignInAccount? googleUser = await googleSignIn.signInSilently();
+    // If no account is found, prompt account picker
+    googleUser ??= await googleSignIn.signIn();
+
+    if (googleUser == null) {
+      Navigator.pop(context);
+      return; // User canceled
+    }
+
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+
+    if (!context.mounted) return;
+    Navigator.pop(context);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => hasSeenOnboarding ? HomePage() : const OnboardingScreen(),
+      ),
+    );
+  } on FirebaseAuthException catch (e) {
+    Navigator.pop(context);
+    _showErrorDialog("Google sign-in failed: ${e.message}");
+  } catch (e) {
+    Navigator.pop(context);
+    _showErrorDialog("An unexpected error occurred: $e");
+  }
+}
+
+
+  String _mapFirebaseError(String code) {
+    switch (code) {
+      case 'email-already-in-use':
+        return 'This email is already registered.';
+      case 'invalid-email':
+        return 'Invalid email address.';
+      case 'weak-password':
+        return 'Password is too weak.';
+      default:
+        return 'Signup failed. Please try again.';
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Signup Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildSignUpForm() {
@@ -66,7 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Paws',
+          'PAWS',
           style: GoogleFonts.notoSerifDisplay(
             fontSize: 36,
             fontStyle: FontStyle.italic,
@@ -78,18 +164,26 @@ class _SignUpPageState extends State<SignUpPage> {
           controller: emailController,
           hintText: 'happypaws@paws.com',
           obscureText: false,
+          validator: (value) {
+            if (value == null || value.isEmpty) return 'Enter email';
+            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+              return 'Invalid email format';
+            }
+            return null;
+          },
         ),
         const SizedBox(height: 20),
         LoginBtn1(
           controller: passwordController,
           hintText: 'Password',
           obscureText: !_passwordVisible,
+          validator: (value) {
+            if (value == null || value.isEmpty) return 'Enter password';
+            if (value.length < 6) return 'Minimum 6 characters';
+            return null;
+          },
           icon: GestureDetector(
-            onTap: () {
-              setState(() {
-                _passwordVisible = !_passwordVisible;
-              });
-            },
+            onTap: () => setState(() => _passwordVisible = !_passwordVisible),
             child: Icon(
               _passwordVisible ? Icons.lock_open_rounded : Icons.lock_outline_rounded,
               color: Colors.grey,
@@ -101,12 +195,12 @@ class _SignUpPageState extends State<SignUpPage> {
           controller: confirmPasswordController,
           hintText: 'Confirm Password',
           obscureText: !_confirmPasswordVisible,
+          validator: (value) {
+            if (value == null || value.isEmpty) return 'Confirm password';
+            return null;
+          },
           icon: GestureDetector(
-            onTap: () {
-              setState(() {
-                _confirmPasswordVisible = !_confirmPasswordVisible;
-              });
-            },
+            onTap: () => setState(() => _confirmPasswordVisible = !_confirmPasswordVisible),
             child: Icon(
               _confirmPasswordVisible ? Icons.lock_open_rounded : Icons.lock_outline_rounded,
               color: Colors.grey,
@@ -114,27 +208,23 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ),
         const SizedBox(height: 20),
+        CTAButton(text: 'Sign Up', onTap: signUp),
+        const SizedBox(height: 20),
         CTAButton(
-          text: 'Signup',
-          onTap: signUp,
+          text: 'Sign Up with Google',
+          onTap: signUpWithGoogle,
+          icon: Image.asset('assets/images/google_logo.png', height: 24),
         ),
         const SizedBox(height: 20),
-        const Divider(
-          color: grey,
-          indent: 20,
-          endIndent: 20,
-          thickness: 1,
-        ),
+        const Divider(color: grey, indent: 20, endIndent: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Have an account? '),
+            const Text('Already have an account? '),
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
+              onTap: () => Navigator.pop(context),
               child: const Text(
-                'Signin now',
+                'Sign in now',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -146,79 +236,62 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final isPortrait = mediaQuery.orientation == Orientation.portrait;
-    final screenHeight = mediaQuery.size.height;
+    final size = MediaQuery.of(context).size;
+    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     return Scaffold(
-      backgroundColor: white,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+      backgroundColor: lightBlue,
+      body: SafeArea(
+        child: Center(
           child: isPortrait
-              ? Column(
-                  children: [
-                    const SizedBox(height: 50),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 30, 10, 20),
-                      child: Image.asset(
-                        'assets/images/paw-placeholder.png',
-                        height: screenHeight * 0.3,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    Container(
-                      height: screenHeight * 0.55,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40),
-                        ),
-                      ),
-                      child: Center(child: _buildSignUpForm()),
-                    ),
-                  ],
-                )
-              : SizedBox(
-                  height: screenHeight,
-                  child: Row(
+              ? SingleChildScrollView(
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 30),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 10),
-                              Expanded(
-                                child: Image.asset(
-                                  'assets/images/paw-placeholder.png',
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      const SizedBox(height: 40),
+                      Lottie.asset(
+                        'assets/lottie/starting.json',
+                        height: size.height * 0.25,
                       ),
-                      Expanded(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40),
-                            ),
-                            color: white,
-                          ),
-                          child: Center(
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: _buildSignUpForm(),
-                            ),
-                          ),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                        decoration: const BoxDecoration(
+                          color: cream,
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
                         ),
+                        child: Form(key: _formKey, child: _buildSignUpForm()),
                       ),
                     ],
                   ),
+                )
+              : Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Lottie.asset(
+                          'assets/lottie/starting.json',
+                          height: size.height * 0.5,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: const BoxDecoration(
+                          color: cream,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(40),
+                            bottomLeft: Radius.circular(40),
+                          ),
+                        ),
+                        child: Center(
+                          child: SingleChildScrollView(
+                            child: Form(key: _formKey, child: _buildSignUpForm()),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
         ),
       ),

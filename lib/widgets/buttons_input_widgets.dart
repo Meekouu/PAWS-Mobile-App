@@ -34,7 +34,7 @@ class LoginBtn1 extends StatelessWidget {
     final horizontalPadding = screenWidth * 0.05;
     final fontSize = (isLandscape ? screenHeight : screenWidth).clamp(320, 600) * 0.045;
     final maxWidth = screenWidth > 600 ? 500.0 : screenWidth * 0.9;
-    final height = isLandscape ? screenHeight * 0.13 : screenHeight * 0.08;
+    final height = isLandscape ? screenHeight * 0.10 : screenHeight * 0.05;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -99,7 +99,10 @@ class CTAButton extends StatelessWidget {
 
     final horizontalPadding = screenWidth * 0.05;
     final buttonHeight = screenHeight * 0.075;
-    final fontSize = screenWidth * 0.05;
+
+    // More adaptive font size based on shortest screen side
+    final shortestSide = screenSize.shortestSide;
+    final fontSize = (shortestSide * 0.04).clamp(14.0, 24.0);
 
     return GestureDetector(
       onTap: onTap,
@@ -120,12 +123,19 @@ class CTAButton extends StatelessWidget {
                   icon!,
                   const SizedBox(width: 10),
                 ],
-                Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: fontSize.clamp(16.0, 24.0),
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ],
@@ -136,3 +146,4 @@ class CTAButton extends StatelessWidget {
     );
   }
 }
+
