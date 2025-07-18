@@ -67,7 +67,7 @@ class LoginBtn1 extends StatelessWidget {
               suffixIconColor: black,
               errorText: errorText,
               errorStyle: TextStyle(
-                height: 1.2,
+                height: 0.5,
                 fontSize: fontSize * 0.75,
                 color: Colors.redAccent,
               ),
