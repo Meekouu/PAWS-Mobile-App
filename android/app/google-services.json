@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "533716313174",
+    "firebase_url": "https://paws-clinic-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "paws-clinic",
     "storage_bucket": "paws-clinic.firebasestorage.app"
   },
@@ -12,7 +13,28 @@
           "package_name": "com.bathandbark.vetapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "533716313174-66o8dc3k67dm38fvmfujimbebqs8ftkb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bathandbark.vetapp",
+            "certificate_hash": "ea9b30b3079c01b4da9c8fbb5156d06cd3984c28"
+          }
+        },
+        {
+          "client_id": "533716313174-8ucq2ga719im7npmdqer3evhejguagvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bathandbark.vetapp",
+            "certificate_hash": "5048150ff8cdd72809597bd2323e3ccb29fb6d0b"
+          }
+        },
+        {
+          "client_id": "533716313174-9442jgfhpqg3biio9tju9uj10hfh0vkb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBa0xglYteWoJDZWHNoUnCApCJfSLuCyR0"
@@ -20,7 +42,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "533716313174-9442jgfhpqg3biio9tju9uj10hfh0vkb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "533716313174-lbp6eutnnej7vlk19p8fcabhc5s0inlh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.template"
+              }
+            }
+          ]
         }
       }
     }
