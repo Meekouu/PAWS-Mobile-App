@@ -38,7 +38,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Map<String, dynamic> petInput = {};
 
   File? _petImageFile;
-  String? _petImageUrl;
+  String? _petImagePath; // <-- Add this
 
   @override
   void initState() {
@@ -110,6 +110,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           'petBirthday': petBirthdayController.text.trim(),
           'petType': petType,
           'petSex': petSex,
+          'petImagePath': _petImagePath ?? '', // <-- Save the file path string
         };
         await DatabaseService().create(path: 'users/$uid', data: ownerInput);
         await DatabaseService().create(path: 'pet/$uid', data: petInput);
@@ -425,19 +426,8 @@ Widget build(BuildContext context) {
     if (picked != null) {
       setState(() {
         _petImageFile = File(picked.path);
+        _petImagePath = picked.path; // <-- Save the file path
       });
-
-
-      final uid = widget.firebaseUID;
-      if (uid != null) {
-        final ref = FirebaseStorage.instance.ref().child('pet_images/$uid.jpg');
-        try {
-          final metadata = await ref.getMetadata();
-          print('Image exists! Size: ${metadata.size}');
-        } catch (e) {
-          print('Image does not exist or error: $e');
-        }
-      }
     }
   }
 }
