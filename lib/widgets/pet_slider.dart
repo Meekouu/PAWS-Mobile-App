@@ -195,23 +195,27 @@ class PetSlider extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  GestureDetector(
-                    onTap: () async {
-                      final picker = ImagePicker();
-                      final picked = await picker.pickImage(source: ImageSource.gallery);
-                      if (picked != null) {
-                        setState(() {
-                          petImageFile = File(picked.path);
-                        });
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.grey.shade300,
-                      backgroundImage: petImageFile != null ? FileImage(petImageFile!) : null,
-                      child: petImageFile == null
-                          ? const Icon(Icons.camera_alt, size: 40, color: Colors.black54)
-                          : null,
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(40),
+                      onTap: () async {
+                        final picker = ImagePicker();
+                        final picked = await picker.pickImage(source: ImageSource.gallery);
+                        if (picked != null) {
+                          setState(() {
+                            petImageFile = File(picked.path);
+                          });
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.grey.shade300,
+                        backgroundImage: petImageFile != null ? FileImage(petImageFile!) : null,
+                        child: petImageFile == null
+                            ? const Icon(Icons.camera_alt, size: 40, color: Colors.black54)
+                            : null,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
