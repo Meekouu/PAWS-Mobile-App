@@ -37,12 +37,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Map<String, dynamic> ownerInput = {};
   Map<String, dynamic> petInput = {};
 
-<<<<<<< HEAD
-=======
   File? _petImageFile;
   String? _petImageUrl;
 
->>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
   @override
   void initState() {
     super.initState();
@@ -164,19 +161,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return [
       _buildWelcomePage(),
       _buildFormPage(
-<<<<<<< HEAD
-  title: 'Owner Info',
-  backgroundColor: pageColors[1],
-  content: Column(
-    children: [
-      FadeSlideIn(
-=======
         title: 'Owner Info',
         backgroundColor: pageColors[1],
         content: Column(
         children: [
           FadeSlideIn(
->>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
               delay: const Duration(milliseconds: 0),
               child: LoginBtn1(
                 controller: ownerNameController,
@@ -217,12 +206,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ],
         ),
       ),
-<<<<<<< HEAD
-      _buildFormPage(
-        title: 'Pet Info',
-=======
       _buildFormPage( //pet info
->>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
         backgroundColor: pageColors[2],
         content: Column(
           children: [
@@ -286,12 +270,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               decoration: const InputDecoration(
               fillColor: Colors.white, 
               filled: true, 
-<<<<<<< HEAD
-              border: OutlineInputBorder()),
-=======
               border: OutlineInputBorder()
               ),
->>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
             ),
           ],
         ),
@@ -305,11 +285,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildFormPage({
-<<<<<<< HEAD
-    required String title,
-=======
     String title = '',
->>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
     required Widget content,
     required Color backgroundColor,
   }) {
@@ -443,8 +419,6 @@ Widget build(BuildContext context) {
     ],
   );
 }
-<<<<<<< HEAD
-=======
   Future<void> _pickPetImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
@@ -465,5 +439,4 @@ Widget build(BuildContext context) {
       }
     }
   }
->>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
 }
