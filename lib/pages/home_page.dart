@@ -7,7 +7,7 @@ import 'package:paws/pages/pet_page.dart';
 import 'package:paws/pages/news/news_card_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paws/widgets/abstract_background_painter.dart';
-
+import 'package:paws/widgets/pet_slider.dart';
 Route createSlideRoute(Widget page) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => page,
@@ -73,7 +73,7 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _petSlider(),
+              PetSlider(animals: animal),
               const SizedBox(height: 10),
               _galleryPreview(),
               const SizedBox(height: 10),
@@ -209,130 +209,6 @@ class HomePage extends StatelessWidget {
     ),
   );
 }
-
-
-  
-
-  Padding _petSlider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0),
-            child: Text(
-              'Your Pets',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 160,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              itemCount: animal.length + 1,
-              itemBuilder: (context, index) {
-                if (index == animal.length) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.grey.shade600, width: 3),
-                            ),
-                            child: CircleAvatar(
-                              radius: 48,
-                              backgroundColor: Colors.grey.shade300,
-                              child: const Icon(
-                                Icons.add,
-                                size: 50,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const SizedBox(
-                            width: 80,
-                            child: Text(
-                              'Add Pet',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PetPage(animal: animal[index]),
-                          ),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.brown.shade700,
-                                width: 3,
-                              ),
-                            ),
-                            child: CircleAvatar(
-                              radius: 48,
-                              backgroundColor: Colors.grey.shade200,
-                              backgroundImage: AssetImage(animal[index].imagePicture),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            width: 80,
-                            child: Text(
-                              animal[index].name,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   AppBar _AppBar(BuildContext context) {
     return AppBar(
       titleSpacing: 35,
