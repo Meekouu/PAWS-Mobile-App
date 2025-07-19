@@ -427,15 +427,16 @@ Widget build(BuildContext context) {
         _petImageFile = File(picked.path);
       });
 
-      // Upload to Firebase Storage if user is logged in
+
       final uid = widget.firebaseUID;
       if (uid != null) {
         final ref = FirebaseStorage.instance.ref().child('pet_images/$uid.jpg');
-        await ref.putFile(_petImageFile!);
-        final url = await ref.getDownloadURL();
-        setState(() {
-          _petImageUrl = url;
-        });
+        try {
+          final metadata = await ref.getMetadata();
+          print('Image exists! Size: ${metadata.size}');
+        } catch (e) {
+          print('Image does not exist or error: $e');
+        }
       }
     }
   }
