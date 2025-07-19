@@ -213,7 +213,7 @@ class PetSlider extends StatelessWidget {
                         backgroundColor: Colors.grey.shade300,
                         backgroundImage: petImageFile != null ? FileImage(petImageFile!) : null,
                         child: petImageFile == null
-                            ? const Icon(Icons.camera_alt, size: 40, color: Colors.black54)
+                            ? const Icon(Icons.add, size: 40, color: Colors.black54)
                             : null,
                       ),
                     ),
