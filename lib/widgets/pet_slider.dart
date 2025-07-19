@@ -5,6 +5,7 @@ import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/pet_page.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paws/widgets/database_service.dart';
+import 'package:uuid/uuid.dart';
 
 class PetSlider extends StatelessWidget {
   const PetSlider({super.key});
@@ -276,7 +277,7 @@ class PetSlider extends StatelessWidget {
                       'petImagePath': petImageFile?.path ?? '',
                     };
                     await DatabaseService().create(
-                      path: 'pet/$uid/${DateTime.now().millisecondsSinceEpoch}',
+                      path: 'pet/$uid/${const Uuid().v4()}',
                       data: petData,
                     );
                   }

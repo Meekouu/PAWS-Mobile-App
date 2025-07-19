@@ -8,6 +8,7 @@ import 'package:paws/widgets/abstract_background_painter.dart';
 import 'package:paws/widgets/pet_slider.dart';
 import 'package:paws/widgets/bottom_navbar.dart';
 
+
 Route createSlideRoute(Widget page) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => page,
@@ -131,7 +132,7 @@ class HomePage extends StatelessWidget {
                 if (shouldLogout == true) {
                   logOut(context);
                 }
-              }, // Your existing logout logic
+              },
             ),
           ],
         ),
