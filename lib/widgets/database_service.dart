@@ -32,7 +32,16 @@ class DatabaseService {
     final DatabaseReference ref = _firebaseDatabase.ref().child(path);
     await ref.remove();
   }
+
+    //check if filled up, if yes, skip onboard
+    Future<bool> exists({required String path}) async {
+    final snapshot = await read(path: path);
+    return snapshot != null;
+  }
+
 }
+
+
 
 //DITO
 // put async

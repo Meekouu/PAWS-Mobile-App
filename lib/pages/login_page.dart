@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:paws/widgets/loading_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paws/auth/auth.dart';
 import 'package:paws/pages/home_page.dart';
@@ -29,13 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(
-          child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
-        ),
-      );
+      showLoadingDialog(context);
 
       await _authService.signInWithEmail(
         emailController.text.trim(),
@@ -163,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
     final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     return Scaffold(
-      backgroundColor: lightBlue,
+      backgroundColor: secondaryColor,
       body: SafeArea(
         child: Center(
           child: isPortrait
@@ -180,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                         decoration: const BoxDecoration(
-                          color: cream,
+                          color: backgroundColor,
                           borderRadius: BorderRadius.all(Radius.circular(40)),
                         ),
                         child: Form(key: _formKey, child: _buildLoginForm()),
@@ -202,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Container(
                         padding: const EdgeInsets.all(24),
                         decoration: const BoxDecoration(
-                          color: cream,
+                          color: backgroundColor,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(40),
                             bottomLeft: Radius.circular(40),
