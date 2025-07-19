@@ -42,7 +42,11 @@ dependencies:
   url_launcher: ^6.2.5 
   flutter_animate: ^4.3.0
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+  uuid: ^4.2.1
+>>>>>>> Stashed changes
 =======
   uuid: ^4.2.1
 >>>>>>> Stashed changes
