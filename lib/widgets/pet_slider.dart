@@ -5,15 +5,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paws/widgets/database_service.dart';
 
 class PetSlider extends StatelessWidget {
-  final List<Animal> animals;
-
-  const PetSlider({super.key, required this.animals});
+  const PetSlider({super.key});
 
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     return FutureBuilder(
-      future: DatabaseService().read(path: 'users/$uid'),
+      future: Future.wait([
+        DatabaseService().read(path: 'users/$uid'),
+        DatabaseService().read(path: 'pet/$uid')
+        ]),
+
       builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const Center(child: CircularProgressIndicator());
@@ -23,11 +25,24 @@ class PetSlider extends StatelessWidget {
         return Center(child: Text('Error: ${snapshot.error}'));
       }
 
-      if (!snapshot.hasData || snapshot.data == null || !(snapshot.data!.value is Map)) {
+      if (!snapshot.hasData ||
+        snapshot.data == null ||
+        snapshot.data!.length < 2) {
         return const Center(child: Text('No user data found.'));
       }
-      final userMap = snapshot.data!.value as Map<dynamic, dynamic>;
+
+      final userSnapshot = snapshot.data![0];
+      final petSnapshot = snapshot.data![1];
+
+      final userMap = userSnapshot?.value as Map<dynamic, dynamic>? ?? {};
       final String name = userMap['owner'] ?? 'Unknown';
+
+      final petMap = petSnapshot?.value as Map<dynamic, dynamic>? ?? {};
+
+      List<Animal> animals = petMap.entries.map((entry) {
+        final petData = entry.value as Map<dynamic, dynamic>;
+        return Animal.fromMap(petData);
+      }).toList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),

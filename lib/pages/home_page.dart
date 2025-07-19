@@ -37,9 +37,6 @@ class HomePage extends StatelessWidget {
     Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
   }
 
-  final List<Animal> animal = Animal.getAnimal();
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +47,7 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PetSlider(animals: animal),
+              PetSlider(),
               const SizedBox(height: 10),
               _galleryPreview(),
               const SizedBox(height: 10),

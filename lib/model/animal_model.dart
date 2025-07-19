@@ -3,6 +3,7 @@ class Animal{
   final String breed;
   final String type;
   final String birthday;
+  final String sex;
   final String imageCover;
   final String imagePicture;
 
@@ -10,32 +11,21 @@ class Animal{
     this.name = 'Unknown',
     this.breed = 'Unknown',
     this.type = 'Unknown',
+    this.sex = 'Unknown',
     this.birthday = 'Unknown',
     this.imageCover = 'assets/images/dog1.jpeg',
     this.imagePicture = 'assets/images/cat1.jpeg',
     });
 
-  static List<Animal> getAnimal(){
-    List<Animal> animal = [];
-
-    animal.add(
-      Animal(
-        name: 'Cat',
-        breed: 'Cet',
-        imageCover: 'assets/images/dog1.jpeg',
-        imagePicture: 'assets/images/cat1.jpeg'
-      )
+  factory Animal.fromMap(Map<dynamic, dynamic> map) {
+    return Animal(
+      name: map['petName'] ?? 'Unknown',
+      breed: map['petBreed'] ?? 'Unknown',
+      type: map['petType'] ?? 'Unknown',
+      birthday: map['petBirthday'] ?? 'Unknown',
+      sex: map['petSex'] ?? 'Unknown',
+      imageCover: 'assets/images/dog1.jpeg',
+      imagePicture: 'assets/images/cat1.jpeg',
     );
-
-    animal.add(
-      Animal(
-        name: 'Dog',
-        breed: 'Barks',
-        imageCover: 'assets/images/cat1.jpeg',
-        imagePicture: 'assets/images/dog1.jpeg'
-      )
-    );
-
-    return animal;
   }
 }
