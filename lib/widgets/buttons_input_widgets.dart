@@ -56,7 +56,8 @@ class LoginBtn1 extends StatelessWidget {
             style: TextStyle(fontSize: fontSize),
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+              isDense: true, // Reduce vertical space
+              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20), // Less vertical padding
               hintText: hintText,
               hintStyle: TextStyle(
                 fontSize: fontSize,
@@ -67,10 +68,11 @@ class LoginBtn1 extends StatelessWidget {
               suffixIconColor: black,
               errorText: errorText,
               errorStyle: TextStyle(
-                height: 0.5,
-                fontSize: fontSize * 0.75,
+                height: 0.8, // Reduce error text height
+                fontSize: fontSize * 0.7, // Smaller error font
                 color: Colors.redAccent,
               ),
+              alignLabelWithHint: true,
             ),
           ),
         ),

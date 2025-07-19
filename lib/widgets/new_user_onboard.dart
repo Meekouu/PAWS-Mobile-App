@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:paws/pages/home_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
@@ -33,6 +36,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Map<String, dynamic> ownerInput = {};
   Map<String, dynamic> petInput = {};
+
+  File? _petImageFile;
+  String? _petImageUrl;
 
   @override
   void initState() {
@@ -155,11 +161,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return [
       _buildWelcomePage(),
       _buildFormPage(
-  title: 'Owner Info',
-  backgroundColor: pageColors[1],
-  content: Column(
-    children: [
-      FadeSlideIn(
+        title: 'Owner Info',
+        backgroundColor: pageColors[1],
+        content: Column(
+        children: [
+          FadeSlideIn(
               delay: const Duration(milliseconds: 0),
               child: LoginBtn1(
                 controller: ownerNameController,
@@ -200,11 +206,43 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ],
         ),
       ),
-      _buildFormPage(
-        title: 'Pet Info',
+      _buildFormPage( //pet info
         backgroundColor: pageColors[2],
         content: Column(
           children: [
+            GestureDetector(
+              onTap: _pickPetImage,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  double circleSize = MediaQuery.of(context).size.width * 0.5;
+                  return Container(
+                    height: circleSize,
+                    width: circleSize,
+                    decoration: BoxDecoration(
+                      color: backgroundColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.grey),
+                      image: _petImageFile != null
+                          ? DecorationImage(
+                              image: FileImage(_petImageFile!),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                    child: _petImageFile == null
+                        ? const Center(
+                            child: Icon(
+                              Icons.add,
+                              size: 36,
+                              color: Colors.grey,
+                            ),
+                          )
+                        : null,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
             LoginBtn1(controller: petNameController, hintText: 'Pet Name', obscureText: false, backgroundColor: Colors.white),
             const SizedBox(height: 12),
             LoginBtn1(controller: petBreedController, hintText: 'Breed', obscureText: false, backgroundColor: Colors.white),
@@ -232,7 +270,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               decoration: const InputDecoration(
               fillColor: Colors.white, 
               filled: true, 
-              border: OutlineInputBorder()),
+              border: OutlineInputBorder()
+              ),
             ),
           ],
         ),
@@ -246,7 +285,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildFormPage({
-    required String title,
+    String title = '',
     required Widget content,
     required Color backgroundColor,
   }) {
@@ -380,4 +419,24 @@ Widget build(BuildContext context) {
     ],
   );
 }
+  Future<void> _pickPetImage() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _petImageFile = File(picked.path);
+      });
+
+      // Upload to Firebase Storage if user is logged in
+      final uid = widget.firebaseUID;
+      if (uid != null) {
+        final ref = FirebaseStorage.instance.ref().child('pet_images/$uid.jpg');
+        await ref.putFile(_petImageFile!);
+        final url = await ref.getDownloadURL();
+        setState(() {
+          _petImageUrl = url;
+        });
+      }
+    }
+  }
 }

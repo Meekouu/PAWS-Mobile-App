@@ -2,12 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/model/animal_model.dart';
-import 'package:paws/pages/gallery.dart';
-import 'package:paws/pages/pet_page.dart';
 import 'package:paws/pages/news/news_card_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paws/widgets/abstract_background_painter.dart';
 import 'package:paws/widgets/pet_slider.dart';
+import 'package:paws/widgets/bottom_navbar.dart';
+
 Route createSlideRoute(Widget page) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => page,
@@ -39,29 +39,6 @@ class HomePage extends StatelessWidget {
 
   final List<Animal> animal = Animal.getAnimal();
 
-  final List<_PlaceholderItem> placeholders = [
-    _PlaceholderItem(
-      label: 'News Outlet',
-      color: Colors.blue.shade200,
-      icon: Icons.newspaper,
-    ),
-    _PlaceholderItem(
-      label: 'Gallery',
-      color: Colors.purple.shade200,
-      icon: Icons.photo_album,
-      onTapRoute: GalleryPage(),
-    ),
-    _PlaceholderItem(
-      label: 'Vaccination Status',
-      color: Colors.green.shade200,
-      icon: Icons.medical_services,
-    ),
-    _PlaceholderItem(
-      label: 'More',
-      color: Colors.orange.shade200,
-      icon: Icons.more_horiz,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +70,19 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
+       bottomNavigationBar: BottomNavBar(
+    currentIndex: 0,
+    onTap: (index) {
+      if (index == 0) return; // Already on Home
+      if (index == 1) {
+        Navigator.pushReplacementNamed(context, '/pets');
+      } else if (index == 2) {
+        Navigator.pushReplacementNamed(context, '/profile');
+      }
+    },
+  ),
+);
+}
 
 
  Widget _galleryPreview() {
@@ -238,18 +226,3 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _PlaceholderItem {
-  final String label;
-  final Color color;
-  final IconData icon;
-  final VoidCallback? onTap;
-  final Widget? onTapRoute;
-
-  _PlaceholderItem({
-    this.onTap,
-    required this.label,
-    required this.color,
-    required this.icon,
-    this.onTapRoute,
-  });
-}
