@@ -155,7 +155,11 @@ class PetSlider extends StatelessWidget {
               child: CircleAvatar(
                 radius: 48,
                 backgroundColor: Colors.grey.shade200,
-                backgroundImage: AssetImage(animal.imagePicture),
+                backgroundImage: animal.petImagePath != null && animal.petImagePath.isNotEmpty
+                    ? (animal.petImagePath.startsWith('/') // crude check for file path
+                        ? FileImage(File(animal.petImagePath))
+                        : AssetImage(animal.petImagePath) as ImageProvider)
+                    : null,
               ),
             ),
             const SizedBox(height: 8),

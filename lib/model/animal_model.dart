@@ -28,4 +28,6 @@ class Animal{
       imagePicture: 'assets/images/cat1.jpeg',
     );
   }
+
+  get petImagePath => null;
 }
