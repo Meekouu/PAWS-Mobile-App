@@ -78,6 +78,43 @@ class HomePage extends StatelessWidget {
       }
     },
   ),
+  drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blueAccent,
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            const ListTile(
+              leading: Icon(Icons.pets),
+              title: Text('Pet Profiles'),
+              onTap: null, // Placeholder
+            ),
+            const ListTile(
+              leading: Icon(Icons.article),
+              title: Text('Articles'),
+              onTap: null, // Placeholder
+            ),
+            const ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: null, // Placeholder
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Log Out'),
+              onTap: () => logOut(context), // Your existing logout logic
+            ),
+          ],
+        ),
+      ),
 );
 }
 
@@ -199,26 +236,20 @@ class HomePage extends StatelessWidget {
       titleSpacing: 35,
       backgroundColor: Colors.blue[100],
       automaticallyImplyLeading: false,
+      leading: Builder(
+        builder: (context) => IconButton(
+          icon: const Icon(Icons.menu, size: 30),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
+      ),
       title: Text(
         'PAWS',
         style: GoogleFonts.notoSerifDisplay(
           fontSize: 35,
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: IconButton(
-            onPressed: () => logOut(context),
-            icon: const Icon(
-              Icons.logout_rounded,
-              size: 30,
             ),
           ),
-        )
-      ],
     );
   }
 }
