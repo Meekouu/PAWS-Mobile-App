@@ -41,7 +41,11 @@ dependencies:
   google_sign_in: ^6.2.1
   url_launcher: ^6.2.5 
   flutter_animate: ^4.3.0
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+  uuid: ^4.2.1
+>>>>>>> Stashed changes
 
   
 =======
