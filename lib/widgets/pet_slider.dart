@@ -7,82 +7,84 @@ import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/pet_page.dart';
 import 'package:paws/widgets/database_service.dart';
 import 'package:uuid/uuid.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 
 class PetSlider extends StatelessWidget {
   const PetSlider({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) return const SizedBox.shrink();
+Widget build(BuildContext context) {
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+  if (uid == null) return const SizedBox.shrink();
 
-    return StreamBuilder(
-      stream: StreamZip([
-        DatabaseService().stream('users/$uid'),
-        DatabaseService().stream('pet/$uid'),
-      ]),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+  return FutureBuilder(
+    future: DatabaseService().read(path: 'users/$uid'),
+    builder: (context, userSnapshot) {
+      if (userSnapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
+      final userMap = userSnapshot.data?.value as Map<dynamic, dynamic>? ?? {};
+      final String name = userMap['owner'] ?? 'User';
 
-        if (!snapshot.hasData || snapshot.data!.length < 2) {
-          return const Center(child: Text('No data found.'));
-        }
+      return StreamBuilder<DatabaseEvent>(
+        stream: DatabaseService().stream('pet/$uid'),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-        final userSnapshot = snapshot.data![0];
-        final petSnapshot = snapshot.data![1];
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
 
-        final userMap = userSnapshot?.value as Map<dynamic, dynamic>? ?? {};
-        final String name = userMap['owner'] ?? 'User';
+          final petMap = snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
+          List<Animal> animals = petMap.entries.map((entry) {
+            final petData = entry.value as Map<dynamic, dynamic>;
+            return Animal.fromMap(petData);
+          }).toList();
 
-        final petMap = petSnapshot?.value as Map<dynamic, dynamic>? ?? {};
-        List<Animal> animals = petMap.entries.map((entry) {
-          final petData = entry.value as Map<dynamic, dynamic>;
-          return Animal.fromMap(petData);
-        }).toList();
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Text(
-                  'Hi $name!',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text(
+                    'Hi $name!',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 160,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  itemCount: animals.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == animals.length) {
-                      return _buildAddPetButton(context);
-                    } else {
-                      return _buildPetItem(context, animals[index]);
-                    }
-                  },
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 160,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    itemCount: animals.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == animals.length) {
+                        return _buildAddPetButton(context);
+                      } else {
+                        return _buildPetItem(context, animals[index]);
+                      }
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 
   Widget _buildAddPetButton(BuildContext context) {
     return Padding(

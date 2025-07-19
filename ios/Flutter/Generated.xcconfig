@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=C:\Users\matma\Documents\Flutter Projects\src\flutter
-FLUTTER_APPLICATION_PATH=C:\Users\matma\Desktop\3rd yr mico\PAWS\PAWS-Mobile-App
+FLUTTER_ROOT=D:\Visual Studio Code\Flutter Web\flutter
+FLUTTER_APPLICATION_PATH=D:\BS IT\3RD YEAR BSIT BA\MIDTERMS (SUMMER)\IT 331\src\FlutterProjects\clones\clone1\paws
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_TARGET=lib\main.dart
 FLUTTER_BUILD_DIR=build
