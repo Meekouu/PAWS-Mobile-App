@@ -82,6 +82,10 @@ class PetPage extends StatelessWidget {
       );
 
   Widget _buildInfoCard(BuildContext context) {
+  final breedController = TextEditingController(text: animal.breed);
+  final sexController = TextEditingController(text: animal.sex);
+  final dobController = TextEditingController(text: animal.birthday);
+
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16),
     child: Card(
@@ -102,28 +106,72 @@ class PetPage extends StatelessWidget {
                     color: Colors.grey,
                   ),
                 ),
-                const Text(
-                  "Edit",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.teal,
-                    fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        title: const Text('Edit Pet Information'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextField(
+                              controller: breedController,
+                              decoration: const InputDecoration(labelText: 'Breed'),
+                            ),
+                            TextField(
+                              controller: sexController,
+                              decoration: const InputDecoration(labelText: 'Sex'),
+                            ),
+                            TextField(
+                              controller: dobController,
+                              decoration: const InputDecoration(labelText: 'Date of Birth'),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Placeholder for backend logic
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Save'),
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                )
+                  child: const Text(
+                    "Edit",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.teal,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 16),
             _buildInfoRow("Breed", animal.breed),
             const Divider(),
-            _buildInfoRow("Sex", animal.sex), // Static for now
+            _buildInfoRow("Sex", animal.sex),
             const Divider(),
-            _buildInfoRow("Date of Birth", animal.birthday), // Placeholder
+            _buildInfoRow("Date of Birth", animal.birthday),
           ],
         ),
       ),
     ),
   );
 }
+
 
   Widget _buildInfoRow(String title, String value) {
     return Padding(
