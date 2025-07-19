@@ -8,8 +8,6 @@ import 'package:paws/widgets/buttons_input_widgets.dart';
 import 'package:paws/widgets/database_service.dart';
 import 'package:paws/widgets/loading_dialog.dart';
 import 'package:paws/animations/animations.dart';
-import 'package:uuid/uuid.dart';
-
 class OnboardingScreen extends StatefulWidget {
   final String? firebaseUID;
   const OnboardingScreen({super.key, required this.firebaseUID});
@@ -117,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           'petSex': petSex,
         };
         await DatabaseService().create(path: 'users/$uid', data: ownerInput);
-        await DatabaseService().create(path: 'pet/$uid/${Uuid().v4()}', data: petInput);
+        await DatabaseService().create(path: 'pet/$uid', data: petInput);
       }
     }
 

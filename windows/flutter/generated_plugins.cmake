@@ -6,7 +6,10 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_windows
   firebase_auth
   firebase_core
+<<<<<<< HEAD
+=======
   firebase_storage
+>>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
   url_launcher_windows
 )
 
