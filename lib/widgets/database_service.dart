@@ -39,6 +39,9 @@ class DatabaseService {
     return snapshot != null;
   }
 
+  Stream<dynamic> stream(String uid) {
+    return _firebaseDatabase.ref().child('pet/$uid').onValue.map((event) => event.snapshot.value);
+  }
 }
 
 
@@ -70,4 +73,3 @@ class DatabaseService {
 
 
 
-  
