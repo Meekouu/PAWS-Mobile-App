@@ -155,7 +155,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Color(0xFF28262C), // Page 0 - Raisin Black
   Color(0xFF998FC7), // Page 1 - Tropical Indigo
   Color(0xFFD4C2FC), // Page 2 - Periwinkle
-  Color(0xFFF9F5FF), // Page 3 - Magnolia
+  Color(0xFF998FC7),// Page 3 - Magnolia
 ];
 
 
@@ -209,71 +209,104 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ],
         ),
       ),
-      _buildFormPage( //pet info
+            _buildFormPage( //pet info
         backgroundColor: pageColors[2],
         content: Column(
           children: [
-            GestureDetector(
-              onTap: _pickPetImage,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  double circleSize = MediaQuery.of(context).size.width * 0.5;
-                  return Container(
-                    height: circleSize,
-                    width: circleSize,
-                    decoration: BoxDecoration(
-                      color: backgroundColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey),
-                      image: _petImageFile != null
-                          ? DecorationImage(
-                              image: FileImage(_petImageFile!),
-                              fit: BoxFit.cover,
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 0),
+              child: GestureDetector(
+                onTap: _pickPetImage,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    double circleSize = MediaQuery.of(context).size.width * 0.5;
+                    return Container(
+                      height: circleSize,
+                      width: circleSize,
+                      decoration: BoxDecoration(
+                        color: backgroundColor,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey),
+                        image: _petImageFile != null
+                            ? DecorationImage(
+                                image: FileImage(_petImageFile!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      child: _petImageFile == null
+                          ? const Center(
+                              child: Icon(
+                                Icons.add,
+                                size: 36,
+                                color: Colors.grey,
+                              ),
                             )
                           : null,
-                    ),
-                    child: _petImageFile == null
-                        ? const Center(
-                            child: Icon(
-                              Icons.add,
-                              size: 36,
-                              color: Colors.grey,
-                            ),
-                          )
-                        : null,
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 12),
-            LoginBtn1(controller: petNameController, hintText: 'Pet Name', obscureText: false, backgroundColor: Colors.white),
-            const SizedBox(height: 12),
-            LoginBtn1(controller: petBreedController, hintText: 'Breed', obscureText: false, backgroundColor: Colors.white),
-            const SizedBox(height: 12),
-            LoginBtn1(controller: petBirthdayController, hintText: 'Birthday (dd/mm/yyyy)', obscureText: false, backgroundColor: Colors.white),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: petSex,
-              items: ['Male', 'Female'].map((sex) => DropdownMenuItem(
-                value: sex,
-                child: Text(sex),
-              )).toList(),
-              onChanged: (val) => setState(() => petSex = val ?? petSex),
-              decoration: const InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-                border: OutlineInputBorder(),
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 100),
+              child: LoginBtn1(
+                controller: petNameController,
+                hintText: 'Pet Name',
+                obscureText: false,
+                backgroundColor: Colors.white,
               ),
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: petType,
-              items: ['Canine', 'Feline', 'Other'].map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
-              onChanged: (val) => setState(() => petType = val ?? petType),
-              decoration: const InputDecoration(
-              fillColor: Colors.white, 
-              filled: true, 
-              border: OutlineInputBorder()
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 200),
+              child: LoginBtn1(
+                controller: petBreedController,
+                hintText: 'Breed',
+                obscureText: false,
+                backgroundColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 12),
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 300),
+              child: LoginBtn1(
+                controller: petBirthdayController,
+                hintText: 'Birthday (dd/mm/yyyy)',
+                obscureText: false,
+                backgroundColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 12),
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 400),
+              child: DropdownButtonFormField<String>(
+                value: petSex,
+                items: ['Male', 'Female'].map((sex) => DropdownMenuItem(
+                  value: sex,
+                  child: Text(sex),
+                )).toList(),
+                onChanged: (val) => setState(() => petSex = val ?? petSex),
+                decoration: const InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 500),
+              child: DropdownButtonFormField<String>(
+                value: petType,
+                items: ['Canine', 'Feline', 'Other'].map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
+                onChanged: (val) => setState(() => petType = val ?? petType),
+                decoration: const InputDecoration(
+                  fillColor: Colors.white, 
+                  filled: true, 
+                  border: OutlineInputBorder()
+                ),
               ),
             ),
           ],
@@ -281,8 +314,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
       _buildFormPage(
         title: 'Welcome to PAWS!',
+        
         backgroundColor: pageColors[3],
-        content: const Text('Thank you for registering. Enjoy the app!', style: TextStyle(fontSize: 18, color: primaryColor)),
+        content: FadeSlideIn(
+          delay: const Duration(milliseconds: 500),
+          child: 
+            Text('Thank you for registering. Enjoy the app!', style: TextStyle(fontSize: 18, color: primaryColor)),) 
       ),
     ];
   }

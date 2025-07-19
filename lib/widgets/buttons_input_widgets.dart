@@ -48,33 +48,32 @@ class LoginBtn1 extends StatelessWidget {
             borderRadius: BorderRadius.circular(40),
           ),
           child: TextFormField(
-            controller: controller,
-            obscureText: obscureText,
-            validator: validator,
-            onChanged: onChanged,
-            keyboardType: keyboardType,
-            style: TextStyle(fontSize: fontSize),
-            textAlignVertical: TextAlignVertical.center,
-            decoration: InputDecoration(
-              isDense: true, // Reduce vertical space
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20), // Less vertical padding
-              hintText: hintText,
-              hintStyle: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.w400,
-              ),
-              border: InputBorder.none,
-              suffixIcon: icon,
-              suffixIconColor: black,
-              errorText: errorText,
-              errorStyle: TextStyle(
-                height: 0.8, // Reduce error text height
-                fontSize: fontSize * 0.7, // Smaller error font
-                color: Colors.redAccent,
-              ),
-              alignLabelWithHint: true,
+          controller: controller,
+          obscureText: obscureText,
+          validator: validator,
+          onChanged: onChanged,
+          keyboardType: keyboardType,
+          style: TextStyle(fontSize: fontSize),
+          textAlignVertical: TextAlignVertical.center,
+          decoration: InputDecoration(
+            isDense: true, // Reduce vertical space
+            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20), // Less vertical padding
+            hintText: hintText,
+            hintStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w400,
             ),
+            border: InputBorder.none,
+            suffixIcon: icon,
+            suffixIconColor: black,
+            errorText: errorText,
+            errorStyle: TextStyle( // Reduce error text height
+              fontSize: fontSize * 0.7, // Smaller error font
+              color: Colors.redAccent,
+            ),
+            alignLabelWithHint: true,
           ),
+        ),
         ),
       ),
     );

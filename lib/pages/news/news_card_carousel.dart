@@ -162,16 +162,14 @@ Widget build(BuildContext context) {
                                                   const SizedBox.shrink(),
                                             ),
                                           ),
-                                        // This Expanded makes the content fill the card and allows spaceBetween to work
                                         Expanded(
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
                                             child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween, // <-- Anchor button to bottom
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                                               crossAxisAlignment: CrossAxisAlignment.stretch,
                                               children: [
-                                                // Top content
-                                                Column(
+                                                  Column(
                                                   children: [
                                                     article.imageUrl.isEmpty
                                                         ? Center(
@@ -198,8 +196,7 @@ Widget build(BuildContext context) {
                                                     const SizedBox(height: 8),
                                                   ],
                                                 ),
-                                                // Bottom button
-                                                Center(
+                                                  Center(
                                                   child: SizedBox(
                                                     width: double.infinity,
                                                     child: OutlinedButton.icon(

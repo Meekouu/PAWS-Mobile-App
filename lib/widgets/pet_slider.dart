@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/pet_page.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -52,7 +54,7 @@ class PetSlider extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.0),
             child: Text(
-              'Hi $name,',
+              'Hi $name!,',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -68,7 +70,7 @@ class PetSlider extends StatelessWidget {
               itemCount: animals.length + 1,
               itemBuilder: (context, index) {
                 if (index == animals.length) {
-                  return _buildAddPetButton();
+                  return _buildAddPetButton(context);
                 } else {
                   return _buildPetItem(context, animals[index]);
                 }
@@ -82,11 +84,13 @@ class PetSlider extends StatelessWidget {
     );
   }
 
-  Widget _buildAddPetButton() {
+  Widget _buildAddPetButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          _showAddPetDialog(context);
+        },
         child: Column(
           children: [
             Container(
@@ -170,6 +174,112 @@ class PetSlider extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showAddPetDialog(BuildContext context) {
+    final petNameController = TextEditingController();
+    final petBreedController = TextEditingController();
+    final petBirthdayController = TextEditingController();
+    String petType = 'Canine';
+    String petSex = 'Male';
+    File? petImageFile;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: const Text('Add Pet'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      final picker = ImagePicker();
+                      final picked = await picker.pickImage(source: ImageSource.gallery);
+                      if (picked != null) {
+                        setState(() {
+                          petImageFile = File(picked.path);
+                        });
+                      }
+                    },
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.grey.shade300,
+                      backgroundImage: petImageFile != null ? FileImage(petImageFile!) : null,
+                      child: petImageFile == null
+                          ? const Icon(Icons.camera_alt, size: 40, color: Colors.black54)
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: petNameController,
+                    decoration: const InputDecoration(labelText: 'Pet Name'),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: petBreedController,
+                    decoration: const InputDecoration(labelText: 'Breed'),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: petBirthdayController,
+                    decoration: const InputDecoration(labelText: 'Birthday (dd/mm/yyyy)'),
+                  ),
+                  const SizedBox(height: 8),
+                  DropdownButtonFormField<String>(
+                    value: petSex,
+                    items: ['Male', 'Female']
+                        .map((sex) => DropdownMenuItem(value: sex, child: Text(sex)))
+                        .toList(),
+                    onChanged: (val) => petSex = val ?? petSex,
+                    decoration: const InputDecoration(labelText: 'Sex'),
+                  ),
+                  const SizedBox(height: 8),
+                  DropdownButtonFormField<String>(
+                    value: petType,
+                    items: ['Canine', 'Feline', 'Other']
+                        .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                        .toList(),
+                    onChanged: (val) => petType = val ?? petType,
+                    decoration: const InputDecoration(labelText: 'Type'),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final uid = FirebaseAuth.instance.currentUser?.uid;
+                  if (uid != null) {
+                    final petData = {
+                      'petName': petNameController.text.trim(),
+                      'petBreed': petBreedController.text.trim(),
+                      'petBirthday': petBirthdayController.text.trim(),
+                      'petType': petType,
+                      'petSex': petSex,
+                      'petImagePath': petImageFile?.path ?? '',
+                    };
+                    await DatabaseService().create(
+                      path: 'pet/$uid/${DateTime.now().millisecondsSinceEpoch}',
+                      data: petData,
+                    );
+                  }
+                  Navigator.pop(context);
+                },
+                child: const Text('Add'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

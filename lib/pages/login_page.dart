@@ -165,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
               ? SingleChildScrollView(
                   child: Column(
                     children: [
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 16),
                       Lottie.asset(
                         'assets/lottie/starting.json',
                         height: size.height * 0.25,
@@ -173,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                         decoration: const BoxDecoration(
                           color: backgroundColor,
                           borderRadius: BorderRadius.all(Radius.circular(40)),
