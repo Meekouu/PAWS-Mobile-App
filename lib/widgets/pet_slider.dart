@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:paws/model/animal_model.dart';
-import 'package:paws/pages/pet_page.dart';
+import 'package:paws/pages/pet_page.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:paws/widgets/database_service.dart';
 
 class PetSlider extends StatelessWidget {
   final List<Animal> animals;
@@ -9,15 +11,33 @@ class PetSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    return FutureBuilder(
+      future: DatabaseService().read(path: 'users/$uid'),
+      builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      }
+
+      if (!snapshot.hasData || snapshot.data == null || !(snapshot.data!.value is Map)) {
+        return const Center(child: Text('No user data found.'));
+      }
+      final userMap = snapshot.data!.value as Map<dynamic, dynamic>;
+      final String name = userMap['owner'] ?? 'Unknown';
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.0),
             child: Text(
-              'Your Pets',
+              'Hi $name,',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -42,6 +62,8 @@ class PetSlider extends StatelessWidget {
           ),
         ],
       ),
+      );
+      }
     );
   }
 
