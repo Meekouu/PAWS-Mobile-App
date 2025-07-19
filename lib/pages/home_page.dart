@@ -2,12 +2,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/model/animal_model.dart';
+<<<<<<< HEAD
 import 'package:paws/pages/gallery.dart';
 import 'package:paws/pages/pet_page.dart';
+=======
+>>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
 import 'package:paws/pages/news/news_card_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paws/widgets/abstract_background_painter.dart';
 import 'package:paws/widgets/pet_slider.dart';
+<<<<<<< HEAD
+=======
+import 'package:paws/widgets/bottom_navbar.dart';
+
+>>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
 Route createSlideRoute(Widget page) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => page,
@@ -39,6 +47,7 @@ class HomePage extends StatelessWidget {
 
   final List<Animal> animal = Animal.getAnimal();
 
+<<<<<<< HEAD
   final List<_PlaceholderItem> placeholders = [
     _PlaceholderItem(
       label: 'News Outlet',
@@ -62,6 +71,8 @@ class HomePage extends StatelessWidget {
       icon: Icons.more_horiz,
     ),
   ];
+=======
+>>>>>>> e34e67f49bb9e724ad0cde74e40953df5fa5f079
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +104,19 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
+       bottomNavigationBar: BottomNavBar(
+    currentIndex: 0,
+    onTap: (index) {
+      if (index == 0) return; // Already on Home
+      if (index == 1) {
+        Navigator.pushReplacementNamed(context, '/pets');
+      } else if (index == 2) {
+        Navigator.pushReplacementNamed(context, '/profile');
+      }
+    },
+  ),
+);
+}
 
 
  Widget _galleryPreview() {
@@ -238,18 +260,3 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _PlaceholderItem {
-  final String label;
-  final Color color;
-  final IconData icon;
-  final VoidCallback? onTap;
-  final Widget? onTapRoute;
-
-  _PlaceholderItem({
-    this.onTap,
-    required this.label,
-    required this.color,
-    required this.icon,
-    this.onTapRoute,
-  });
-}
