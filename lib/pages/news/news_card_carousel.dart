@@ -73,7 +73,7 @@ class _NewsCardCarouselState extends State<NewsCardCarousel>
                 },
                 child: const Text(
                   'See All',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                  style: TextStyle(fontWeight: FontWeight.w600, decoration: TextDecoration.underline, color: Colors.black),
                 ),
               ),
             ],
@@ -86,139 +86,120 @@ class _NewsCardCarouselState extends State<NewsCardCarousel>
               ? Center(
                   child: FadeTransition(
                     opacity: _animation,
-                    child: const Icon(Icons.pets,
-                        size: 40, color: Colors.tealAccent),
                   ),
                 )
               : articles.isEmpty
                   ? const Center(child: Text("No articles found."))
                   : ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.only(
-                          left: 20, right: 10, top: 10, bottom: 10),
-                      itemCount: articles.length,
-                      itemBuilder: (context, index) {
-                        final article = articles[index];
-                        final imageUrl = article.imageUrl.isNotEmpty
-                            ? article.imageUrl
-                            : 'https://via.placeholder.com/300';
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.only(left: 20, right: 10, top: 10, bottom: 10),
+            itemCount: articles.length > 4 ? 4 : articles.length,
+            itemBuilder: (context, index) {
+              final article = articles[index];
 
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ArticleDetailsPage(article: article),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            width: 260,
-                            margin: const EdgeInsets.only(right: 15),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(16),
-                                  ),
-                                  child: Image.network(
-                                    imageUrl,
-                                    height: 110,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Container(
-                                        height: 110,
-                                        color: Colors.grey[300],
-                                        child: const Center(
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      );
-                                    },
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        Container(
-                                      height: 110,
-                                      color: Colors.grey[300],
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.broken_image,
-                                          size: 50,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    article.title,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8),
-                                  child: LikeBookmarkButtons(article: article),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 4, 8, 6),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: OutlinedButton.icon(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                ArticleDetailsPage(
-                                                    article: article),
-                                          ),
-                                        );
-                                      },
-                                      icon: const Icon(Icons.article),
-                                      label: const Text("See Full"),
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: Colors.teal,
-                                        side: const BorderSide(
-                                            color: Colors.teal),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 6),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ArticleDetailsPage(article: article),
                     ),
+                  );
+                },
+                child: Container(
+                  width: 260,
+                  margin: const EdgeInsets.only(right: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (article.imageUrl.isNotEmpty)
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
+                          child: Image.network(
+                            article.imageUrl,
+                            height: 110,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: 110,
+                                color: Colors.grey[300],
+                                child: const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) =>
+                                const SizedBox.shrink(),
+                          ),
+                        ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                article.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              LikeBookmarkButtons(article: article),
+                              const Spacer(), // Pushes the button to the bottom
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            ArticleDetailsPage(article: article),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.article),
+                                  label: const Text("See Full"),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.teal,
+                                    side: const BorderSide(color: Colors.teal),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 6),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );

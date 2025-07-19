@@ -12,13 +12,6 @@ class LikeBookmarkButtons extends StatefulWidget {
 }
 
 class _LikeBookmarkButtonsState extends State<LikeBookmarkButtons> {
-  void _toggleLike() {
-    setState(() {
-      widget.article.isLiked = !widget.article.isLiked;
-    });
-    widget.onUpdate?.call();
-  }
-
   void _toggleBookmark() {
     setState(() {
       widget.article.isBookmarked = !widget.article.isBookmarked;
@@ -30,13 +23,6 @@ class _LikeBookmarkButtonsState extends State<LikeBookmarkButtons> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        IconButton(
-          icon: Icon(
-            widget.article.isLiked ? Icons.favorite : Icons.favorite_border,
-            color: widget.article.isLiked ? Colors.red : Colors.grey,
-          ),
-          onPressed: _toggleLike,
-        ),
         IconButton(
           icon: Icon(
             widget.article.isBookmarked ? Icons.bookmark : Icons.bookmark_border,

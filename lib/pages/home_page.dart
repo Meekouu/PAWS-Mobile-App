@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/gallery.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:paws/pages/pet_page.dart';
 import 'package:paws/pages/news/news_card_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,8 +77,6 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 10),
               _galleryPreview(),
               const SizedBox(height: 10),
-              _bodySlider(),
-              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
@@ -214,69 +211,7 @@ class HomePage extends StatelessWidget {
 }
 
 
-  Padding _bodySlider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: SizedBox(
-        height: 600,
-        child: MasonryGridView.count(
-          physics: const BouncingScrollPhysics(),
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          itemCount: placeholders.length,
-          itemBuilder: (context, index) {
-            final item = placeholders[index];
-            final double height = 250 + (index % 3) * 40;
-
-            return GestureDetector(
-              onTap: () {
-                if (item.onTapRoute != null) {
-                  Navigator.push(
-                    context,
-                    createSlideRoute(item.onTapRoute!),
-                  );
-                } else if (item.onTap != null) {
-                  item.onTap!();
-                }
-              },
-              child: Container(
-                height: height,
-                decoration: BoxDecoration(
-                  color: item.color,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(item.icon, size: 48, color: Colors.white),
-                    const SizedBox(height: 12),
-                    Text(
-                      item.label,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+  
 
   Padding _petSlider() {
     return Padding(

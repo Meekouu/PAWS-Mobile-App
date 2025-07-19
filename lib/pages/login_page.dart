@@ -158,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
     final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     return Scaffold(
-      backgroundColor: lightBlue,
+      backgroundColor: secondaryColor,
       body: SafeArea(
         child: Center(
           child: isPortrait
@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                         decoration: const BoxDecoration(
-                          color: cream,
+                          color: backgroundColor,
                           borderRadius: BorderRadius.all(Radius.circular(40)),
                         ),
                         child: Form(key: _formKey, child: _buildLoginForm()),
@@ -197,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Container(
                         padding: const EdgeInsets.all(24),
                         decoration: const BoxDecoration(
-                          color: cream,
+                          color: backgroundColor,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(40),
                             bottomLeft: Radius.circular(40),

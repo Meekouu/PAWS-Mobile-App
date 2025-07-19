@@ -13,33 +13,79 @@ class AllNewsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('All Veterinary News'),
       ),
-      body: ListView.separated(
-        itemCount: articles.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
-        itemBuilder: (context, index) {
-          final article = articles[index];
-          return ListTile(
-            leading: article.imageUrl.isNotEmpty
-                ? Image.network(
-                    article.imageUrl,
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                  )
-                : const Icon(Icons.broken_image),
-            title: Text(article.title),
-            subtitle: Text(article.description ?? ''),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ArticleDetailsPage(article: article),
-                ),
-              );
-            },
-          );
-        },
-      ),
+      body: articles.isEmpty
+          ? const Center(child: Text("No news available."))
+          : ListView.builder(
+              itemCount: articles.length,
+              itemBuilder: (context, index) {
+                final article = articles[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ArticleDetailsPage(article: article),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 8),
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (article.imageUrl.isNotEmpty)
+                          ClipRRect(
+                            borderRadius: const BorderRadius.horizontal(
+                              left: Radius.circular(12),
+                            ),
+                            child: Image.network(
+                              article.imageUrl,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                              errorBuilder:
+                                  (context, error, stackTrace) => const SizedBox.shrink(),
+                            ),
+                          ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  article.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  article.description ?? '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }
