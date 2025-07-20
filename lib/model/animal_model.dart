@@ -1,14 +1,16 @@
 class Animal{
-  final String name;
-  final String breed;
-  final String type;
-  final String birthday;
-  final String sex;
-  final String imageCover;
-  final String imagePicture;
-  final String petImagePath;
+   String petID;
+   String name;
+   String breed;
+   String type;
+   String birthday;
+   String sex;
+   String imageCover;
+   String imagePicture;
+   String petImagePath;
 
   Animal({
+    required this.petID,
     this.name = 'Unknown',
     this.breed = 'Unknown',
     this.type = 'Unknown',
@@ -17,11 +19,11 @@ class Animal{
     this.imageCover = 'assets/images/dog1.jpeg',
     this.imagePicture = 'assets/images/cat1.jpeg',
     this.petImagePath = '', 
-    
     });
 
-  factory Animal.fromMap(Map<dynamic, dynamic> map) {
+  factory Animal.fromMap(String petId, Map<dynamic, dynamic> map) {
     return Animal(
+      petID: petId,
       name: map['petName'] ?? 'Unknown',
       breed: map['petBreed'] ?? 'Unknown',
       type: map['petType'] ?? 'Unknown',
@@ -32,5 +34,4 @@ class Animal{
       petImagePath: map['petImagePath'] ?? '',
     );
   }
-
 }
