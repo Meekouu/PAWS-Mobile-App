@@ -89,58 +89,64 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
  void _nextPage({required Offset originOffset}) async {
-    if (_currentPage == 1) {
-      if (ownerNameController.text.trim().isEmpty ||
-          _validateDate(ownerBirthdayController.text.trim()) != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please complete your info')),
-        );
-        return;
-      }
-    } else if (_currentPage == 2) {
-      if (petNameController.text.trim().isEmpty ||
-          petBreedController.text.trim().isEmpty ||
-          _validateDate(petBirthdayController.text.trim()) != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please complete pet info')),
-        );
-        return;
-      } else {
-        final uid = widget.firebaseUID;
-        if (uid == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('User not logged in.')),
-          );
-          return;
-        }
-        ownerInput = {
-          'owner': ownerNameController.text.trim(),
-          'ownerBirthday': ownerBirthdayController.text.trim(),
-          'ownerCountry': selectedCountry,
-        };
-        petInput = {
-          'petName': petNameController.text.trim(),
-          'petBreed': petBreedController.text.trim(),
-          'petBirthday': petBirthdayController.text.trim(),
-          'petType': petType,
-          'petSex': petSex,
-          'petImagePath': _petImagePath ?? '', // <-- Save the file path string
-        };
-        await DatabaseService().create(path: 'users/$uid', data: ownerInput);
-        await DatabaseService().create(path: 'pet/$uid/${Uuid().v4()}', data: petInput);
-      }
+  if (_currentPage == 1) {
+    if (ownerNameController.text.trim().isEmpty ||
+        _validateDate(ownerBirthdayController.text.trim()) != null ||
+        selectedCountry == 'Country') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please complete your info.')),
+      );
+      return;
     }
-
-    if (_currentPage == 3) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  HomePage()));
+  } else if (_currentPage == 2) {
+    if (petNameController.text.trim().isEmpty ||
+        petBreedController.text.trim().isEmpty ||
+        _validateDate(petBirthdayController.text.trim()) != null ||
+        petType == 'Type' ||
+        petSex == 'Sex') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please complete all pet info.')),
+      );
       return;
     }
 
-    setState(() {
-      _revealOffset = originOffset;
-      _revealing = true;
-    });
+    final uid = widget.firebaseUID;
+    if (uid == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User not logged in.')),
+      );
+      return;
+    }
+
+    ownerInput = {
+      'owner': ownerNameController.text.trim(),
+      'ownerBirthday': ownerBirthdayController.text.trim(),
+      'ownerCountry': selectedCountry,
+    };
+    petInput = {
+      'petName': petNameController.text.trim(),
+      'petBreed': petBreedController.text.trim(),
+      'petBirthday': petBirthdayController.text.trim(),
+      'petType': petType,
+      'petSex': petSex,
+      'petImagePath': _petImagePath ?? '',
+    };
+
+    await DatabaseService().create(path: 'users/$uid', data: ownerInput);
+    await DatabaseService().create(path: 'pet/$uid/${Uuid().v4()}', data: petInput);
   }
+
+  if (_currentPage == 3) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
+    return;
+  }
+
+  setState(() {
+    _revealOffset = originOffset;
+    _revealing = true;
+  });
+}
+
 
 
 
