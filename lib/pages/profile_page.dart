@@ -15,8 +15,8 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-final List<String> allCountries = ['Country', 'United States', 'Canada', 'UK', 'Philippines'];
-String selectedCountry = 'Country';
+final List<String> allCountries = ['United States', 'Canada', 'UK', 'Philippines'];
+String? selectedCountry;
 
 class _ProfilePageState extends State<ProfilePage> {
   final double coverHeight = 180;
@@ -203,24 +203,31 @@ Widget build(BuildContext context) {
                                 decoration: const InputDecoration(labelText: 'Date of Birth'),
                               ),
                               DropdownButtonFormField<String>(
-                              value: selectedCountry,
-                              items: allCountries.map((country) {
-                                return DropdownMenuItem<String>(
-                                  value: country,
-                                  child: Text(country),
-                                );
-                              }).toList(),
-                              onChanged: (val) {
-                                if (val != null) {
-                                  setState(() => selectedCountry = val);
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                labelText: 'Country',
-                                border: OutlineInputBorder(),
+                                value: selectedCountry == 'Country' ? null : selectedCountry,
+                                onChanged: (val) {
+                                  if (val != null) {
+                                    setState(() => selectedCountry = val);
+                                  }
+                                },
+                                decoration: const InputDecoration(
+                                  labelText: 'Country',
+                                  border: UnderlineInputBorder(), // default Material underline
+                                ),
+                                items: [
+                                  const DropdownMenuItem<String>(
+                                    value: null,
+                                    enabled: false,
+                                    child: Text(
+                                      'Country',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ),
+                                  ...allCountries.map((country) => DropdownMenuItem(
+                                    value: country,
+                                    child: Text(country),
+                                  )),
+                                ],
                               ),
-                            )
-
                             ],
                           ),
                           actions: [
