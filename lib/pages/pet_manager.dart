@@ -47,7 +47,14 @@ class _PetManagerState extends State<PetManager> {
             width: 20,
             color: Colors.white,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              Navigator.pushReplacementNamed(context, '/home'); // or any default route
+            }
+          },
+
         ),
       ),
       body: StreamBuilder<DatabaseEvent>(

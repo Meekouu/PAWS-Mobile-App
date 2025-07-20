@@ -56,10 +56,21 @@ Future<void> _loadUserInfo() async {
     final snapshot = await DatabaseService().read(path: 'users/${user.uid}');
     if (snapshot != null) {
       final data = snapshot.value as Map<dynamic, dynamic>;
+      final imagePath = data['profileImage'];
+      String? validPath;
+
+      // Check if local file path exists
+      if (imagePath != null && imagePath.toString().startsWith('/')) {
+        final file = File(imagePath);
+        if (await file.exists()) {
+          validPath = imagePath;
+        }
+      }
+
       setState(() {
         userName = data['owner'] ?? 'No Name';
         userEmail = data['email'] ?? user.email ?? 'No Email';
-        userProfileImage = data['profileImage']; // Can be null
+        userProfileImage = validPath; // Null if file is missing
       });
     } else {
       setState(() {
@@ -70,6 +81,7 @@ Future<void> _loadUserInfo() async {
     }
   }
 }
+
 
 
   void logOut(BuildContext context) async {
@@ -83,29 +95,34 @@ Future<void> _loadUserInfo() async {
 
   Widget _buildProfileImage(String imagePath) {
   if (imagePath.startsWith('http')) {
-    // Network image (Firebase Storage or URL)
+    // For future use if Firebase Storage added
     return ClipOval(
       child: Image.network(
         imagePath,
         fit: BoxFit.cover,
         width: 55,
         height: 55,
-        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 30, color: secondaryColor),
+        errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 30, color: secondaryColor),
       ),
     );
   } else {
-    // Local file path
-    return ClipOval(
-      child: Image.file(
-        File(imagePath),
-        fit: BoxFit.cover,
-        width: 55,
-        height: 55,
-        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 30, color: secondaryColor),
-      ),
-    );
+    final file = File(imagePath);
+    if (file.existsSync()) {
+      return ClipOval(
+        child: Image.file(
+          file,
+          fit: BoxFit.cover,
+          width: 55,
+          height: 55,
+          errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 30, color: secondaryColor),
+        ),
+      );
+    } else {
+      return const Icon(Icons.person, size: 30, color: secondaryColor);
+    }
   }
 }
+
 
 
   @override

@@ -180,8 +180,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         content: Column(
         children: [
           FadeSlideIn(
-            child: Text("data") 
+            child: Text("User Information", style: TextStyle(fontSize: 24),) 
           ),
+          SizedBox(height: 10,),
           FadeSlideIn(
               delay: const Duration(milliseconds: 0),
               child: LoginBtn1(
@@ -193,14 +194,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             const SizedBox(height: 12),
             FadeSlideIn(
-              delay: const Duration(milliseconds: 150),
-              child: LoginBtn1(
-                controller: ownerBirthdayController,
-                hintText: 'Birthday (dd/mm/yyyy)',
-                obscureText: false,
-                backgroundColor: Colors.white,
-              ),
-            ),
+  delay: const Duration(milliseconds: 150),
+  child: TextField(
+    controller: ownerBirthdayController,
+    readOnly: true,
+    onTap: () async {
+      final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      );
+
+      if (pickedDate != null) {
+        final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
+                          "${pickedDate.month.toString().padLeft(2, '0')}/"
+                          "${pickedDate.year}";
+        setState(() => ownerBirthdayController.text = formatted);
+      }
+    },
+    decoration: const InputDecoration(
+      hintText: 'Birthday (dd/mm/yyyy)',
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(),
+    ),
+  ),
+),
+
             const SizedBox(height: 12),
             FadeSlideIn(
               delay: const Duration(milliseconds: 300),
@@ -294,14 +315,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             const SizedBox(height: 12),
             FadeSlideIn(
-              delay: const Duration(milliseconds: 300),
-              child: LoginBtn1(
-                controller: petBirthdayController,
-                hintText: 'Birthday (dd/mm/yyyy)',
-                obscureText: false,
-                backgroundColor: Colors.white,
-              ),
-            ),
+  delay: const Duration(milliseconds: 300),
+  child: TextField(
+    controller: petBirthdayController,
+    readOnly: true,
+    onTap: () async {
+      final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      );
+
+      if (pickedDate != null) {
+        final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
+                          "${pickedDate.month.toString().padLeft(2, '0')}/"
+                          "${pickedDate.year}";
+        setState(() => petBirthdayController.text = formatted);
+      }
+    },
+    decoration: const InputDecoration(
+      hintText: 'Birthday (dd/mm/yyyy)',
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(),
+    ),
+  ),
+),
+
             const SizedBox(height: 12),
             FadeSlideIn(
               delay: const Duration(milliseconds: 400),

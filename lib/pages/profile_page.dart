@@ -55,8 +55,16 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       profileImageFile = File(picked.path);
     });
+
+    if (uid != null) {
+      await DatabaseService().update(
+        path: 'users/$uid',
+        data: {'ownerImagePath': picked.path},
+      );
+    }
   }
 }
+
   Future<void> loadUserData() async {
   if (uid != null) {
     final snapshot = await DatabaseService().read(path: 'users/$uid');
@@ -108,12 +116,19 @@ Widget build(BuildContext context) {
           children: [
             _buildCoverImage(),
             Positioned(
-              top: coverHeight - profileHeight / 2,
-              child: GestureDetector(
-                onTap: _pickImage,
-                child: _buildProfileImage(),
-              ),
-            ),
+  top: coverHeight - profileHeight / 2,
+  child: GestureDetector(
+    behavior: HitTestBehavior.translucent,
+    onTap: _pickImage,
+    child: Container(
+      width: profileHeight + 30, 
+      height: profileHeight + 30,
+      alignment: Alignment.center,
+      child: _buildProfileImage(),
+    ),
+  ),
+),
+
           ],
         ),
         const SizedBox(height: 60),
@@ -155,18 +170,41 @@ Widget build(BuildContext context) {
     imageProvider = FileImage(profileImageFile!);
   }
 
-  return CircleAvatar(
-    radius: profileHeight / 2,
-    backgroundColor: Colors.white,
-    child: CircleAvatar(
-      radius: (profileHeight / 2) - 5,
-      backgroundImage: imageProvider,
-      child: imageProvider == null
-          ? const Icon(Icons.person, size: 40, color: Colors.black45)
-          : null,
-    ),
+  return Stack(
+    children: [
+      CircleAvatar(
+        radius: profileHeight / 2,
+        backgroundColor: Colors.white,
+        child: CircleAvatar(
+          radius: (profileHeight / 2) - 5,
+          backgroundImage: imageProvider,
+          child: imageProvider == null
+              ? const Icon(Icons.person, size: 40, color: Colors.black45)
+              : null,
+        ),
+      ),
+      // Positioned camera icon at bottom-right
+      Positioned(
+        bottom: 0,
+        right: 0,
+        child: Container(
+          decoration: BoxDecoration(
+            color: secondaryColor,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+          padding: const EdgeInsets.all(4),
+          child: const Icon(
+            Icons.camera_alt,
+            size: 20,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ],
   );
 }
+
 
 
   Widget _buildInfoCard() {
@@ -211,7 +249,26 @@ Widget build(BuildContext context) {
                               TextField(
                                 controller: birthdayController,
                                 decoration: const InputDecoration(labelText: 'Date of Birth'),
+                                readOnly: true,  // Make it read-only so user taps only to pick date
+                                onTap: () async {
+                                  final pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.tryParse(birthdayController.text) ?? DateTime.now(),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime.now(),
+                                  );
+
+                                  if (pickedDate != null) {
+                                    final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
+                                                      "${pickedDate.month.toString().padLeft(2, '0')}/"
+                                                      "${pickedDate.year}";
+                                    setState(() {
+                                      birthdayController.text = formatted;
+                                    });
+                                  }
+                                },
                               ),
+
                               DropdownButtonFormField<String>(
                                 value: selectedCountry == 'Country' ? null : selectedCountry,
                                 onChanged: (val) {

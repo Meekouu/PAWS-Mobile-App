@@ -241,11 +241,35 @@ Widget build(BuildContext context) {
                   obscureText: false,
                 ),
                 const SizedBox(height: 12),
-                LoginBtn1(
-                  hintText: 'Birthday (dd/mm/yyyy)',
-                  controller: petBirthdayController,
-                  obscureText: false,
-                ),
+                Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 20),
+  child: TextField(
+    controller: petBirthdayController,
+    readOnly: true,
+    onTap: () async {
+      final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime.now(),
+      );
+      if (pickedDate != null) {
+        final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
+                          "${pickedDate.month.toString().padLeft(2, '0')}/"
+                          "${pickedDate.year}";
+        petBirthdayController.text = formatted;
+      }
+    },
+    decoration: const InputDecoration(
+      labelText: 'Birthday (dd/mm/yyyy)',
+      border: OutlineInputBorder(),
+      filled: true,
+      fillColor: Colors.white,
+      suffixIcon: Icon(Icons.calendar_today),
+    ),
+  ),
+),
+
                 const SizedBox(height: 12),
 
                 // Dropdowns

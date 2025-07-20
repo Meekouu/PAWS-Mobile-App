@@ -166,12 +166,19 @@ class _PetPageState extends State<PetPage> {
             children: [
               _buildCoverImage(),
               Positioned(
-                top: coverHeight - profileHeight / 2,
-                child: GestureDetector(
-                  onTap: _pickImage,
-                  child: _buildProfileImage(),
-                ),
-              ),
+  top: coverHeight - profileHeight / 2,
+  child: GestureDetector(
+    behavior: HitTestBehavior.translucent,
+    onTap: _pickImage,
+    child: Container(
+      width: profileHeight + 30,
+      height: profileHeight + 30,
+      alignment: Alignment.center,
+      child: _buildProfileImage(),
+    ),
+  ),
+),
+
             ],
           ),
           const SizedBox(height: 60),
@@ -206,30 +213,53 @@ class _PetPageState extends State<PetPage> {
       );
 
   Widget _buildProfileImage() {
-    final String path = animal?.petImagePath ?? '';
+  final String path = animal?.petImagePath ?? '';
 
-    ImageProvider? imageProvider;
+  ImageProvider? imageProvider;
 
-    if (petImageFile != null) {
-      imageProvider = FileImage(petImageFile!);
-    } else if (path.isNotEmpty && path.startsWith('/')) {
-      imageProvider = FileImage(File(path));
-    } else if (path.isNotEmpty) {
-      imageProvider = AssetImage(path);
-    }
-
-    return CircleAvatar(
-      radius: profileHeight / 2,
-      backgroundColor: Colors.white,
-      child: CircleAvatar(
-        radius: (profileHeight / 2) - 5,
-        backgroundImage: imageProvider,
-        child: imageProvider == null
-            ? const Icon(Icons.pets, size: 40, color: Colors.black45)
-            : null,
-      ),
-    );
+  if (petImageFile != null) {
+    imageProvider = FileImage(petImageFile!);
+  } else if (path.isNotEmpty && path.startsWith('/')) {
+    imageProvider = FileImage(File(path));
+  } else if (path.isNotEmpty) {
+    imageProvider = AssetImage(path);
   }
+
+  return Stack(
+    children: [
+      CircleAvatar(
+        radius: profileHeight / 2,
+        backgroundColor: Colors.white,
+        child: CircleAvatar(
+          radius: (profileHeight / 2) - 5,
+          backgroundImage: imageProvider,
+          child: imageProvider == null
+              ? const Icon(Icons.pets, size: 40, color: Colors.black45)
+              : null,
+        ),
+      ),
+      Positioned(
+        bottom: 0,
+        right: 0,
+        child: Container(
+          decoration: BoxDecoration(
+            color: secondaryColor,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+          padding: const EdgeInsets.all(4),
+          child: const Icon(
+            Icons.camera_alt,
+            size: 20,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+
 
   Widget _buildInfoCard(Animal animal) {
     return Padding(
