@@ -8,7 +8,7 @@ import 'package:paws/pages/pet_page.dart';
 import 'package:paws/widgets/database_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_database/firebase_database.dart';
-
+import 'package:paws/widgets/buttons_input_widgets.dart';
 
 class PetSlider extends StatelessWidget {
   const PetSlider({super.key});
@@ -165,103 +165,126 @@ Widget build(BuildContext context) {
   }
 
   void _showAddPetDialog(BuildContext context) {
-    final petNameController = TextEditingController();
-    final petBreedController = TextEditingController();
-    final petBirthdayController = TextEditingController();
-    String petType = 'Canine';
-    String petSex = 'Male';
-    File? petImageFile;
+  final petNameController = TextEditingController();
+  final petBreedController = TextEditingController();
+  final petBirthdayController = TextEditingController();
+  String petType = 'Canine';
+  String petSex = 'Male';
+  File? petImageFile;
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) => AlertDialog(
-            title: const Text('Add Pet'),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(40),
-                    onTap: () async {
-                      final picker = ImagePicker();
-                      final picked = await picker.pickImage(source: ImageSource.gallery);
-                      if (picked != null) {
-                        setState(() => petImageFile = File(picked.path));
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.grey.shade300,
-                      backgroundImage: petImageFile != null ? FileImage(petImageFile!) : null,
-                      child: petImageFile == null
-                          ? const Icon(Icons.add, size: 40, color: Colors.black54)
-                          : null,
-                    ),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Add Pet'),
+          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  borderRadius: BorderRadius.circular(40),
+                  onTap: () async {
+                    final picker = ImagePicker();
+                    final picked = await picker.pickImage(source: ImageSource.gallery);
+                    if (picked != null) {
+                      setState(() => petImageFile = File(picked.path));
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Colors.grey.shade300,
+                    backgroundImage: petImageFile != null ? FileImage(petImageFile!) : null,
+                    child: petImageFile == null
+                        ? const Icon(Icons.add, size: 40, color: Colors.black54)
+                        : null,
                   ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: petNameController,
-                    decoration: const InputDecoration(labelText: 'Pet Name'),
-                  ),
-                  TextField(
-                    controller: petBreedController,
-                    decoration: const InputDecoration(labelText: 'Breed'),
-                  ),
-                  TextField(
-                    controller: petBirthdayController,
-                    decoration: const InputDecoration(labelText: 'Birthday (dd/mm/yyyy)'),
-                  ),
-                  DropdownButtonFormField<String>(
+                ),
+                const SizedBox(height: 12),
+
+                // Custom Input Fields
+                LoginBtn1(
+                  hintText: 'Pet Name',
+                  controller: petNameController,
+                  obscureText: false,
+                ),
+                const SizedBox(height: 12),
+                LoginBtn1(
+                  hintText: 'Breed',
+                  controller: petBreedController,
+                  obscureText: false,
+                ),
+                const SizedBox(height: 12),
+                LoginBtn1(
+                  hintText: 'Birthday (dd/mm/yyyy)',
+                  controller: petBirthdayController,
+                  obscureText: false,
+                ),
+                const SizedBox(height: 12),
+
+                // Dropdowns
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: DropdownButtonFormField<String>(
                     value: petSex,
                     items: ['Male', 'Female']
                         .map((sex) => DropdownMenuItem(value: sex, child: Text(sex)))
                         .toList(),
-                    onChanged: (val) => petSex = val ?? petSex,
+                    onChanged: (val) => setState(() => petSex = val ?? petSex),
                     decoration: const InputDecoration(labelText: 'Sex'),
                   ),
-                  DropdownButtonFormField<String>(
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: DropdownButtonFormField<String>(
                     value: petType,
                     items: ['Canine', 'Feline', 'Other']
                         .map((type) => DropdownMenuItem(value: type, child: Text(type)))
                         .toList(),
-                    onChanged: (val) => petType = val ?? petType,
+                    onChanged: (val) => setState(() => petType = val ?? petType),
                     decoration: const InputDecoration(labelText: 'Type'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final uid = FirebaseAuth.instance.currentUser?.uid;
-                  if (uid != null) {
-                    final petData = {
-                      'petName': petNameController.text.trim(),
-                      'petBreed': petBreedController.text.trim(),
-                      'petBirthday': petBirthdayController.text.trim(),
-                      'petType': petType,
-                      'petSex': petSex,
-                      'petImagePath': petImageFile?.path ?? '',
-                    };
-                    await DatabaseService().create(
-                      path: 'pet/$uid/${const Uuid().v4()}',
-                      data: petData,
-                    );
-                  }
-                  Navigator.pop(context);
-                },
-                child: const Text('Add'),
-              ),
-            ],
           ),
-        );
-      },
-    );
-  }
+
+          // Buttons
+          actionsPadding: const EdgeInsets.symmetric(vertical: 10),
+          actions: [
+            CTAButton(
+              text: 'Cancel',
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            CTAButton(
+              text: 'Add',
+              onTap: () async {
+                final uid = FirebaseAuth.instance.currentUser?.uid;
+                if (uid != null) {
+                  final petData = {
+                    'petName': petNameController.text.trim(),
+                    'petBreed': petBreedController.text.trim(),
+                    'petBirthday': petBirthdayController.text.trim(),
+                    'petType': petType,
+                    'petSex': petSex,
+                    'petImagePath': petImageFile?.path ?? '',
+                  };
+                  await DatabaseService().create(
+                    path: 'pet/$uid/${const Uuid().v4()}',
+                    data: petData,
+                  );
+                }
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 }

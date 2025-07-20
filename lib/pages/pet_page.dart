@@ -1,18 +1,67 @@
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/weight_tracker_page.dart';
+import 'package:paws/themes/themes.dart';
+import 'package:paws/widgets/database_service.dart';
 
-class PetPage extends StatelessWidget {
+class PetPage extends StatefulWidget {
   final Animal animal;
 
   const PetPage({Key? key, required this.animal}) : super(key: key);
 
+  @override
+  State<PetPage> createState() => _PetPageState();
+}
+
+class _PetPageState extends State<PetPage> {
   final double coverHeight = 180;
   final double profileHeight = 100;
 
+  File? petImageFile;
+
+  Future<void> _pickImage() async {
+  final picker = ImagePicker();
+  final picked = await picker.pickImage(source: ImageSource.gallery);
+
+  if (picked != null) {
+    setState(() {
+      petImageFile = File(picked.path);
+    });
+
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      final petRef = FirebaseDatabase.instance.ref('pet/$uid');
+      final snapshot = await petRef.get();
+      final pets = snapshot.value as Map?;
+
+      if (pets != null) {
+        for (var entry in pets.entries) {
+          final petId = entry.key;
+          final petData = entry.value as Map;
+
+          if (petData['petName'] == widget.animal.name) {
+            await DatabaseService().update(
+              path: 'pet/$uid/$petId',
+              data: {'petImagePath': picked.path},
+            );
+            break;
+          }
+        }
+      }
+    }
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
+    final animal = widget.animal;
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       extendBodyBehindAppBar: true,
@@ -46,12 +95,15 @@ class PetPage extends StatelessWidget {
               _buildCoverImage(),
               Positioned(
                 top: coverHeight - profileHeight / 2,
-                child: _buildProfileImage(),
+                child: GestureDetector(
+                  onTap: _pickImage,
+                  child: _buildProfileImage(),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 60),
-          _buildInfoCard(context),
+          _buildInfoCard(animal),
           const SizedBox(height: 20),
           _buildListTile(Icons.folder_shared, "Medical Records"),
           _buildListTile(Icons.memory, "Chipping"),
@@ -76,23 +128,40 @@ class PetPage extends StatelessWidget {
   Widget _buildCoverImage() => Container(
         height: coverHeight,
         decoration: BoxDecoration(
-          color: const Color(0xFFA8D5BA),
+          color: secondaryColor,
           borderRadius: const BorderRadius.vertical(
             bottom: Radius.circular(50),
           ),
         ),
       );
 
-  Widget _buildProfileImage() => CircleAvatar(
-        radius: profileHeight / 2,
-        backgroundColor: Colors.white,
-        child: CircleAvatar(
-          radius: (profileHeight / 2) - 5,
-          backgroundImage: AssetImage(animal.imagePicture),
-        ),
-      );
+  Widget _buildProfileImage() {
+    final String path = widget.animal.petImagePath;
 
-  Widget _buildInfoCard(BuildContext context) {
+    ImageProvider? imageProvider;
+
+    if (petImageFile != null) {
+      imageProvider = FileImage(petImageFile!);
+    } else if (path.isNotEmpty && path.startsWith('/')) {
+      imageProvider = FileImage(File(path));
+    } else if (path.isNotEmpty) {
+      imageProvider = AssetImage(path);
+    }
+
+    return CircleAvatar(
+      radius: profileHeight / 2,
+      backgroundColor: Colors.white,
+      child: CircleAvatar(
+        radius: (profileHeight / 2) - 5,
+        backgroundImage: imageProvider,
+        child: imageProvider == null
+            ? const Icon(Icons.pets, size: 40, color: Colors.black45)
+            : null,
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(Animal animal) {
     final breedController = TextEditingController(text: animal.breed);
     final sexController = TextEditingController(text: animal.sex);
     final dobController = TextEditingController(text: animal.birthday);
@@ -150,7 +219,7 @@ class PetPage extends StatelessWidget {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                // Placeholder for backend logic
+                                // TODO: update backend
                                 Navigator.of(context).pop();
                               },
                               child: const Text('Save'),
