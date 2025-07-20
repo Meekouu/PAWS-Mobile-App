@@ -114,7 +114,7 @@ Widget build(BuildContext context) {
                                 margin: EdgeInsets.symmetric(
                                     horizontal: index == currentPage ? 4 : 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: secondaryColor,
+                                  color: tertiaryColor,
                                   borderRadius: BorderRadius.circular(16),
                                   boxShadow: [
                                     BoxShadow(
@@ -153,7 +153,7 @@ Widget build(BuildContext context) {
                                                 if (loadingProgress == null) return child;
                                                 return Container(
                                                   height: imageHeight.clamp(80.0, 140.0),
-                                                  color: Colors.grey[300],
+                                                  color: white,
                                                   child: const Center(
                                                     child: CircularProgressIndicator(),
                                                   ),

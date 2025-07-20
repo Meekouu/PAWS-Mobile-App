@@ -28,13 +28,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // Controllers for input
   final ownerNameController = TextEditingController();
   final ownerBirthdayController = TextEditingController();
-  String selectedCountry = 'United States';
-
   final petNameController = TextEditingController();
   final petBreedController = TextEditingController();
   final petBirthdayController = TextEditingController();
-  String petType = 'Canine';
-  String petSex = 'Male';
+
+  String selectedCountry = 'Country';
+  String petType = 'Type';
+  String petSex = 'Sex';
+
+  final List<String> allCountries = ['Country', 'United States', 'Canada', 'UK', 'Philippines'];
+  final List<String> allPetTypes = ['Type', 'Canine', 'Feline', 'Other'];
+  final List<String> allPetSexes = ['Sex', 'Male', 'Female'];
+
+  List<String> visibleCountries = [];
+  List<String> visiblePetTypes = [];
+  List<String> visiblePetSexes = [];
 
   Map<String, dynamic> ownerInput = {};
   Map<String, dynamic> petInput = {};
@@ -46,6 +54,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void initState() {
     super.initState();
     _checkIfUserExists();
+
+    visibleCountries = List.from(allCountries);
+    visiblePetTypes = List.from(allPetTypes);
+    visiblePetSexes = List.from(allPetSexes);
   }
 
   @override
@@ -164,10 +176,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return [
       _buildWelcomePage(),
       _buildFormPage(
-        title: 'Owner Info',
         backgroundColor: pageColors[1],
         content: Column(
         children: [
+          FadeSlideIn(
+            child: Text("data") 
+          ),
           FadeSlideIn(
               delay: const Duration(milliseconds: 0),
               child: LoginBtn1(
@@ -191,20 +205,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             FadeSlideIn(
               delay: const Duration(milliseconds: 300),
               child: DropdownButtonFormField<String>(
-                value: selectedCountry,
-                items: ['United States', 'Canada', 'UK', 'Philippines']
-                    .map((country) => DropdownMenuItem(
-                        value: country, child: Text(country)))
-                    .toList(),
-                onChanged: (val) =>
-                    setState(() => selectedCountry = val ?? selectedCountry),
+  value: selectedCountry,
+  items: visibleCountries.map((country) {
+    return DropdownMenuItem<String>(
+      value: country,
+      child: Text(country),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  if (val != null && val != 'Country') {
+                    setState(() {
+                      selectedCountry = val;
+                      visibleCountries.remove('Country');
+                    });
+                  } else {
+                    setState(() => selectedCountry = val!);
+                  }
+                },
                 decoration: const InputDecoration(
-                  labelText: 'Country',
                   fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(),
                 ),
-              ),
+              )
+
             ),
           ],
         ),
@@ -282,32 +306,55 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             FadeSlideIn(
               delay: const Duration(milliseconds: 400),
               child: DropdownButtonFormField<String>(
-                value: petSex,
-                items: ['Male', 'Female'].map((sex) => DropdownMenuItem(
-                  value: sex,
-                  child: Text(sex),
+  value: petSex,
+  items: visiblePetSexes.map((sex) => DropdownMenuItem<String>(
+    value: sex,
+    child: Text(sex),
                 )).toList(),
-                onChanged: (val) => setState(() => petSex = val ?? petSex),
+                onChanged: (val) {
+                  if (val != null && val != 'Sex') {
+                    setState(() {
+                      petSex = val;
+                      visiblePetSexes.remove('Sex');
+                    });
+                  } else {
+                    setState(() => petSex = val!);
+                  }
+                },
                 decoration: const InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(),
                 ),
-              ),
+              )
+
             ),
             const SizedBox(height: 12),
             FadeSlideIn(
               delay: const Duration(milliseconds: 500),
               child: DropdownButtonFormField<String>(
-                value: petType,
-                items: ['Canine', 'Feline', 'Other'].map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
-                onChanged: (val) => setState(() => petType = val ?? petType),
+  value: petType,
+  items: visiblePetTypes.map((type) => DropdownMenuItem<String>(
+    value: type,
+    child: Text(type),
+                )).toList(),
+                onChanged: (val) {
+                  if (val != null && val != 'Type') {
+                    setState(() {
+                      petType = val;
+                      visiblePetTypes.remove('Type');
+                    });
+                  } else {
+                    setState(() => petType = val!);
+                  }
+                },
                 decoration: const InputDecoration(
-                  fillColor: Colors.white, 
-                  filled: true, 
-                  border: OutlineInputBorder()
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(),
                 ),
-              ),
+              )
+
             ),
           ],
         ),
@@ -364,7 +411,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
               label: Text(_currentPage == 3 ? 'Finish' : 'Next'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: pageColors[
+                backgroundColor: _currentPage == 3 ? tertiaryColor : pageColors[
                   (_currentPage + 1) < pageColors.length ? _currentPage + 1 : _currentPage
                 ],
                 foregroundColor: primaryColor,

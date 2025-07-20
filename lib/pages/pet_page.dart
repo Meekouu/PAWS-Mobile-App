@@ -94,7 +94,7 @@ class _PetPageState extends State<PetPage> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Delete Pet'),
+          title: const Text('Delete Pet Profile'),
           content: const Text('Are you sure you want to delete this pet profile?'),
           actions: [
             TextButton(
