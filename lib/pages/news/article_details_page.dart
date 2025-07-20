@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paws/themes/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:paws/pages/news/article_model.dart';
 
@@ -58,7 +59,9 @@ class ArticleDetailsPage extends StatelessWidget {
             ),
             const Divider(height: 24),
             Text(
-              article.content.isNotEmpty ? article.content : article.description,
+              article.content.isNotEmpty
+              ? article.content.replaceAll(RegExp(r'\s*\[\+\d+\schars\]'), '…')
+              : article.description,
               style: const TextStyle(fontSize: 16, height: 1.4),
             ),
             const SizedBox(height: 24),
@@ -69,8 +72,8 @@ class ArticleDetailsPage extends StatelessWidget {
                   icon: const Icon(Icons.open_in_browser),
                   label: const Text("Read Full Article"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
-                    foregroundColor: Colors.white,
+                    backgroundColor: secondaryColor,
+                    foregroundColor: primaryColor,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

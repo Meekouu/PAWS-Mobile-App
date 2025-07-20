@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/news/news_card_carousel.dart';
+import 'package:paws/themes/themes.dart';
+import 'package:paws/widgets/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paws/widgets/abstract_background_painter.dart';
 import 'package:paws/widgets/pet_slider.dart';
@@ -28,15 +30,51 @@ Route createSlideRoute(Widget page) {
   );
 }
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String? userName;
+  String? userEmail;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final snapshot = await DatabaseService().read(path: 'users/${user.uid}');
+      if (snapshot != null) {
+        final data = snapshot.value as Map<dynamic, dynamic>;
+        setState(() {
+          userName = data['name'] ?? 'No Name';
+          userEmail = data['email'] ?? user.email ?? 'No Email';
+        });
+      } else {
+        setState(() {
+          userName = 'User';
+          userEmail = user.email ?? '';
+        });
+      }
+    }
+  }
 
   void logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await FirebaseAuth.instance.signOut();
 
-    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+    if (mounted) {
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,15 +121,34 @@ class HomePage extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blueAccent,
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: secondaryColor,
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    userName ?? 'Loading...',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    userEmail ?? '',
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
             ),
+
             const ListTile(
               leading: Icon(Icons.pets),
               title: Text('Pet Profiles'),

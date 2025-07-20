@@ -254,13 +254,7 @@ Widget build(BuildContext context) {
           // Buttons
           actionsPadding: const EdgeInsets.symmetric(vertical: 10),
           actions: [
-            CTAButton(
-              text: 'Cancel',
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            CTAButton(
+              CTAButton(
               text: 'Add',
               onTap: () async {
                 final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -281,6 +275,16 @@ Widget build(BuildContext context) {
                 Navigator.pop(context);
               },
             ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.black),
+              ),
+            )
+
           ],
         ),
       );
