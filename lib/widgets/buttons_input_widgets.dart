@@ -39,44 +39,47 @@ class LoginBtn1 extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Center(
-        child: Container(
-          height: height.clamp(56.0, 100.0),
-          width: maxWidth,
-          decoration: BoxDecoration(
-            color: backgroundColor ?? Colors.white,
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(40),
-          ),
-          child: TextFormField(
-          controller: controller,
-          obscureText: obscureText,
-          validator: validator,
-          onChanged: onChanged,
-          keyboardType: keyboardType,
-          style: TextStyle(fontSize: fontSize),
-          textAlignVertical: TextAlignVertical.center,
-          decoration: InputDecoration(
-            isDense: true, // Reduce vertical space
-            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20), // Less vertical padding
-            hintText: hintText,
-            hintStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.w400,
+        child: ConstrainedBox(
+  constraints: BoxConstraints(
+    maxWidth: maxWidth,
+  ),
+            child: TextFormField(
+              controller: controller,
+              obscureText: obscureText,
+              validator: validator,
+              onChanged: onChanged,
+              keyboardType: keyboardType,
+              style: TextStyle(fontSize: fontSize),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: backgroundColor ?? Colors.white,
+                contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                hintText: hintText,
+                hintStyle: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w400,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(40),
+                  borderSide: const BorderSide(color: Colors.black),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(40),
+                  borderSide: const BorderSide(color: Colors.black),
+                ),
+                errorText: errorText,
+                errorStyle: TextStyle(
+                  fontSize: fontSize * 0.7,
+                  color: Colors.redAccent,
+                  height: 0.9, // ⬅️ Reduce vertical gap
+                ),
+                suffixIcon: icon,
+                suffixIconColor: black,
+              ),
             ),
-            border: InputBorder.none,
-            suffixIcon: icon,
-            suffixIconColor: black,
-            errorText: errorText,
-            errorStyle: TextStyle( // Reduce error text height
-              fontSize: fontSize * 0.7, // Smaller error font
-              color: Colors.redAccent,
-            ),
-            alignLabelWithHint: true,
           ),
         ),
-        ),
-      ),
-    );
+      );
   }
 }
 

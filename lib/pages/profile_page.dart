@@ -19,6 +19,9 @@ final List<String> allCountries = ['United States', 'Canada', 'UK', 'Philippines
 String? selectedCountry;
 
 class _ProfilePageState extends State<ProfilePage> {
+  late TextEditingController ownerController;
+  late TextEditingController birthdayController;
+
   final double coverHeight = 180;
   final double profileHeight = 100;
 
@@ -33,8 +36,16 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    ownerController = TextEditingController();
+    birthdayController = TextEditingController();
     loadUserData();
   }
+  @override
+  void dispose() {
+  ownerController.dispose();
+  birthdayController.dispose();
+  super.dispose();
+}
 
   Future<void> _pickImage() async {
   final picker = ImagePicker();
@@ -58,6 +69,8 @@ class _ProfilePageState extends State<ProfilePage> {
         birthday = data['ownerBirthday'] ?? 'No Birthday';
         country = data['ownerCountry'] ?? 'Country';
         selectedCountry = country;
+        ownerController.text = owner;
+        birthdayController.text = birthday;
       });
 
       }
@@ -161,7 +174,6 @@ Widget build(BuildContext context) {
   Widget _buildInfoCard() {
     final ownerController = TextEditingController(text: owner);
     final birthdayController = TextEditingController(text: birthday);
-    final countryController = TextEditingController(text: country);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Card(
@@ -236,8 +248,24 @@ Widget build(BuildContext context) {
                               child: const Text('Cancel'),
                             ),
                             ElevatedButton(
-                              onPressed: () {
-                                // TODO: update backend
+                              onPressed: () async {
+                                if (uid != null){
+                                  final updatedData = {
+                                    'owner': ownerController.text,
+                                    'ownerBirthday': birthdayController.text,
+                                    'ownerCountry': selectedCountry ?? 'Country',
+                                  };
+                                  await DatabaseService().update(
+                                    path: 'users/$uid',
+                                    data: updatedData,
+                                  );
+
+                                  setState(() {
+                                    owner = ownerController.text;
+                                    birthday = birthdayController.text;
+                                    country = selectedCountry ?? 'Country';
+                                  });
+                                }
                                 Navigator.of(context).pop();
                               },
                               child: const Text('Save'),
