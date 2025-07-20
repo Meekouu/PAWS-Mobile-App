@@ -86,14 +86,12 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               PetSlider(),
-              const SizedBox(height: 10),
                 const Divider(
                 thickness: 1,
                 color: Colors.grey,
                 indent: 20,
                 endIndent: 20,
               ),
-              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
               ),
@@ -354,7 +352,7 @@ class BottomNavBar extends StatelessWidget {
           label: 'Profile',
         ),
       ],
-      selectedItemColor: Colors.brown,
+      selectedItemColor: primaryColor,
       unselectedItemColor: Colors.grey,
       showUnselectedLabels: true,
     );

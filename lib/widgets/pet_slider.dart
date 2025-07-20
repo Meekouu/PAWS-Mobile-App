@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:async/async.dart'; // For StreamZip
 import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/pet_page.dart';
+import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -137,7 +138,7 @@ Widget build(BuildContext context) {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.brown.shade700, width: 3),
+                border: Border.all(color: secondaryColor, width: 4),
               ),
               child: CircleAvatar(
                 backgroundColor: Colors.grey.shade200,
@@ -146,6 +147,9 @@ Widget build(BuildContext context) {
                         ? FileImage(File(animal.petImagePath))
                         : AssetImage(animal.petImagePath) as ImageProvider)
                     : null,
+                child: animal.petImagePath.isEmpty
+                  ? const Icon(Icons.pets, size: 40, color: Colors.grey)
+                  : null,
               ),
             ),
             const SizedBox(height: 8),

@@ -53,7 +53,7 @@ Widget build(BuildContext context) {
   final screenWidth = MediaQuery.of(context).size.width;
   final screenHeight = MediaQuery.of(context).size.height;
 
-  final carouselHeight = screenHeight * 0.4;
+  final carouselHeight = screenHeight * 0.36;
   final imageHeight = carouselHeight * 0.45;
 
   PageController pageController = PageController(viewportFraction: 0.85);
@@ -67,7 +67,7 @@ Widget build(BuildContext context) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'Veterinary News',
+              "What's New?",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             TextButton(
@@ -114,7 +114,7 @@ Widget build(BuildContext context) {
                                 margin: EdgeInsets.symmetric(
                                     horizontal: index == currentPage ? 4 : 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[100],
+                                  color: secondaryColor,
                                   borderRadius: BorderRadius.circular(16),
                                   boxShadow: [
                                     BoxShadow(
@@ -190,8 +190,8 @@ Widget build(BuildContext context) {
                                                             maxLines: 2,
                                                             overflow: TextOverflow.ellipsis,
                                                             style: const TextStyle(
-                                                              fontWeight: FontWeight.w600,
-                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 18,
                                                             ),
                                                           ),
                                                     const SizedBox(height: 8),
@@ -212,8 +212,8 @@ Widget build(BuildContext context) {
                                                       icon: const Icon(Icons.article),
                                                       label: const Text("See Full"),
                                                       style: OutlinedButton.styleFrom(
-                                                        foregroundColor: secondaryColor,
-                                                        side: const BorderSide(color: secondaryColor),
+                                                        foregroundColor: primaryColor,
+                                                        side: const BorderSide(color: primaryColor),
                                                         shape: RoundedRectangleBorder(
                                                           borderRadius: BorderRadius.circular(10),
                                                         ),
