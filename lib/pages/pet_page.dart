@@ -34,25 +34,13 @@ class _PetPageState extends State<PetPage> {
     });
 
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      final petRef = FirebaseDatabase.instance.ref('pet/$uid');
-      final snapshot = await petRef.get();
-      final pets = snapshot.value as Map?;
+    final petId = widget.animal.petID;
 
-      if (pets != null) {
-        for (var entry in pets.entries) {
-          final petId = entry.key;
-          final petData = entry.value as Map;
-
-          if (petData['petName'] == widget.animal.name) {
-            await DatabaseService().update(
-              path: 'pet/$uid/$petId',
-              data: {'petImagePath': picked.path},
-            );
-            break;
-          }
-        }
-      }
+    if (uid != null && petId.isNotEmpty) {
+      await DatabaseService().update(
+        path: 'pet/$uid/$petId',
+        data: {'petImagePath' : picked.path}
+      );
     }
   }
  

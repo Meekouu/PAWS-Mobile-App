@@ -1,4 +1,5 @@
 class Animal{
+  final String petID;
   final String name;
   final String breed;
   final String type;
@@ -9,6 +10,7 @@ class Animal{
   final String petImagePath;
 
   Animal({
+    required this.petID,
     this.name = 'Unknown',
     this.breed = 'Unknown',
     this.type = 'Unknown',
@@ -20,8 +22,9 @@ class Animal{
     
     });
 
-  factory Animal.fromMap(Map<dynamic, dynamic> map) {
+  factory Animal.fromMap(String petId, Map<dynamic, dynamic> map) {
     return Animal(
+      petID: petId,
       name: map['petName'] ?? 'Unknown',
       breed: map['petBreed'] ?? 'Unknown',
       type: map['petType'] ?? 'Unknown',
@@ -32,5 +35,4 @@ class Animal{
       petImagePath: map['petImagePath'] ?? '',
     );
   }
-
 }

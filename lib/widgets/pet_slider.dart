@@ -42,8 +42,9 @@ Widget build(BuildContext context) {
 
           final petMap = snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
           List<Animal> animals = petMap.entries.map((entry) {
+            final petId = entry.key.toString();
             final petData = entry.value as Map<dynamic, dynamic>;
-            return Animal.fromMap(petData);
+            return Animal.fromMap(petId, petData);
           }).toList();
 
           return Padding(
