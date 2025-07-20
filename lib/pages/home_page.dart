@@ -148,49 +148,33 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-
-            const ListTile(
-              leading: Icon(Icons.pets),
-              title: Text('Pet Profiles'),
-              onTap: null, // Placeholder
-            ),
-            const ListTile(
-              leading: Icon(Icons.article),
-              title: Text('Articles'),
-              onTap: null, // Placeholder
-            ),
-            const ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: null, // Placeholder
-            ),
-            const Divider(),
             ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Log Out'),
-              onTap: () async {
-                final shouldLogout = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Log Out'),
-                    content: const Text('Are you sure you want to log out?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text('Cancel'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text('Log Out'),
-                      ),
-                    ],
-                  ),
-                );
-                if (shouldLogout == true) {
-                  logOut(context);
-                }
-              },
-            ),
+            leading: const Icon(Icons.logout),
+            title: const Text('Log Out'),
+            onTap: () async {
+              final shouldLogout = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Log Out'),
+                  content: const Text('Are you sure you want to log out?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('Log Out'),
+                    ),
+                  ],
+                ),
+              );
+              if (shouldLogout == true) {
+                logOut(context);
+              }
+            },
+          ),
+
           ],
         ),
       ),
@@ -313,7 +297,7 @@ class _HomePageState extends State<HomePage> {
   AppBar _AppBar(BuildContext context) {
     return AppBar(
       titleSpacing: 35,
-      backgroundColor: Colors.blue[100],
+      backgroundColor: secondaryColor,
       automaticallyImplyLeading: false,
       leading: Builder(
         builder: (context) => IconButton(

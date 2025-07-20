@@ -172,12 +172,21 @@ Widget build(BuildContext context) {
   String petSex = 'Male';
   File? petImageFile;
 
-  showDialog(
+   showDialog(
     context: context,
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Add Pet'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Add Pet'),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
           contentPadding: const EdgeInsets.symmetric(vertical: 10),
           content: SingleChildScrollView(
             child: Column(
@@ -203,7 +212,7 @@ Widget build(BuildContext context) {
                 ),
                 const SizedBox(height: 12),
 
-                // Custom Input Fields
+
                 LoginBtn1(
                   hintText: 'Pet Name',
                   controller: petNameController,
@@ -254,7 +263,7 @@ Widget build(BuildContext context) {
           // Buttons
           actionsPadding: const EdgeInsets.symmetric(vertical: 10),
           actions: [
-              CTAButton(
+            CTAButton(
               text: 'Add',
               onTap: () async {
                 final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -275,16 +284,6 @@ Widget build(BuildContext context) {
                 Navigator.pop(context);
               },
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.black),
-              ),
-            )
-
           ],
         ),
       );
