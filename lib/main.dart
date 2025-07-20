@@ -6,6 +6,7 @@ import 'package:paws/pages/login_page.dart';
 import 'package:paws/pages/profile_page.dart';
 import 'package:paws/pages/signup_page.dart';
 import 'package:paws/pages/home_page.dart';
+import 'package:paws/pages/pet_manager.dart';
 import 'package:paws/themes/themes.dart';
 import 'firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/home': (context) => HomePage(),
         '/profile': (context) => ProfilePage(),
+        '/pets': (context) => PetManager(),
       },
     );
   }

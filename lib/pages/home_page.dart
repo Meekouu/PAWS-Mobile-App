@@ -81,6 +81,32 @@ Future<void> _loadUserInfo() async {
     }
   }
 
+  Widget _buildProfileImage(String imagePath) {
+  if (imagePath.startsWith('http')) {
+    // Network image (Firebase Storage or URL)
+    return ClipOval(
+      child: Image.network(
+        imagePath,
+        fit: BoxFit.cover,
+        width: 55,
+        height: 55,
+        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 30, color: secondaryColor),
+      ),
+    );
+  } else {
+    // Local file path
+    return ClipOval(
+      child: Image.file(
+        File(imagePath),
+        fit: BoxFit.cover,
+        width: 55,
+        height: 55,
+        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 30, color: secondaryColor),
+      ),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,15 +159,7 @@ Future<void> _loadUserInfo() async {
               radius: 30,
               backgroundColor: Colors.white,
               child: userProfileImage != null
-                  ? ClipOval(
-                      child: Image.file(
-                        File(userProfileImage!),
-                        fit: BoxFit.cover,
-                        width: 55,
-                        height: 55,
-                        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 30, color: secondaryColor),
-                      ),
-                    )
+                  ? _buildProfileImage(userProfileImage!)
                   : Icon(Icons.person, size: 30, color: secondaryColor),
             ),
             const SizedBox(width: 16),

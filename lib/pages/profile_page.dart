@@ -57,25 +57,27 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 }
-  Future<void> loadUserData() async{
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null){
-      final snapshot = await DatabaseService().read(path: 'users/$uid');
-      if(snapshot != null && snapshot.exists){
-        final data = snapshot.value as Map<dynamic, dynamic>;
+  Future<void> loadUserData() async {
+  if (uid != null) {
+    final snapshot = await DatabaseService().read(path: 'users/$uid');
+    if (snapshot != null && snapshot.exists) {
+      final data = snapshot.value as Map<dynamic, dynamic>;
 
-        setState(() {
+      setState(() {
         owner = data['owner'] ?? 'No Name';
         birthday = data['ownerBirthday'] ?? 'No Birthday';
         country = data['ownerCountry'] ?? 'Country';
         selectedCountry = country;
+        profileImageFile = (data['ownerImagePath'] != null && data['ownerImagePath'].toString().startsWith('/'))
+            ? File(data['ownerImagePath'])
+            : null;
         ownerController.text = owner;
         birthdayController.text = birthday;
       });
-
-      }
     }
   }
+}
+
 
   @override
   @override
@@ -147,29 +149,25 @@ Widget build(BuildContext context) {
       );
 
   Widget _buildProfileImage() {
-    final String path = '';   //widget.animal.petImagePath ;
-    ImageProvider? imageProvider;
+  ImageProvider? imageProvider;
 
-    if (profileImageFile != null) {
-      imageProvider = FileImage(profileImageFile!);
-    } else if (path.isNotEmpty && path.startsWith('/')) {
-      imageProvider = FileImage(File(path));
-    } else if (path.isNotEmpty) {
-      imageProvider = AssetImage(path);
-    }
-
-    return CircleAvatar(
-      radius: profileHeight / 2,
-      backgroundColor: Colors.white,
-      child: CircleAvatar(
-        radius: (profileHeight / 2) - 5,
-        backgroundImage: imageProvider,
-        child: imageProvider == null
-            ? const Icon(Icons.pets, size: 40, color: Colors.black45)
-            : null,
-      ),
-    );
+  if (profileImageFile != null) {
+    imageProvider = FileImage(profileImageFile!);
   }
+
+  return CircleAvatar(
+    radius: profileHeight / 2,
+    backgroundColor: Colors.white,
+    child: CircleAvatar(
+      radius: (profileHeight / 2) - 5,
+      backgroundImage: imageProvider,
+      child: imageProvider == null
+          ? const Icon(Icons.person, size: 40, color: Colors.black45)
+          : null,
+    ),
+  );
+}
+
 
   Widget _buildInfoCard() {
     final ownerController = TextEditingController(text: owner);
