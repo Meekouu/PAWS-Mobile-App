@@ -1,14 +1,10 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/news/news_card_carousel.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:paws/widgets/abstract_background_painter.dart';
 import 'package:paws/widgets/pet_slider.dart';
 import 'package:paws/widgets/bottomnav_bar.dart';
 
@@ -85,7 +81,6 @@ Future<void> _loadUserInfo() async {
 
 
   void logOut(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
     await FirebaseAuth.instance.signOut();
 
     if (mounted) {

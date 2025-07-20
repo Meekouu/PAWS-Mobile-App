@@ -119,7 +119,9 @@ class _CircularRevealTransitionState extends State<CircularRevealTransition>
   }
 
   @override
-  void dispose() => _controller.dispose();
+  void dispose() {_controller.dispose();
+  super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

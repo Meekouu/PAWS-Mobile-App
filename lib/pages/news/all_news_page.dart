@@ -26,7 +26,7 @@ class _AllNewsPageState extends State<AllNewsPage> {
       setState(() {
         filteredArticles = widget.articles.where((article) {
           final title = article.title.toLowerCase();
-          final description = article.description?.toLowerCase() ?? '';
+          final description = article.description.toLowerCase();
           return title.contains(query) || description.contains(query);
         }).toList();
       });
@@ -122,7 +122,7 @@ class _AllNewsPageState extends State<AllNewsPage> {
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
-                                        article.description ?? '',
+                                        article.description,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(fontSize: 14),

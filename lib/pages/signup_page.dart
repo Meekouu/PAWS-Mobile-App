@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
-import 'package:paws/widgets/show_message.dart';
 import 'package:paws/widgets/new_user_onboard.dart';
 
 class SignUpPage extends StatefulWidget {

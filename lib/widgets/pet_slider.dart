@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:async/async.dart'; // For StreamZip
 import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/pet_page.dart';
 import 'package:paws/themes/themes.dart';

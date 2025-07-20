@@ -34,7 +34,6 @@ class LoginBtn1 extends StatelessWidget {
     final horizontalPadding = screenWidth * 0.05;
     final fontSize = (isLandscape ? screenHeight : screenWidth).clamp(320, 600) * 0.045;
     final maxWidth = screenWidth > 600 ? 500.0 : screenWidth * 0.9;
-    final height = isLandscape ? screenHeight * 0.10 : screenHeight * 0.05;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),

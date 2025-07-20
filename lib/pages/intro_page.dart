@@ -21,7 +21,6 @@ class _IntroPageState extends State<IntroPage> {
     final horizontalPadding = isPortrait ? size.width * 0.1 : size.width * 0.15;
     final topPadding = isPortrait ? size.height * 0.05 : size.height * 0.02;
     final spaceBetweenTextAndLogo = isPortrait ? size.height * 0.15 : size.height * 0.1;
-    final buttonHeight = isPortrait ? 50.0 : 40.0;
     final titleFontSize = isPortrait ? size.width * 0.08 : size.height * 0.08;
 
     final aspectRatio = size.width / size.height;
