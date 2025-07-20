@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:paws/pages/intro_page.dart';
 import 'package:paws/pages/login_page.dart';
+import 'package:paws/pages/profile_page.dart';
 import 'package:paws/pages/signup_page.dart';
 import 'package:paws/pages/home_page.dart';
 import 'package:paws/themes/themes.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignUpPage(),
         '/login': (context) => const LoginPage(),
         '/home': (context) => HomePage(),
+        '/profile': (context) => ProfilePage(),
       },
     );
   }
