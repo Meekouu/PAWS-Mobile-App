@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               PetSlider(),
               const SizedBox(height: 10),
-              _galleryPreview(),
+              //_galleryPreview(),
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -179,8 +179,8 @@ class _HomePageState extends State<HomePage> {
       ),
 );
 }
-
-
+//remove gallery for now
+/*
  Widget _galleryPreview() {
   final List<Map<String, String>> galleryItems = [
     {
@@ -292,7 +292,7 @@ class _HomePageState extends State<HomePage> {
       ],
     ),
   );
-}
+} */
   AppBar _AppBar(BuildContext context) {
     return AppBar(
       titleSpacing: 35,
