@@ -53,13 +53,24 @@ Widget build(BuildContext context) {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text(
-                    'Hi $name!',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  child: RichText(
+                    text: TextSpan(
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.black, // Default color
+                      ),
+                      children: [
+                        const TextSpan(text: 'Hi '),
+                        TextSpan(
+                          text: '$name!',
+                          style: const TextStyle(
+                            color: primaryColor, // Highlighted color just for the name
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                  )
                 ),
                 const SizedBox(height: 10),
                 SizedBox(

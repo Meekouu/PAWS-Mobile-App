@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +10,7 @@ import 'package:paws/widgets/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paws/widgets/abstract_background_painter.dart';
 import 'package:paws/widgets/pet_slider.dart';
-
+import 'package:paws/widgets/bottomnav_bar.dart';
 
 Route createSlideRoute(Widget page) {
   return PageRouteBuilder(
@@ -46,24 +48,29 @@ class _HomePageState extends State<HomePage> {
     _loadUserInfo();
   }
 
-  Future<void> _loadUserInfo() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final snapshot = await DatabaseService().read(path: 'users/${user.uid}');
-      if (snapshot != null) {
-        final data = snapshot.value as Map<dynamic, dynamic>;
-        setState(() {
-          userName = data['owner'] ?? 'No Name';
-          userEmail = data['email'] ?? user.email ?? 'No Email';
-        });
-      } else {
-        setState(() {
-          userName = 'User';
-          userEmail = user.email ?? '';
-        });
-      }
+  String? userProfileImage;
+
+Future<void> _loadUserInfo() async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    final snapshot = await DatabaseService().read(path: 'users/${user.uid}');
+    if (snapshot != null) {
+      final data = snapshot.value as Map<dynamic, dynamic>;
+      setState(() {
+        userName = data['owner'] ?? 'No Name';
+        userEmail = data['email'] ?? user.email ?? 'No Email';
+        userProfileImage = data['profileImage']; // Can be null
+      });
+    } else {
+      setState(() {
+        userName = 'User';
+        userEmail = user.email ?? '';
+        userProfileImage = null;
+      });
     }
   }
+}
+
 
   void logOut(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
@@ -101,7 +108,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-       bottomNavigationBar: BottomNavBar(
+       bottomNavigationBar: bottomnavbar(
     currentIndex: 0,
     onTap: (index) {
       if (index == 0) return; // Already on Home
@@ -113,16 +120,35 @@ class _HomePageState extends State<HomePage> {
     },
   ),
   drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+  child: ListView(
+    padding: EdgeInsets.zero,
+    children: [
+      // Header with profile picture
+      DrawerHeader(
+        decoration: const BoxDecoration(color: secondaryColor),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: secondaryColor,
-              ),
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.white,
+              child: userProfileImage != null
+                  ? ClipOval(
+                      child: Image.file(
+                        File(userProfileImage!),
+                        fit: BoxFit.cover,
+                        width: 55,
+                        height: 55,
+                        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 30, color: secondaryColor),
+                      ),
+                    )
+                  : Icon(Icons.person, size: 30, color: secondaryColor),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
                     userName ?? 'Loading...',
@@ -143,36 +169,101 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Log Out'),
-            onTap: () async {
-              final shouldLogout = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Log Out'),
-                  content: const Text('Are you sure you want to log out?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: const Text('Log Out'),
-                    ),
-                  ],
-                ),
-              );
-              if (shouldLogout == true) {
-                logOut(context);
-              }
-            },
-          ),
-
           ],
         ),
       ),
+
+      // New Drawer items
+      ListTile(
+        leading: const Icon(Icons.info_outline),
+        title: const Text('About Us'),
+        onTap: () {
+          Navigator.pop(context);
+          showAboutDialog(
+            context: context,
+            applicationName: 'PAWS',
+            applicationVersion: '1.0.0',
+            applicationIcon: Icon(Icons.pets, color: secondaryColor),
+            children: [
+              const Text('PAWS is your companion in managing pet care and vet appointments.'),
+            ],
+          );
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.support_agent),
+        title: const Text('Contact Support'),
+        onTap: () {
+          Navigator.pop(context);
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Contact Support'),
+              content: const Text('Email us at: support@pawsclinic.com'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.feedback_outlined),
+        title: const Text('Feedback'),
+        onTap: () {
+          Navigator.pop(context);
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Send Feedback'),
+              content: const Text('We’d love to hear your thoughts!\nSend feedback to feedback@pawsclinic.com'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+
+      const Divider(),
+
+      // Log Out option
+      ListTile(
+        leading: const Icon(Icons.logout),
+        title: const Text('Log Out'),
+        onTap: () async {
+          final shouldLogout = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Log Out'),
+              content: const Text('Are you sure you want to log out?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Log Out'),
+                ),
+              ],
+            ),
+          );
+          if (shouldLogout == true) {
+            logOut(context);
+          }
+        },
+      ),
+    ],
+  ),
+),
+
 );
 }
 //remove gallery for now
@@ -313,48 +404,3 @@ class _HomePageState extends State<HomePage> {
 }
 
 
-class BottomNavBar extends StatelessWidget {
-  final int currentIndex;
-  final Function(int) onTap;
-
-  const BottomNavBar({
-    super.key,
-    required this.currentIndex,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: currentIndex,
-      onTap: (index) {
-        onTap(index);
-        // Example usage:
-        // if (index == 0) {
-        //   // Navigate to Home
-        // } else if (index == 1) {
-        //   // Navigate to Pets
-        // } else if (index == 2) {
-        //   // Navigate to Profile
-        // }
-      },
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.pets),
-          label: 'Pets',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-      ],
-      selectedItemColor: primaryColor,
-      unselectedItemColor: Colors.grey,
-      showUnselectedLabels: true,
-    );
-  }
-}

@@ -265,7 +265,7 @@ class _PetPageState extends State<PetPage> {
                       "Edit",
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.teal,
+                        color: secondaryColor,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

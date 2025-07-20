@@ -248,7 +248,7 @@ Widget build(BuildContext context) {
                               width: currentPage == index ? 18 : 8,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: currentPage == index ? secondaryColor : Colors.grey[400],
+                                color: currentPage == index ? tertiaryColor : Colors.grey[400],
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),

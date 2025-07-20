@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
+import 'package:paws/widgets/bottomnav_bar.dart'; 
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key});
@@ -12,6 +14,9 @@ class ProfilePage extends StatefulWidget {
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
+
+final List<String> allCountries = ['Country', 'United States', 'Canada', 'UK', 'Philippines'];
+String selectedCountry = 'Country';
 
 class _ProfilePageState extends State<ProfilePage> {
   final double coverHeight = 180;
@@ -49,57 +54,74 @@ class _ProfilePageState extends State<ProfilePage> {
         final data = snapshot.value as Map<dynamic, dynamic>;
 
         setState(() {
-          owner = data['owner'] ?? 'No Name';
-          birthday = data['ownerBirthday'] ?? 'No Birthday';
-          country = data['ownerCountry'] ?? 'No Country';
-        });
+        owner = data['owner'] ?? 'No Name';
+        birthday = data['ownerBirthday'] ?? 'No Birthday';
+        country = data['ownerCountry'] ?? 'Country';
+        selectedCountry = country;
+      });
+
       }
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text(owner),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/images/Arrow - Left 2.svg',
-            height: 20,
-            width: 20,
-          ),
-          onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
+  @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.grey[100],
+    extendBodyBehindAppBar: true,
+    appBar: AppBar(
+      title: Text(owner),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      foregroundColor: Colors.black,
+      leading: IconButton(
+        icon: SvgPicture.asset(
+          'assets/images/Arrow - Left 2.svg',
+          height: 20,
+          width: 20,
         ),
+        onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
       ),
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              _buildCoverImage(),
-              Positioned(
-                top: coverHeight - profileHeight / 2,
-                child: GestureDetector(
-                  onTap: _pickImage,
-                  child: _buildProfileImage(),
-                ),
+    ),
+    body: ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            _buildCoverImage(),
+            Positioned(
+              top: coverHeight - profileHeight / 2,
+              child: GestureDetector(
+                onTap: _pickImage,
+                child: _buildProfileImage(),
               ),
-            ],
-          ),
-          const SizedBox(height: 60),
-          _buildInfoCard(),
-          const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+        const SizedBox(height: 60),
+        _buildInfoCard(),
+        const SizedBox(height: 20),
+      ],
+    ),
+    bottomNavigationBar: bottomnavbar(
+    currentIndex: 2, // Profile is index 2
+    onTap: (index) {
+      if (index == 0) {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else if (index == 1) {
+        Navigator.pushReplacementNamed(context, '/pets');
+      } else if (index == 2) {
+        // Already on Profile
+      }
+    },
+  ),
+
+  );
+}
+
 
   Widget _buildCoverImage() => Container(
         height: coverHeight,
@@ -174,16 +196,31 @@ class _ProfilePageState extends State<ProfilePage> {
                             children: [
                               TextField(
                                 controller: ownerController,
-                                decoration: const InputDecoration(labelText: 'Breed'),
+                                decoration: const InputDecoration(labelText: 'Name'),
                               ),
                               TextField(
                                 controller: birthdayController,
-                                decoration: const InputDecoration(labelText: 'Sex'),
-                              ),
-                              TextField(
-                                controller: countryController,
                                 decoration: const InputDecoration(labelText: 'Date of Birth'),
                               ),
+                              DropdownButtonFormField<String>(
+                              value: selectedCountry,
+                              items: allCountries.map((country) {
+                                return DropdownMenuItem<String>(
+                                  value: country,
+                                  child: Text(country),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                if (val != null) {
+                                  setState(() => selectedCountry = val);
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                labelText: 'Country',
+                                border: OutlineInputBorder(),
+                              ),
+                            )
+
                             ],
                           ),
                           actions: [
@@ -206,7 +243,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       "Edit",
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.teal,
+                        color: secondaryColor,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
