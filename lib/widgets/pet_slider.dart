@@ -129,7 +129,7 @@ Widget build(BuildContext context) {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PetPage(animal: animal)),
+            MaterialPageRoute(builder: (context) => PetPage(petId: animal.petID,)),
           );
         },
         child: Column(
