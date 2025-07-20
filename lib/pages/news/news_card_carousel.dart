@@ -34,19 +34,22 @@ class _NewsCardCarouselState extends State<NewsCardCarousel>
   }
 
   Future<void> fetchNews() async {
-    try {
-      final fetched = await NewsService.fetchArticles();
-      setState(() {
-        articles = fetched;
-        isLoading = false;
-      });
-    } catch (e) {
-      print("Failed to fetch articles: $e");
-      setState(() {
-        isLoading = false;
-      });
-    }
+  try {
+    final fetched = await NewsService.fetchArticles();
+    if (!mounted) return;
+    setState(() {
+      articles = fetched;
+      isLoading = false;
+    });
+  } catch (e) {
+    print("Failed to fetch articles: $e");
+    if (!mounted) return; 
+    setState(() {
+      isLoading = false;
+    });
   }
+}
+
 
  @override
 Widget build(BuildContext context) {
