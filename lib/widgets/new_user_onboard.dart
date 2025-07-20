@@ -508,7 +508,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   final offset = renderBox.localToGlobal(Offset.zero) + Offset(renderBox.size.width / 2, renderBox.size.height / 2);
                   _nextPage(originOffset: offset);
                 },
-                icon: const Icon(Icons.arrow_forward),
                 label: const Text("Get Started"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

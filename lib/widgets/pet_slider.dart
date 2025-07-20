@@ -180,7 +180,8 @@ Widget build(BuildContext context) {
     );
   }
 
-  void _showAddPetDialog(BuildContext context) {
+ void _showAddPetDialog(BuildContext context) {
+  final _formKey = GlobalKey<FormState>();
   final petNameController = TextEditingController();
   final petBreedController = TextEditingController();
   final petBirthdayController = TextEditingController();
@@ -188,7 +189,7 @@ Widget build(BuildContext context) {
   String petSex = 'Male';
   File? petImageFile;
 
-   showDialog(
+  showDialog(
     context: context,
     builder: (context) {
       return StatefulBuilder(
@@ -204,124 +205,155 @@ Widget build(BuildContext context) {
             ],
           ),
           contentPadding: const EdgeInsets.symmetric(vertical: 10),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(40),
-                  onTap: () async {
-                    final picker = ImagePicker();
-                    final picked = await picker.pickImage(source: ImageSource.gallery);
-                    if (picked != null) {
-                      setState(() => petImageFile = File(picked.path));
-                    }
-                  },
-                  child: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.grey.shade300,
-                    backgroundImage: petImageFile != null ? FileImage(petImageFile!) : null,
-                    child: petImageFile == null
-                        ? const Icon(Icons.add, size: 40, color: Colors.black54)
-                        : null,
+          content: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    borderRadius: BorderRadius.circular(40),
+                    onTap: () async {
+                      final picker = ImagePicker();
+                      final picked = await picker.pickImage(source: ImageSource.gallery);
+                      if (picked != null) {
+                        setState(() => petImageFile = File(picked.path));
+                      }
+                    },
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.grey.shade300,
+                      backgroundImage: petImageFile != null ? FileImage(petImageFile!) : null,
+                      child: petImageFile == null
+                          ? const Icon(Icons.add, size: 40, color: Colors.black54)
+                          : null,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-
-                LoginBtn1(
-                  hintText: 'Pet Name',
-                  controller: petNameController,
-                  obscureText: false,
-                ),
-                const SizedBox(height: 12),
-                LoginBtn1(
-                  hintText: 'Breed',
-                  controller: petBreedController,
-                  obscureText: false,
-                ),
-                const SizedBox(height: 12),
-                Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 20),
-  child: TextField(
-    controller: petBirthdayController,
-    readOnly: true,
-    onTap: () async {
-      final pickedDate = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime.now(),
-      );
-      if (pickedDate != null) {
-        final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
-                          "${pickedDate.month.toString().padLeft(2, '0')}/"
-                          "${pickedDate.year}";
-        petBirthdayController.text = formatted;
-      }
-    },
-    decoration: const InputDecoration(
-      labelText: 'Birthday (dd/mm/yyyy)',
-      border: OutlineInputBorder(),
-      filled: true,
-      fillColor: Colors.white,
-      suffixIcon: Icon(Icons.calendar_today),
-    ),
-  ),
-),
-
-                const SizedBox(height: 12),
-
-                // Dropdowns
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: DropdownButtonFormField<String>(
-                    value: petSex,
-                    items: ['Male', 'Female']
-                        .map((sex) => DropdownMenuItem(value: sex, child: Text(sex)))
-                        .toList(),
-                    onChanged: (val) => setState(() => petSex = val ?? petSex),
-                    decoration: const InputDecoration(labelText: 'Sex'),
+                  // Name
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: petNameController,
+                      decoration: const InputDecoration(labelText: 'Pet Name'),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter pet name';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: DropdownButtonFormField<String>(
-                    value: petType,
-                    items: ['Canine', 'Feline', 'Other']
-                        .map((type) => DropdownMenuItem(value: type, child: Text(type)))
-                        .toList(),
-                    onChanged: (val) => setState(() => petType = val ?? petType),
-                    decoration: const InputDecoration(labelText: 'Type'),
+                  const SizedBox(height: 12),
+
+                  // Breed
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: petBreedController,
+                      decoration: const InputDecoration(labelText: 'Breed'),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please enter breed';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 12),
+
+                  // Birthday
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: petBirthdayController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Birthday (dd/mm/yyyy)',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
+                        suffixIcon: Icon(Icons.calendar_today),
+                      ),
+                      onTap: () async {
+                        final pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime.now(),
+                        );
+                        if (pickedDate != null) {
+                          final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
+                                            "${pickedDate.month.toString().padLeft(2, '0')}/"
+                                            "${pickedDate.year}";
+                          petBirthdayController.text = formatted;
+                        }
+                      },
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Please pick a birthday';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Sex Dropdown
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: DropdownButtonFormField<String>(
+                      value: petSex,
+                      items: ['Male', 'Female']
+                          .map((sex) => DropdownMenuItem(value: sex, child: Text(sex)))
+                          .toList(),
+                      onChanged: (val) => setState(() => petSex = val ?? petSex),
+                      decoration: const InputDecoration(labelText: 'Sex'),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Type Dropdown
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: DropdownButtonFormField<String>(
+                      value: petType,
+                      items: ['Canine', 'Feline', 'Other']
+                          .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                          .toList(),
+                      onChanged: (val) => setState(() => petType = val ?? petType),
+                      decoration: const InputDecoration(labelText: 'Type'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
-          // Buttons
           actionsPadding: const EdgeInsets.symmetric(vertical: 10),
           actions: [
             CTAButton(
               text: 'Add',
               onTap: () async {
-                final uid = FirebaseAuth.instance.currentUser?.uid;
-                if (uid != null) {
-                  final petData = {
-                    'petName': petNameController.text.trim(),
-                    'petBreed': petBreedController.text.trim(),
-                    'petBirthday': petBirthdayController.text.trim(),
-                    'petType': petType,
-                    'petSex': petSex,
-                    'petImagePath': petImageFile?.path ?? '',
-                  };
-                  await DatabaseService().create(
-                    path: 'pet/$uid/${const Uuid().v4()}',
-                    data: petData,
-                  );
+                if (_formKey.currentState!.validate()) {
+                  final uid = FirebaseAuth.instance.currentUser?.uid;
+                  if (uid != null) {
+                    final petData = {
+                      'petName': petNameController.text.trim(),
+                      'petBreed': petBreedController.text.trim(),
+                      'petBirthday': petBirthdayController.text.trim(),
+                      'petType': petType,
+                      'petSex': petSex,
+                      'petImagePath': petImageFile?.path ?? '',
+                    };
+                    await DatabaseService().create(
+                      path: 'pet/$uid/${const Uuid().v4()}',
+                      data: petData,
+                    );
+                    Navigator.pop(context);
+                  }
                 }
-                Navigator.pop(context);
               },
             ),
           ],
