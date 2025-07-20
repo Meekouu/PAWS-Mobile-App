@@ -239,22 +239,26 @@ class _PetPageState extends State<PetPage> {
         ),
       ),
       Positioned(
-        bottom: 0,
-        right: 0,
-        child: Container(
-          decoration: BoxDecoration(
-            color: secondaryColor,
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-          padding: const EdgeInsets.all(4),
-          child: const Icon(
-            Icons.camera_alt,
-            size: 20,
-            color: Colors.white,
-          ),
-        ),
+  bottom: 0,
+  right: 0,
+  child: GestureDetector(
+    onTap: _pickImage,
+    child: Container(
+      decoration: BoxDecoration(
+        color: secondaryColor,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
       ),
+      padding: const EdgeInsets.all(4),
+      child: const Icon(
+        Icons.camera_alt,
+        size: 20,
+        color: Colors.white,
+      ),
+    ),
+  ),
+),
+
     ],
   );
 }

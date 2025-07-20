@@ -56,7 +56,7 @@ Future<void> _loadUserInfo() async {
     final snapshot = await DatabaseService().read(path: 'users/${user.uid}');
     if (snapshot != null) {
       final data = snapshot.value as Map<dynamic, dynamic>;
-      final imagePath = data['profileImage'];
+      final imagePath = data['ownerImagePath'];
       String? validPath;
 
       // Check if local file path exists
