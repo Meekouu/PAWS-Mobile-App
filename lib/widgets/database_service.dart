@@ -43,7 +43,29 @@ class DatabaseService {
   return _firebaseDatabase.ref().child(path).onValue;
 }
 
+Future<void> deletePetByName({required String uid, required String petName}) async {
+  final petRef = _firebaseDatabase.ref().child('pet/$uid');
+  final snapshot = await petRef.get();
+
+  if (snapshot.exists) {
+    final pets = snapshot.value as Map<dynamic, dynamic>;
+
+    for (var entry in pets.entries) {
+      final petId = entry.key;
+      final petData = entry.value as Map<dynamic, dynamic>;
+
+      if (petData['petName'] == petName) {
+        await petRef.child(petId).remove();
+        break;
+      }
+    }
+  }
 }
+
+
+}
+
+
 
 
 

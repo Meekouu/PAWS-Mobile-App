@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
       if (snapshot != null) {
         final data = snapshot.value as Map<dynamic, dynamic>;
         setState(() {
-          userName = data['name'] ?? 'No Name';
+          userName = data['owner'] ?? 'No Name';
           userEmail = data['email'] ?? user.email ?? 'No Email';
         });
       } else {
@@ -87,17 +87,15 @@ class _HomePageState extends State<HomePage> {
             children: [
               PetSlider(),
               const SizedBox(height: 10),
-              //_galleryPreview(),
+                const Divider(
+                thickness: 1,
+                color: Colors.grey,
+                indent: 20,
+                endIndent: 20,
+              ),
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text(
-                  'News',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
               NewsCardCarousel(),
               const SizedBox(height: 30),

@@ -3,6 +3,7 @@ import 'package:paws/pages/news/article_model.dart';
 import 'package:paws/pages/news/article_details_page.dart';
 import 'package:paws/pages/news/news_service.dart';
 import 'package:paws/pages/news/all_news_page.dart';
+import 'package:paws/themes/themes.dart';
 
 class NewsCardCarousel extends StatefulWidget {
   @override
@@ -211,8 +212,8 @@ Widget build(BuildContext context) {
                                                       icon: const Icon(Icons.article),
                                                       label: const Text("See Full"),
                                                       style: OutlinedButton.styleFrom(
-                                                        foregroundColor: Colors.teal,
-                                                        side: const BorderSide(color: Colors.teal),
+                                                        foregroundColor: secondaryColor,
+                                                        side: const BorderSide(color: secondaryColor),
                                                         shape: RoundedRectangleBorder(
                                                           borderRadius: BorderRadius.circular(10),
                                                         ),
@@ -244,7 +245,7 @@ Widget build(BuildContext context) {
                               width: currentPage == index ? 18 : 8,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: currentPage == index ? Colors.teal : Colors.grey[400],
+                                color: currentPage == index ? secondaryColor : Colors.grey[400],
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),

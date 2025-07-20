@@ -55,6 +55,15 @@ class _PetPageState extends State<PetPage> {
       }
     }
   }
+ 
+}
+
+ Future<void> _deletePetFromDatabase() async {
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+  if (uid != null) {
+    await DatabaseService().deletePetByName(uid: uid, petName: widget.animal.name);
+    if (mounted) Navigator.of(context).pop(); // Return to previous page
+  }
 }
 
 
@@ -79,11 +88,35 @@ class _PetPageState extends State<PetPage> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {}, // Placeholder
-          ),
-        ],
+  IconButton(
+    icon: const Icon(Icons.delete),
+    onPressed: () async {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Delete Pet'),
+          content: const Text('Are you sure you want to delete this pet profile?'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            ElevatedButton(
+              child: const Text('Delete'),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        ),
+      );
+
+      if (confirm == true) {
+        await _deletePetFromDatabase();
+      }
+    },
+  ),
+],
+
+
       ),
       body: ListView(
         padding: EdgeInsets.zero,
