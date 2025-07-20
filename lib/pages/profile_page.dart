@@ -1,11 +1,8 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:paws/model/animal_model.dart';
-import 'package:paws/pages/weight_tracker_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
 
@@ -245,17 +242,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildListTile(IconData icon, String label, {VoidCallback? onTap}) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.teal),
-      title: Text(label),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: onTap ?? () {
-        debugPrint('$label clicked');
-      },
     );
   }
 }
