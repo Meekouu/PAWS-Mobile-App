@@ -29,6 +29,7 @@ class _PetPageState extends State<PetPage> {
   final double profileHeight = 100;
 
   File? petImageFile;
+  
 
   @override
   void initState() {
@@ -177,9 +178,7 @@ class _PetPageState extends State<PetPage> {
           _buildInfoCard(pet),
           const SizedBox(height: 20),
           _buildListTile(Icons.folder_shared, "Medical Records"),
-          _buildListTile(Icons.memory, "Chipping"),
           _buildListTile(Icons.local_pharmacy, "Prescriptions"),
-          _buildListTile(Icons.verified_user, "Insurance"),
           _buildListTile(
             Icons.monitor_weight,
             "Weight Tracker",
@@ -273,10 +272,27 @@ class _PetPageState extends State<PetPage> {
                                 controller: sexController,
                                 decoration: const InputDecoration(labelText: 'Sex'),
                               ),
-                              TextField(
+                              TextFormField(
                                 controller: dobController,
                                 decoration: const InputDecoration(labelText: 'Date of Birth'),
+                                readOnly: true,
+                                onTap: () async {
+                                  final pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime.now(),
+                                  );
+
+                                  if (pickedDate != null) {
+                                    final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
+                                                      "${pickedDate.month.toString().padLeft(2, '0')}/"
+                                                      "${pickedDate.year}";
+                                    setState(() => dobController.text = formatted);
+                                  }
+                                },
                               ),
+
                             ],
                           ),
                           actions: [
@@ -360,7 +376,7 @@ class _PetPageState extends State<PetPage> {
 
   Widget _buildListTile(IconData icon, String label, {VoidCallback? onTap}) {
     return ListTile(
-      leading: Icon(icon, color: Colors.teal),
+      leading: Icon(icon, color: secondaryColor),
       title: Text(label),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap ?? () {
