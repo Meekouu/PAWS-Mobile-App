@@ -308,25 +308,41 @@ Widget build(BuildContext context) {
                             ),
                             ElevatedButton(
                               onPressed: () async {
-                                if (uid != null){
-                                  final updatedData = {
-                                    'owner': ownerController.text,
-                                    'ownerBirthday': birthdayController.text,
-                                    'ownerCountry': selectedCountry ?? 'Country',
-                                  };
-                                  await DatabaseService().update(
-                                    path: 'users/$uid',
-                                    data: updatedData,
-                                  );
+                              final trimmedName = ownerController.text.trim();
+                              final trimmedBirthday = birthdayController.text.trim();
+                              final selected = selectedCountry?.trim();
 
-                                  setState(() {
-                                    owner = ownerController.text;
-                                    birthday = birthdayController.text;
-                                    country = selectedCountry ?? 'Country';
-                                  });
-                                }
-                                Navigator.of(context).pop();
-                              },
+                              if (trimmedName.isEmpty || trimmedBirthday.isEmpty || selected == null || selected.isEmpty || selected == 'Country') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('All fields must be filled out.'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              if (uid != null) {
+                                final updatedData = {
+                                  'owner': trimmedName,
+                                  'ownerBirthday': trimmedBirthday,
+                                  'ownerCountry': selected,
+                                };
+                                await DatabaseService().update(
+                                  path: 'users/$uid',
+                                  data: updatedData,
+                                );
+
+                                setState(() {
+                                  owner = trimmedName;
+                                  birthday = trimmedBirthday;
+                                  country = selected;
+                                });
+                              }
+
+                              Navigator.of(context).pop();
+                            },
+
                               child: const Text('Save'),
                             ),
                           ],

@@ -336,29 +336,45 @@ class _PetPageState extends State<PetPage> {
                             ),
                             ElevatedButton(
                               onPressed: () async {
-                                final uid = FirebaseAuth.instance.currentUser?.uid;
-                                final petId = animal.petID;
+                              final breed = breedController.text.trim();
+                              final sex = sexController.text.trim();
+                              final dob = dobController.text.trim();
 
-                                if (uid != null && petId.isNotEmpty){
-                                  final updatedData={
-                                    'petBreed': breedController.text,
-                                    'petSex': sexController.text,
-                                    'petBirthday': dobController.text,
-                                  };
+                              if (breed.isEmpty || sex.isEmpty || dob.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('All fields must be filled out.'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
 
-                                  await DatabaseService().update(
-                                    path: 'pet/$uid/$petId',
-                                    data: updatedData,
-                                  );
+                              final uid = FirebaseAuth.instance.currentUser?.uid;
+                              final petId = animal.petID;
 
-                                  setState(() {
-                                    animal.breed = breedController.text;
-                                    animal.sex = sexController.text;
-                                    animal.birthday = dobController.text;
-                                  });
-                                }
-                                Navigator.of(context).pop();
-                              },
+                              if (uid != null && petId.isNotEmpty) {
+                                final updatedData = {
+                                  'petBreed': breed,
+                                  'petSex': sex,
+                                  'petBirthday': dob,
+                                };
+
+                                await DatabaseService().update(
+                                  path: 'pet/$uid/$petId',
+                                  data: updatedData,
+                                );
+
+                                setState(() {
+                                  animal.breed = breed;
+                                  animal.sex = sex;
+                                  animal.birthday = dob;
+                                });
+                              }
+
+                              Navigator.of(context).pop();
+                            },
+
                               child: const Text('Save'),
                             ),
                           ],
