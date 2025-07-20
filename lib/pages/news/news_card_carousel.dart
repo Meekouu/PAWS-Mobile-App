@@ -112,128 +112,129 @@ Widget build(BuildContext context) {
                             },
                             itemBuilder: (context, index) {
                               final article = articles[index];
-                              return AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: index == currentPage ? 4 : 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: tertiaryColor,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 4,
-                                      offset: Offset(2, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(16),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => ArticleDetailsPage(article: article),
-                                        ),
-                                      );
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        if (article.imageUrl.isNotEmpty)
-                                          ClipRRect(
-                                            borderRadius: const BorderRadius.vertical(
-                                              top: Radius.circular(16),
-                                            ),
-                                            child: Image.network(
-                                              article.imageUrl,
-                                              height: imageHeight.clamp(80.0, 140.0),
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              loadingBuilder: (context, child, loadingProgress) {
-                                                if (loadingProgress == null) return child;
-                                                return Container(
-                                                  height: imageHeight.clamp(80.0, 140.0),
-                                                  color: white,
-                                                  child: const Center(
-                                                    child: CircularProgressIndicator(),
-                                                  ),
-                                                );
-                                              },
-                                              errorBuilder: (context, error, stackTrace) =>
-                                                  const SizedBox.shrink(),
-                                            ),
-                                          ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-                                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                                              children: [
-                                                  Column(
-                                                  children: [
-                                                    article.imageUrl.isEmpty
-                                                        ? Center(
-                                                            child: Text(
-                                                              article.title,
-                                                              maxLines: 2,
-                                                              overflow: TextOverflow.ellipsis,
-                                                              style: const TextStyle(
-                                                                fontWeight: FontWeight.w600,
-                                                                fontSize: 14,
-                                                              ),
-                                                              textAlign: TextAlign.center,
-                                                            ),
-                                                          )
-                                                        : Text(
-                                                            article.title,
-                                                            maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 18,
-                                                            ),
-                                                          ),
-                                                    const SizedBox(height: 8),
-                                                  ],
-                                                ),
-                                                  Center(
-                                                  child: SizedBox(
-                                                    width: double.infinity,
-                                                    child: OutlinedButton.icon(
-                                                      onPressed: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (_) => ArticleDetailsPage(article: article),
-                                                          ),
-                                                        );
-                                                      },
-                                                      icon: const Icon(Icons.article),
-                                                      label: const Text("See Full"),
-                                                      style: OutlinedButton.styleFrom(
-                                                        foregroundColor: primaryColor,
-                                                        side: const BorderSide(color: primaryColor),
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        padding: const EdgeInsets.symmetric(vertical: 6),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                              return SizedBox(
+  height: carouselHeight,
+  child: AnimatedContainer(
+    duration: const Duration(milliseconds: 300),
+    margin: EdgeInsets.symmetric(
+      horizontal: index == currentPage ? 4 : 12,
+      vertical: 8,
+    ),
+    decoration: BoxDecoration(
+      color: tertiaryColor,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 4,
+          offset: Offset(2, 2),
+        ),
+      ],
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ArticleDetailsPage(article: article),
+            ),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (article.imageUrl.isNotEmpty)
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                child: Image.network(
+                  article.imageUrl,
+                  height: imageHeight.clamp(80.0, 140.0),
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      height: imageHeight.clamp(80.0, 140.0),
+                      color: white,
+                      child: const Center(child: CircularProgressIndicator()),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                ),
+              ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 10, 8, 4),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Column(
+                      children: [
+                        article.imageUrl.isEmpty
+                            ? Center(
+                                child: Text(
+                                  article.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
-                              );
+                              )
+                            : Text(
+                                article.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                    Center(
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ArticleDetailsPage(article: article),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.article),
+                          label: const Text("See Full"),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: primaryColor,
+                            side: const BorderSide(color: primaryColor),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  ),
+);
+
                             },
                           ),
                         ),
