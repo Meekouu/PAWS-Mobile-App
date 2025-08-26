@@ -64,7 +64,7 @@ class _PetPageState extends State<PetPage> {
     }
   }
 
-  Future<void> _pickImage() async {
+Future<void> _pickImage() async {
   final picker = ImagePicker();
   final picked = await picker.pickImage(source: ImageSource.gallery);
   final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -75,21 +75,24 @@ class _PetPageState extends State<PetPage> {
       petImageFile = File(picked.path);
     });
     if (uid != null && petId.isNotEmpty) {
-      await DatabaseService().update(
-        path: 'pet/$uid/$petId',
-        data: {'petImagePath' : picked.path}
+      await FirestoreService().update(
+        collectionPath: 'users/$uid/pets', // subcollection pets
+        docId: petId,                       // target pet document
+        data: {'petImagePath': picked.path},
       );
     }
   }
-
 }
 
- Future<void> _deletePetFromDatabase() async {
+Future<void> _deletePetFromDatabase() async {
   final uid = FirebaseAuth.instance.currentUser?.uid;
   final petId = animal?.petID;
 
   if (uid != null && petId != null && petId.isNotEmpty) {
-    await DatabaseService().delete(path: 'pet/$uid/$petId');
+    await FirestoreService().delete(
+      collectionPath: 'users/$uid/pets',
+      docId: petId,
+    );
     if (mounted) Navigator.of(context).pop();
   }
 }
@@ -360,10 +363,11 @@ class _PetPageState extends State<PetPage> {
                                   'petBirthday': dob,
                                 };
 
-                                await DatabaseService().update(
-                                  path: 'pet/$uid/$petId',
-                                  data: updatedData,
-                                );
+                                await FirestoreService().update(
+                                collectionPath: 'users/$uid/pets', // ✅ subcollection inside user doc
+                                docId: petId, // ✅ which pet to update
+                                data: updatedData,
+                              );
 
                                 setState(() {
                                   animal.breed = breed;

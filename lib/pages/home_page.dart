@@ -49,32 +49,34 @@ class _HomePageState extends State<HomePage> {
 Future<void> _loadUserInfo() async {
   final user = FirebaseAuth.instance.currentUser;
   if (user != null) {
-    final snapshot = await DatabaseService().read(path: 'users/${user.uid}');
-    if (snapshot != null) {
-      final data = snapshot.value as Map<dynamic, dynamic>;
-      final imagePath = data['ownerImagePath'];
-      String? validPath;
+    final snapshot = await FirestoreService()
+    .read(collectionPath: 'users', docId: user.uid);
 
-      // Check if local file path exists
-      if (imagePath != null && imagePath.toString().startsWith('/')) {
-        final file = File(imagePath);
-        if (await file.exists()) {
-          validPath = imagePath;
-        }
-      }
+if (snapshot != null && snapshot.exists) {
+  final data = snapshot.data() as Map<String, dynamic>;
+  final imagePath = data['ownerImagePath'];
+  String? validPath;
 
-      setState(() {
-        userName = data['owner'] ?? 'No Name';
-        userEmail = data['email'] ?? user.email ?? 'No Email';
-        userProfileImage = validPath; // Null if file is missing
-      });
-    } else {
-      setState(() {
-        userName = 'User';
-        userEmail = user.email ?? '';
-        userProfileImage = null;
-      });
+  if (imagePath != null && imagePath.toString().startsWith('/')) {
+    final file = File(imagePath);
+    if (await file.exists()) {
+      validPath = imagePath;
     }
+  }
+
+  setState(() {
+    userName = data['owner'] ?? 'No Name';
+    userEmail = data['email'] ?? user.email ?? 'No Email';
+    userProfileImage = validPath;
+  });
+} else {
+  setState(() {
+    userName = 'User';
+    userEmail = user.email ?? '';
+    userProfileImage = null;
+  });
+}
+
   }
 }
 

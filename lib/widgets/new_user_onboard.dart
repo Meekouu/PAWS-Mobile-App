@@ -132,8 +132,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'petImagePath': _petImagePath ?? '',
     };
 
-    await DatabaseService().create(path: 'users/$uid', data: ownerInput);
-    await DatabaseService().create(path: 'pet/$uid/${Uuid().v4()}', data: petInput);
+    // ✅ Firestore: save owner at users/{uid}
+    await FirestoreService().create(
+      collectionPath: 'users',
+      docId: uid,
+      data: ownerInput,
+    );
+
+    // ✅ Firestore: save pet at users/{uid}/pets/{petId}
+    await FirestoreService().create(
+      collectionPath: 'users/$uid/pets',
+      docId: const Uuid().v4(),
+      data: petInput,
+    );
   }
 
   if (_currentPage == 3) {
@@ -154,15 +165,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => showLoadingDialog(context));
     await Future.delayed(const Duration(seconds: 2));
 
-    if (widget.firebaseUID != null) {
-      final exists = await DatabaseService().exists(path: 'users/${widget.firebaseUID}');
-      if (exists && context.mounted) {
-        Navigator.pop(context); // Close dialog
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  HomePage()));
-        return;
-      }
-    }
+     if (widget.firebaseUID != null) {
+    final exists = await FirestoreService().exists(
+      collectionPath: 'users',
+      docId: widget.firebaseUID!,
+    );
 
+    if (exists && context.mounted) {
+      Navigator.pop(context); // Close dialog
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage()),
+      );
+      return;
+    }
+  }
     if (context.mounted) {
       Navigator.pop(context); // Close dialog
       setState(() => _checking = false);

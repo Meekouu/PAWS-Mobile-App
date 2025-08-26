@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
 import 'package:paws/widgets/new_user_onboard.dart';
+import 'package:paws/auth/auth.dart'; // 🔹 import AuthService for Google sign in
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -22,6 +23,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
+
+  final AuthService _authService = AuthService();
 
   Future<void> signUp() async {
     if (!_formKey.currentState!.validate()) return;
@@ -61,6 +64,35 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  Future<void> signUpWithGoogle() async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => Center(
+          child: Lottie.asset('assets/lottie/loading.json', width: 100, height: 100),
+        ),
+      );
+
+      await _authService.signInWithGoogle();
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('hasSeenOnboarding', false);
+
+      if (!context.mounted) return;
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      _showErrorDialog(_mapFirebaseError(e.code));
+    }
+  }
+
   String _mapFirebaseError(String code) {
     switch (code) {
       case 'email-already-in-use':
@@ -69,6 +101,8 @@ class _SignUpPageState extends State<SignUpPage> {
         return 'Invalid email address.';
       case 'weak-password':
         return 'Password is too weak.';
+      case 'ERROR_ABORTED_BY_USER':
+        return 'Sign in aborted by user.';
       default:
         return 'Signup failed. Please try again.';
     }
@@ -152,6 +186,21 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         const SizedBox(height: 20),
         CTAButton(text: 'Sign Up', onTap: signUp),
+        const SizedBox(height: 20),
+
+        // 🔹 Google Sign Up button (can use FontAwesome or SignInButton package)
+        ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            minimumSize: const Size(double.infinity, 50),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          onPressed: signUpWithGoogle,
+          icon: const Icon(Icons.g_mobiledata, color: Colors.red, size: 28), // or use FontAwesomeIcons.google
+          label: const Text("Sign up with Google"),
+        ),
+
         const SizedBox(height: 20),
         const Divider(color: grey, indent: 20, endIndent: 20),
         Row(

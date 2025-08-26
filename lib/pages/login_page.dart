@@ -37,19 +37,36 @@ class _LoginPageState extends State<LoginPage> {
         passwordController.text.trim(),
       );
 
-      final prefs = await SharedPreferences.getInstance();
-      final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-      final nextPage = hasSeenOnboarding
-          ? HomePage()
-          : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid);
-
-      if (!context.mounted) return;
-      Navigator.pop(context);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => nextPage));
+      await _handlePostLogin();
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
       _showErrorDialog(_mapFirebaseError(e.code));
     }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      showLoadingDialog(context);
+
+      await _authService.signInWithGoogle();
+
+      await _handlePostLogin();
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      _showErrorDialog(_mapFirebaseError(e.code));
+    }
+  }
+
+  Future<void> _handlePostLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+    final nextPage = hasSeenOnboarding
+        ? HomePage()
+        : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid);
+
+    if (!context.mounted) return;
+    Navigator.pop(context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => nextPage));
   }
 
   String _mapFirebaseError(String code) {
@@ -62,6 +79,8 @@ class _LoginPageState extends State<LoginPage> {
         return 'No user found with this email.';
       case 'wrong-password':
         return 'Incorrect password. Please try again.';
+      case 'ERROR_ABORTED_BY_USER':
+        return 'Sign in aborted by user.';
       default:
         return 'Login failed. Please try again.';
     }
@@ -128,6 +147,25 @@ class _LoginPageState extends State<LoginPage> {
         ),
         const SizedBox(height: 10),
         CTAButton(text: 'Sign In', onTap: signIn),
+        const SizedBox(height: 20),
+
+        // 🔹 Google Sign-In Button
+        ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            minimumSize: const Size(double.infinity, 50),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          onPressed: signInWithGoogle,
+          icon: Image.asset(
+            'assets/images/google_logo.png', // 🔹 Add this asset (Google logo)
+            height: 24,
+            width: 24,
+          ),
+          label: const Text("Sign in with Google"),
+        ),
+
         const SizedBox(height: 20),
         const Text('Forgot Login Details? Get Help Logging in'),
         const Divider(color: grey, indent: 20, endIndent: 20),

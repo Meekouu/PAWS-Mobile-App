@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/pet_page.dart';
 import 'package:paws/themes/themes.dart';
-import 'package:paws/widgets/database_service.dart';
+import 'package:paws/widgets/database_service.dart'; // use Firestore instead of RealtimeDB
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PetManager extends StatefulWidget {
   const PetManager({super.key});
@@ -26,7 +26,10 @@ class _PetManagerState extends State<PetManager> {
 
   Future<void> _deletePet(String petId) async {
     if (uid != null) {
-      await DatabaseService().delete(path: 'pet/$uid/$petId');
+      await FirestoreService().delete(
+        collectionPath: 'users/$uid/pets',
+        docId: petId,
+      );
     }
   }
 
@@ -51,29 +54,24 @@ class _PetManagerState extends State<PetManager> {
             if (Navigator.of(context).canPop()) {
               Navigator.of(context).pop();
             } else {
-              Navigator.pushReplacementNamed(context, '/home'); // or any default route
+              Navigator.pushReplacementNamed(context, '/home');
             }
           },
-
         ),
       ),
-      body: StreamBuilder<DatabaseEvent>(
-        stream: DatabaseService().stream('pet/$uid'),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirestoreService().streamCollection('users/$uid/pets'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final petMap = snapshot.data?.snapshot.value as Map<dynamic, dynamic>? ?? {};
-
-          if (petMap.isEmpty) {
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(child: Text("No pets added yet."));
           }
 
-          final pets = petMap.entries.map((entry) {
-            final petId = entry.key.toString();
-            final petData = entry.value as Map;
-            return Animal.fromMap(petId, petData);
+          final pets = snapshot.data!.docs.map((doc) {
+            return Animal.fromMap(doc.id, doc.data() as Map<String, dynamic>);
           }).toList();
 
           return ListView.builder(
@@ -147,7 +145,7 @@ class _PetManagerState extends State<PetManager> {
 
   Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex: 1, 
+      currentIndex: 1,
       onTap: (index) {
         switch (index) {
           case 0:

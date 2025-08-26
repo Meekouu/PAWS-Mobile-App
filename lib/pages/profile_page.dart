@@ -47,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
   super.dispose();
 }
 
-  Future<void> _pickImage() async {
+Future<void> _pickImage() async {
   final picker = ImagePicker();
   final picked = await picker.pickImage(source: ImageSource.gallery);
 
@@ -57,28 +57,35 @@ class _ProfilePageState extends State<ProfilePage> {
     });
 
     if (uid != null) {
-      await DatabaseService().update(
-        path: 'users/$uid',
-        data: {'ownerImagePath': picked.path},
+      await FirestoreService().update(
+        collectionPath: 'users',
+        docId: uid!,
+        data: {'ownerImagePath': picked.path}, // keeping local path until you add Storage
       );
     }
   }
 }
 
-  Future<void> loadUserData() async {
+Future<void> loadUserData() async {
   if (uid != null) {
-    final snapshot = await DatabaseService().read(path: 'users/$uid');
+    final snapshot = await FirestoreService().read(
+      collectionPath: 'users',
+      docId: uid!,
+    );
+
     if (snapshot != null && snapshot.exists) {
-      final data = snapshot.value as Map<dynamic, dynamic>;
+      final data = snapshot.data() as Map<String, dynamic>;
 
       setState(() {
         owner = data['owner'] ?? 'No Name';
         birthday = data['ownerBirthday'] ?? 'No Birthday';
         country = data['ownerCountry'] ?? 'Country';
         selectedCountry = country;
-        profileImageFile = (data['ownerImagePath'] != null && data['ownerImagePath'].toString().startsWith('/'))
+        profileImageFile = (data['ownerImagePath'] != null &&
+                data['ownerImagePath'].toString().startsWith('/'))
             ? File(data['ownerImagePath'])
             : null;
+
         ownerController.text = owner;
         birthdayController.text = birthday;
       });
@@ -86,8 +93,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-
-  @override
   @override
 Widget build(BuildContext context) {
   return Scaffold(
@@ -323,22 +328,25 @@ Widget build(BuildContext context) {
                               }
 
                               if (uid != null) {
-                                final updatedData = {
-                                  'owner': trimmedName,
-                                  'ownerBirthday': trimmedBirthday,
-                                  'ownerCountry': selected,
-                                };
-                                await DatabaseService().update(
-                                  path: 'users/$uid',
-                                  data: updatedData,
-                                );
+                              final updatedData = {
+                                'owner': trimmedName,
+                                'ownerBirthday': trimmedBirthday,
+                                'ownerCountry': selected,
+                              };
 
-                                setState(() {
-                                  owner = trimmedName;
-                                  birthday = trimmedBirthday;
-                                  country = selected;
-                                });
-                              }
+                              await FirestoreService().update(
+                                collectionPath: 'users',
+                                docId: uid!,
+                                data: updatedData,
+                              );
+
+                              setState(() {
+                                owner = trimmedName;
+                                birthday = trimmedBirthday;
+                                country = selected;
+                              });
+                            }
+
 
                               Navigator.of(context).pop();
                             },
