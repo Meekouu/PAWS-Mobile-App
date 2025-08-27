@@ -42,18 +42,56 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         useMaterial3: true,
       ),
+      home: showIntro ? const IntroPage() : const LoginPage(),
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/intro':
+            return MaterialPageRoute(builder: (_) => const IntroPage());
+          case '/auth':
+            return MaterialPageRoute(builder: (_) => const LoginPage());
+          case '/signup':
+            return MaterialPageRoute(builder: (_) => const SignUpPage());
+          case '/home':
+            return MaterialPageRoute(
+              builder: (_) => PopScope(
+                canPop: false, // disables default back navigation
+                onPopInvoked: (didPop) async {
+                  if (didPop) return; // if system already handled it, do nothing
 
-      initialRoute: showIntro ? '/intro' : '/auth',
+                  final shouldExit = await showDialog<bool>(
+                    context: _,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Exit App"),
+                      content: const Text("Do you really want to exit?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text("Exit"),
+                        ),
+                      ],
+                    ),
+                  );
 
-      routes: {
-        '/intro': (context) => const IntroPage(),
-        '/auth': (context) => const LoginPage(),
-        '/signup': (context) => const SignUpPage(),
-        '/login': (context) => const LoginPage(),
-        '/home': (context) => HomePage(),
-        '/profile': (context) => ProfilePage(),
-        '/pets': (context) => PetManager(),
+                  if (shouldExit ?? false) {
+                    SystemNavigator.pop(); // closes the app
+                  }
+                },
+                child: HomePage(),
+              ),
+            );
+          case '/profile':
+            return MaterialPageRoute(builder: (_) => ProfilePage());
+          case '/pets':
+            return MaterialPageRoute(builder: (_) => PetManager());
+          default:
+            return MaterialPageRoute(builder: (_) => const LoginPage());
+        }
       },
     );
   }
 }
+
