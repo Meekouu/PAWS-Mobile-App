@@ -69,11 +69,12 @@ class ArticleDetailsPage extends StatelessWidget {
               Center(
                 child: ElevatedButton.icon(
                   onPressed: () => _launchURL(article.url),
-                  icon: const Icon(Icons.open_in_browser),
-                  label: const Text("Read Full Article"),
+                  icon: const Icon(Icons.open_in_browser, color: Colors.white),
+                  label: const Text("Read Full Article",
+                  style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: secondaryColor,
-                    foregroundColor: primaryColor,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

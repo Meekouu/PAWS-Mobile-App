@@ -43,8 +43,12 @@ class _AllNewsPageState extends State<AllNewsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("What's New?"),
+        title: const Text(
+          "What's New?",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: secondaryColor,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
         children: [
@@ -118,6 +122,7 @@ class _AllNewsPageState extends State<AllNewsPage> {
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
+                                          color: Colors.white,
                                         ),
                                       ),
                                       const SizedBox(height: 6),
@@ -125,7 +130,10 @@ class _AllNewsPageState extends State<AllNewsPage> {
                                         article.description,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontSize: 14),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ],
                                   ),

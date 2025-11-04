@@ -87,6 +87,7 @@ Future<void> loadUserData() async {
     if (snapshot != null && snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
 
+      if (!mounted) return;
       setState(() {
         owner = data['owner'] ?? 'No Name';
         birthday = data['ownerBirthday'] ?? 'No Birthday';
@@ -361,6 +362,7 @@ Widget build(BuildContext context) {
                                 data: updatedData,
                               );
 
+                              if (!mounted) return;
                               setState(() {
                                 owner = trimmedName;
                                 birthday = trimmedBirthday;
