@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:paws/model/animal_model.dart';
@@ -28,6 +29,7 @@ class _PetPageState extends State<PetPage> {
   final double profileHeight = 100;
 
   File? petImageFile;
+  bool _isPickingImage = false;
   
 
   @override
@@ -65,22 +67,31 @@ class _PetPageState extends State<PetPage> {
   }
 
 Future<void> _pickImage() async {
-  final picker = ImagePicker();
-  final picked = await picker.pickImage(source: ImageSource.gallery);
-  final uid = FirebaseAuth.instance.currentUser?.uid;
-  final petId = widget.petId;
+  if (_isPickingImage) return;
+  _isPickingImage = true;
+  try {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final petId = widget.petId;
 
-  if (picked != null) {
-    setState(() {
-      petImageFile = File(picked.path);
-    });
-    if (uid != null && petId.isNotEmpty) {
-      await FirestoreService().update(
-        collectionPath: 'users/$uid/pets', // subcollection pets
-        docId: petId,                       // target pet document
-        data: {'petImagePath': picked.path},
-      );
+    if (picked != null) {
+      if (!mounted) return;
+      setState(() {
+        petImageFile = File(picked.path);
+      });
+      if (uid != null && petId.isNotEmpty) {
+        await FirestoreService().update(
+          collectionPath: 'users/$uid/pets',
+          docId: petId,
+          data: {'petImagePath': picked.path},
+        );
+      }
     }
+  } on PlatformException catch (e) {
+    if (e.code != 'already_active') rethrow;
+  } finally {
+    _isPickingImage = false;
   }
 }
 
@@ -120,7 +131,7 @@ Future<void> _deletePetFromDatabase() async {
         title: Text(pet.name),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: Colors.black,
+        foregroundColor: Colors.white.withValues(alpha: 0.8),
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/images/Arrow - Left 2.svg',

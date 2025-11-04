@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
@@ -30,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String country = '';
 
   File? profileImageFile;
+  bool _isPickingImage = false;
 
   final uid = FirebaseAuth.instance.currentUser?.uid;
 
@@ -48,21 +50,30 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 Future<void> _pickImage() async {
-  final picker = ImagePicker();
-  final picked = await picker.pickImage(source: ImageSource.gallery);
+  if (_isPickingImage) return;
+  _isPickingImage = true;
+  try {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
 
-  if (picked != null) {
-    setState(() {
-      profileImageFile = File(picked.path);
-    });
+    if (picked != null) {
+      if (!mounted) return;
+      setState(() {
+        profileImageFile = File(picked.path);
+      });
 
-    if (uid != null) {
-      await FirestoreService().update(
-        collectionPath: 'users',
-        docId: uid!,
-        data: {'ownerImagePath': picked.path}, // keeping local path until you add Storage
-      );
+      if (uid != null) {
+        await FirestoreService().update(
+          collectionPath: 'users',
+          docId: uid!,
+          data: {'ownerImagePath': picked.path},
+        );
+      }
     }
+  } on PlatformException catch (e) {
+    if (e.code != 'already_active') rethrow;
+  } finally {
+    _isPickingImage = false;
   }
 }
 
@@ -102,12 +113,16 @@ Widget build(BuildContext context) {
       title: Text(owner),
       backgroundColor: Colors.transparent,
       elevation: 0,
-      foregroundColor: Colors.black,
+      foregroundColor: Colors.white.withValues(alpha: 0.8),
       leading: IconButton(
         icon: SvgPicture.asset(
           'assets/images/Arrow - Left 2.svg',
           height: 20,
           width: 20,
+          colorFilter: ColorFilter.mode(
+            Colors.white.withValues(alpha: 0.8),
+            BlendMode.srcIn,
+          ),
         ),
         onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
       ),

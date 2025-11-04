@@ -414,13 +414,14 @@ if (snapshot != null && snapshot.exists) {
 } */
   AppBar _AppBar(BuildContext context) {
     return AppBar(
-      titleSpacing: 35,
+      titleSpacing: 8,
       backgroundColor: secondaryColor,
       automaticallyImplyLeading: false,
       leading: Builder(
         builder: (context) => IconButton(
           icon: const Icon(Icons.menu, size: 30),
           onPressed: () => Scaffold.of(context).openDrawer(),
+          color: Colors.white.withValues(alpha: 0.8),
         ),
       ),
       title: Text(
@@ -429,6 +430,7 @@ if (snapshot != null && snapshot.exists) {
           fontSize: 35,
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
+          color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
     );

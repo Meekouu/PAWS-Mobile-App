@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:paws/pages/home_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
@@ -49,6 +49,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   File? _petImageFile;
   String? _petImagePath; // <-- Add this
+  bool _isPickingPetImage = false;
 
   @override
   void initState() {
@@ -570,13 +571,22 @@ Widget build(BuildContext context) {
   );
 }
   Future<void> _pickPetImage() async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() {
-        _petImageFile = File(picked.path);
-        _petImagePath = picked.path; // <-- Save the file path
-      });
+    if (_isPickingPetImage) return;
+    _isPickingPetImage = true;
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: ImageSource.gallery);
+      if (picked != null) {
+        if (!mounted) return;
+        setState(() {
+          _petImageFile = File(picked.path);
+          _petImagePath = picked.path;
+        });
+      }
+    } on PlatformException catch (e) {
+      if (e.code != 'already_active') rethrow;
+    } finally {
+      _isPickingPetImage = false;
     }
   }
 }

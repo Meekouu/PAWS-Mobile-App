@@ -6,6 +6,7 @@ import 'package:paws/pages/pet_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart'; // use Firestore instead of RealtimeDB
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:paws/widgets/add_pet_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PetManager extends StatefulWidget {
@@ -41,7 +42,7 @@ class _PetManagerState extends State<PetManager> {
       appBar: AppBar(
         title: const Text('Manage Pets'),
         centerTitle: true,
-        backgroundColor: primaryColor,
+        backgroundColor: secondaryColor,
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: SvgPicture.asset(
@@ -83,6 +84,12 @@ class _PetManagerState extends State<PetManager> {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showAddPetDialog(context),
+        backgroundColor: secondaryColor,
+        foregroundColor: Colors.white,
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
     );
