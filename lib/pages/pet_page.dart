@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -47,12 +46,13 @@ class _PetPageState extends State<PetPage> {
   Future<void> _fetchAnimal() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
-      final snapshot = await FirebaseDatabase.instance
-          .ref('pet/$uid/${widget.petId}')
-          .get();
+      final snapshot = await FirestoreService().read(
+        collectionPath: 'users/$uid/pets',
+        docId: widget.petId,
+      );
 
       if (snapshot.exists) {
-        final data = snapshot.value as Map;
+        final data = snapshot.data() as Map<String, dynamic>;
         final loadedAnimal = Animal.fromMap(widget.petId, data);
         setState(() {
           animal = Animal.fromMap(widget.petId, data);

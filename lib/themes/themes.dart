@@ -2,7 +2,7 @@ import 'dart:ui';
 
 // Brand colors
 const Color primaryColor = Color.fromARGB(255, 71, 54, 104);     // Raisin Black
-const Color secondaryColor = Color(0xFF998FC7);   // Tropical Indigo
+const Color secondaryColor = Color(0xFF7255B0);   // Tropical Indigo
 const Color tertiaryColor = Color(0xFFD4C2FC);    // Periwinkle
 const Color backgroundColor = Color(0xFFF9F5FF);  // Magnolia
 const Color accentColor = Color(0xFF14248A);      // Resolution Blue
