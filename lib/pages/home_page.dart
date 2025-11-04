@@ -64,12 +64,14 @@ if (snapshot != null && snapshot.exists) {
     }
   }
 
+  if (!mounted) return;
   setState(() {
     userName = data['owner'] ?? 'No Name';
     userEmail = data['email'] ?? user.email ?? 'No Email';
     userProfileImage = validPath;
   });
 } else {
+  if (!mounted) return;
   setState(() {
     userName = 'User';
     userEmail = user.email ?? '';

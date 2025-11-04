@@ -129,14 +129,21 @@ Future<void> _deletePetFromDatabase() async {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(pet.name),
-        backgroundColor: Colors.transparent,
+        backgroundColor: secondaryColor,
         elevation: 0,
+      systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: Colors.transparent,
+      ),
         foregroundColor: Colors.white.withValues(alpha: 0.8),
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/images/Arrow - Left 2.svg',
             height: 20,
             width: 20,
+            colorFilter: ColorFilter.mode(
+              Colors.white.withValues(alpha: 0.8),
+              BlendMode.srcIn,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -174,13 +181,15 @@ Future<void> _deletePetFromDatabase() async {
       body: ListView(
         padding: EdgeInsets.zero,
         children: [
-          Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              _buildCoverImage(),
-              Positioned(
-  top: coverHeight - profileHeight / 2,
+          SizedBox(
+            height: coverHeight + MediaQuery.of(context).padding.top + (profileHeight / 2),
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                _buildCoverImage(),
+                Positioned(
+  top: coverHeight + MediaQuery.of(context).padding.top - profileHeight / 2,
   child: GestureDetector(
     behavior: HitTestBehavior.translucent,
     onTap: _pickImage,
@@ -193,9 +202,10 @@ Future<void> _deletePetFromDatabase() async {
   ),
 ),
 
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 60),
+          const SizedBox(height: 100),
           _buildInfoCard(pet),
           const SizedBox(height: 20),
           _buildListTile(Icons.folder_shared, "Medical Records"),
@@ -217,7 +227,7 @@ Future<void> _deletePetFromDatabase() async {
   }
 
   Widget _buildCoverImage() => Container(
-        height: coverHeight,
+        height: coverHeight + MediaQuery.of(context).padding.top,
         decoration: BoxDecoration(
           color: secondaryColor,
           borderRadius: const BorderRadius.vertical(
