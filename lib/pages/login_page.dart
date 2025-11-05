@@ -39,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
 
       await _handlePostLogin();
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       Navigator.pop(context);
       _showErrorDialog(_mapFirebaseError(e.code));
     }
@@ -52,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 
       await _handlePostLogin();
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       Navigator.pop(context);
       _showErrorDialog(_mapFirebaseError(e.code));
     }
@@ -64,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
         ? HomePage()
         : OnboardingScreen(firebaseUID: FirebaseAuth.instance.currentUser?.uid);
 
-    if (!context.mounted) return;
+    if (!mounted) return;
     Navigator.pop(context);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => nextPage));
   }

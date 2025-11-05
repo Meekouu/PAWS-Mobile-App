@@ -53,23 +53,23 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const SignUpPage());
           case '/home':
             return MaterialPageRoute(
-              builder: (_) => PopScope(
+              builder: (context) => PopScope(
                 canPop: false, // disables default back navigation
-                onPopInvoked: (didPop) async {
+                onPopInvokedWithResult: (didPop, result) async {
                   if (didPop) return; // if system already handled it, do nothing
 
                   final shouldExit = await showDialog<bool>(
-                    context: _,
-                    builder: (context) => AlertDialog(
+                    context: context,
+                    builder: (dialogContext) => AlertDialog(
                       title: const Text("Exit App"),
                       content: const Text("Do you really want to exit?"),
                       actions: [
                         TextButton(
-                          onPressed: () => Navigator.pop(context, false),
+                          onPressed: () => Navigator.pop(dialogContext, false),
                           child: const Text("Cancel"),
                         ),
                         TextButton(
-                          onPressed: () => Navigator.pop(context, true),
+                          onPressed: () => Navigator.pop(dialogContext, true),
                           child: const Text("Exit"),
                         ),
                       ],
@@ -94,4 +94,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
