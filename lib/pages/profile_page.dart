@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
-import 'package:paws/widgets/bottomnav_bar.dart'; 
+import 'package:paws/widgets/bottomnav_bar.dart';
+import 'package:paws/pages/home_page.dart'; // Import HomePage here
 
 
 class ProfilePage extends StatefulWidget {
@@ -84,7 +85,7 @@ Future<void> loadUserData() async {
       docId: uid!,
     );
 
-    if (snapshot != null && snapshot.exists) {
+  if (snapshot.exists) {
       final data = snapshot.data() as Map<String, dynamic>;
 
       if (!mounted) return;
@@ -107,10 +108,20 @@ Future<void> loadUserData() async {
 
   @override
 Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Colors.grey[100],
-    extendBodyBehindAppBar: true,
-    appBar: AppBar(
+  return PopScope(
+    canPop: false,
+    onPopInvoked: (didPop) async {
+      if (didPop) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage()),
+        (route) => false,
+      );
+    },
+    child: Scaffold(
+      backgroundColor: Colors.grey[100],
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
       title: Text(owner),
       backgroundColor: secondaryColor,
       elevation: 0,
@@ -128,7 +139,13 @@ Widget build(BuildContext context) {
             BlendMode.srcIn,
           ),
         ),
-        onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
+        onPressed: () {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => HomePage()),
+            (route) => false,
+          );
+        },
       ),
     ),
     body: ListView(
@@ -175,7 +192,7 @@ Widget build(BuildContext context) {
       }
     },
   ),
-
+    ),
   );
 }
 
@@ -400,9 +417,8 @@ Widget build(BuildContext context) {
             ],
           ),
         ),
-      ),
-    );
-  }
+      ));
+    }
 
   Widget _buildInfoRow(String title, String value) {
     return Padding(

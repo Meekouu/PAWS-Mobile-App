@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paws/model/animal_model.dart';
 import 'package:paws/pages/pet_page.dart';
+import 'package:paws/pages/home_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart'; // use Firestore instead of RealtimeDB
 import 'package:flutter_svg/flutter_svg.dart';
@@ -38,12 +40,22 @@ class _PetManagerState extends State<PetManager> {
   Widget build(BuildContext context) {
     if (uid == null) return const Center(child: Text('No user found'));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Manage Pets'),
-        centerTitle: true,
-        backgroundColor: secondaryColor,
-        foregroundColor: Colors.white,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => HomePage()),
+          (route) => false,
+        );
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Manage Pets'),
+          centerTitle: true,
+          backgroundColor: secondaryColor,
+          foregroundColor: Colors.white,
         leading: IconButton(
           icon: SvgPicture.asset(
             'assets/images/Arrow - Left 2.svg',
@@ -52,11 +64,11 @@ class _PetManagerState extends State<PetManager> {
             color: Colors.white,
           ),
           onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            } else {
-              Navigator.pushReplacementNamed(context, '/home');
-            }
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => HomePage()),
+              (route) => false,
+            );
           },
         ),
       ),
@@ -92,6 +104,7 @@ class _PetManagerState extends State<PetManager> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
+      ),
     );
   }
 
