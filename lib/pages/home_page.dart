@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/pages/news/news_card_carousel.dart';
+import 'package:paws/pages/qr_scanner_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
 import 'package:paws/widgets/pet_slider.dart';
@@ -52,7 +53,7 @@ Future<void> _loadUserInfo() async {
     final snapshot = await FirestoreService()
     .read(collectionPath: 'users', docId: user.uid);
 
-if (snapshot != null && snapshot.exists) {
+if (snapshot.exists) {
   final data = snapshot.data() as Map<String, dynamic>;
   final imagePath = data['ownerImagePath'];
   String? validPath;
@@ -435,6 +436,19 @@ if (snapshot != null && snapshot.exists) {
           color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.qr_code_scanner, size: 28),
+          color: Colors.white.withValues(alpha: 0.9),
+          tooltip: 'Scan Clinic QR Code',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const QRScannerPage()),
+            );
+          },
+        ),
+      ],
     );
   }
 }
