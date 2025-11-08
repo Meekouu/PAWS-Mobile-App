@@ -270,6 +270,10 @@ image_picker_windows
 2.19
 file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_windows-0.2.1+1/
 file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_windows-0.2.1+1/lib/
+intl
+2.12
+file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.18.1/
+file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.18.1/lib/
 json_annotation
 3.0
 file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/json_annotation-4.9.0/
@@ -378,6 +382,14 @@ plugin_platform_interface
 3.0
 file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8/
 file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8/lib/
+qr
+3.4
+file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/qr-3.0.2/
+file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/qr-3.0.2/lib/
+qr_flutter
+2.19
+file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/qr_flutter-4.1.0/
+file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/qr_flutter-4.1.0/lib/
 shared_preferences
 3.5
 file:///C:/Users/Colt/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.5.3/

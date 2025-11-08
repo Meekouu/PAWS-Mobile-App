@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:paws/pages/check_in_form_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -93,43 +94,128 @@ class _QRScannerPageState extends State<QRScannerPage> {
           _isScanned = true;
         });
         
-        // Show clinic information
-        _showClinicDialog(code);
+        // Validate and process QR code
+        _validateAndProcessQRCode(code);
         break;
       }
     }
   }
 
-  void _showClinicDialog(String qrCode) {
-    // Parse QR code to determine clinic
-    String clinicName = _parseClinicName(qrCode);
+  void _validateAndProcessQRCode(String qrCode) {
+    // Validate if QR code is official
+    final validationResult = _validateOfficialQRCode(qrCode);
     
+    if (validationResult['isValid'] == true) {
+      // Navigate to check-in form page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CheckInFormPage(
+            clinicName: validationResult['clinicName'] as String,
+            qrCode: qrCode,
+          ),
+        ),
+      ).then((_) {
+        // Reset scan state when returning from form
+        if (mounted) {
+          setState(() => _isScanned = false);
+        }
+      });
+    } else {
+      // Show error for invalid QR code
+      _showInvalidQRDialog(validationResult['error'] as String);
+    }
+  }
+
+  Map<String, dynamic> _validateOfficialQRCode(String qrCode) {
+    // Security: Check if QR code is empty or too short
+    if (qrCode.isEmpty || qrCode.length < 10) {
+      return {
+        'isValid': false,
+        'error': 'Invalid QR code format',
+      };
+    }
+
+    // Security: Check for SQL injection attempts or malicious characters
+    final dangerousPatterns = [
+      RegExp(r'''[';\"\\]'''),  // SQL injection characters
+      RegExp(r'<script', caseSensitive: false),  // XSS attempts
+      RegExp(r'javascript:', caseSensitive: false),  // JavaScript injection
+    ];
+
+    for (final pattern in dangerousPatterns) {
+      if (pattern.hasMatch(qrCode)) {
+        return {
+          'isValid': false,
+          'error': 'Security violation detected',
+        };
+      }
+    }
+
+    // Validate official QR code format
+    // Expected format: https://[domain]/checkin?id=[ID]&site=[site_identifier]
+    // Scalable: Add more domains to the list as needed
+    final authorizedDomains = [
+      'bathandbarkclinic.com',
+      // Add more clinic domains here in the future:
+      // 'anotherclinic.com',
+      // 'yourclinic.com',
+    ];
+
+    // Build regex pattern from authorized domains
+    final domainPattern = authorizedDomains.map((d) => d.replaceAll('.', r'\.')).join('|');
+    final urlPattern = RegExp(
+      r'^https?://([a-zA-Z0-9.-]+\.)?(' + domainPattern + r')/checkin\?.*$',
+      caseSensitive: false,
+    );
+
+    if (!urlPattern.hasMatch(qrCode)) {
+      return {
+        'isValid': false,
+        'error': 'This QR code is not from an authorized clinic',
+      };
+    }
+
+    // Parse clinic name from validated QR code
+    final clinicName = _parseClinicName(qrCode);
+    
+    if (clinicName.isEmpty || clinicName.startsWith('Clinic:')) {
+      return {
+        'isValid': false,
+        'error': 'Unable to identify clinic from QR code',
+      };
+    }
+
+    return {
+      'isValid': true,
+      'clinicName': clinicName,
+    };
+  }
+
+  void _showInvalidQRDialog(String errorMessage) {
     showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Clinic Found'),
+        title: Row(
+          children: const [
+            Icon(Icons.error_outline, color: Colors.red, size: 30),
+            SizedBox(width: 10),
+            Text('Invalid QR Code'),
+          ],
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(errorMessage),
+            const SizedBox(height: 16),
             const Text(
-              'You can check into:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              clinicName,
-              style: const TextStyle(
-                fontSize: 18,
-                color: secondaryColor,
-                fontWeight: FontWeight.w600,
+              'Please scan an official clinic QR code.',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+                fontStyle: FontStyle.italic,
               ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'QR Code: $qrCode',
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ],
         ),
@@ -137,11 +223,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              setState(() {
-                _isScanned = false;
-              });
+              Navigator.pop(context); // Return to previous screen
             },
-            child: const Text('Scan Again'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -150,9 +234,11 @@ class _QRScannerPageState extends State<QRScannerPage> {
             ),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pop(context);
+              setState(() {
+                _isScanned = false; // Allow scanning again
+              });
             },
-            child: const Text('Done'),
+            child: const Text('Scan Again'),
           ),
         ],
       ),
@@ -165,7 +251,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     
     if (qrCode.toLowerCase().contains('paws') || 
         qrCode.toLowerCase().contains('clinic')) {
-      return 'PAWS Veterinary Clinic';
+      return 'Bath and Bark Clinic';
     } else if (qrCode.toLowerCase().contains('emergency')) {
       return 'Emergency Pet Care Center';
     } else if (qrCode.toLowerCase().contains('animal') || 
