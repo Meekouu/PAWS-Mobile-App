@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:paws/widgets/loading_dialog.dart';
@@ -43,6 +44,40 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pop(context);
       _showErrorDialog(_mapFirebaseError(e.code));
     }
+  }
+
+  void _openTerms() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Terms & Conditions'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'By using this app, you agree to follow our acceptable use policies and understand that this app is provided as-is without warranties. Do not share your credentials. Contact support for questions.',
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+        ],
+      ),
+    );
+  }
+
+  void _openPrivacy() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Privacy Policy'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'We respect your privacy. We collect only the information needed to provide the service. Your data is stored securely and is never sold. You can request deletion at any time.',
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+        ],
+      ),
+    );
   }
 
   Future<void> signInWithGoogle() async {
@@ -151,24 +186,54 @@ class _LoginPageState extends State<LoginPage> {
         CTAButton(text: 'Sign In', onTap: signIn),
         const SizedBox(height: 20),
 
-        // 🔹 Google Sign-In Button
-        ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            minimumSize: const Size(double.infinity, 50),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        // 🔹 Google Sign-In Button (styled like CTAButton)
+        CTAButton(
+          text: 'Sign in with Google',
+          onTap: signInWithGoogle,
+          icon: Padding(
+            padding: const EdgeInsets.only(right: 4.0),
+            child: Image.asset(
+              'assets/images/google_logo.png',
+              height: 22,
+              width: 22,
+            ),
           ),
-          onPressed: signInWithGoogle,
-          icon: Image.asset(
-            'assets/images/google_logo.png', // 🔹 Add this asset (Google logo)
-            height: 24,
-            width: 24,
-          ),
-          label: const Text("Sign in with Google"),
         ),
 
         const SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Text.rich(
+            TextSpan(
+              text: 'By signing in, you agree to our ',
+              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+              children: [
+                TextSpan(
+                  text: 'Terms & Conditions',
+                  style: const TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: secondaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  recognizer: TapGestureRecognizer()..onTap = _openTerms,
+                ),
+                const TextSpan(text: ' and '),
+                TextSpan(
+                  text: 'Privacy Policy',
+                  style: const TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: secondaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  recognizer: TapGestureRecognizer()..onTap = _openPrivacy,
+                ),
+                const TextSpan(text: '.'),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: 10),
         const Text('Forgot Login Details? Get Help Logging in'),
         const Divider(color: grey, indent: 20, endIndent: 20),
         const SizedBox(height: 10),

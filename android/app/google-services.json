@@ -48,10 +48,10 @@
               "client_type": 3
             },
             {
-              "client_id": "533716313174-lbp6eutnnej7vlk19p8fcabhc5s0inlh.apps.googleusercontent.com",
+              "client_id": "533716313174-8t6cai9ikh96ck12326tr97i9b3vs87g.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.template"
+                "bundle_id": "com.example.pawsWeb"
               }
             }
           ]

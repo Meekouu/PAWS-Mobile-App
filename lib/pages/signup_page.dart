@@ -188,17 +188,18 @@ class _SignUpPageState extends State<SignUpPage> {
         CTAButton(text: 'Sign Up', onTap: signUp),
         const SizedBox(height: 20),
 
-        // 🔹 Google Sign Up button (can use FontAwesome or SignInButton package)
-        ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            minimumSize: const Size(double.infinity, 50),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        // 🔹 Google Sign Up button (styled like CTAButton)
+        CTAButton(
+          text: 'Sign up with Google',
+          onTap: signUpWithGoogle,
+          icon: Padding(
+            padding: const EdgeInsets.only(right: 4.0),
+            child: Image.asset(
+              'assets/images/google_logo.png',
+              height: 22,
+              width: 22,
+            ),
           ),
-          onPressed: signUpWithGoogle,
-          icon: const Icon(Icons.g_mobiledata, color: Colors.red, size: 28), // or use FontAwesomeIcons.google
-          label: const Text("Sign up with Google"),
         ),
 
         const SizedBox(height: 20),

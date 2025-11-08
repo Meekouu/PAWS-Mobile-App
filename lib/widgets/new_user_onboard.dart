@@ -214,6 +214,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 hintText: 'Name',
                 obscureText: false,
                 backgroundColor: Colors.white,
+                fullWidth: true,
               ),
             ),
             const SizedBox(height: 12),
@@ -237,11 +238,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         setState(() => ownerBirthdayController.text = formatted);
       }
     },
-    decoration: const InputDecoration(
+    decoration: InputDecoration(
       hintText: 'Birthday (dd/mm/yyyy)',
       filled: true,
       fillColor: Colors.white,
-      border: OutlineInputBorder(),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(40),
+        borderSide: const BorderSide(color: Colors.black),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(40),
+        borderSide: const BorderSide(color: Colors.black),
+      ),
     ),
   ),
 ),
@@ -267,10 +276,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     setState(() => selectedCountry = val!);
                   }
                 },
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
-                  border: OutlineInputBorder(),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
                 ),
               )
 
@@ -325,6 +342,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 hintText: 'Pet Name',
                 obscureText: false,
                 backgroundColor: Colors.white,
+                fullWidth: true,
               ),
             ),
             const SizedBox(height: 12),
@@ -335,6 +353,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 hintText: 'Breed',
                 obscureText: false,
                 backgroundColor: Colors.white,
+                fullWidth: true,
               ),
             ),
             const SizedBox(height: 12),
@@ -358,11 +377,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         setState(() => petBirthdayController.text = formatted);
       }
     },
-    decoration: const InputDecoration(
+    decoration: InputDecoration(
       hintText: 'Birthday (dd/mm/yyyy)',
       filled: true,
       fillColor: Colors.white,
-      border: OutlineInputBorder(),
+      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(40),
+        borderSide: const BorderSide(color: Colors.black),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(40),
+        borderSide: const BorderSide(color: Colors.black),
+      ),
     ),
   ),
 ),
@@ -386,10 +413,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     setState(() => petSex = val!);
                   }
                 },
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
-                  border: OutlineInputBorder(),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
                 ),
               )
 
@@ -413,10 +448,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     setState(() => petType = val!);
                   }
                 },
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
-                  border: OutlineInputBorder(),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
                 ),
               )
 

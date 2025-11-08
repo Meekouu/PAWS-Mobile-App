@@ -8,6 +8,7 @@ import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
 import 'package:paws/widgets/pet_slider.dart';
 import 'package:paws/widgets/bottomnav_bar.dart';
+import 'package:paws/widgets/vaccine_reminder_section.dart';
 
 Route createSlideRoute(Widget page) {
   return PageRouteBuilder(
@@ -94,14 +95,16 @@ if (snapshot.exists) {
   }
 
   Widget _buildProfileImage(String imagePath) {
+  // Default size will be overridden by parent when needed
+  const double size = 55;
   if (imagePath.startsWith('http')) {
     // For future use if Firebase Storage added
     return ClipOval(
       child: Image.network(
         imagePath,
         fit: BoxFit.cover,
-        width: 55,
-        height: 55,
+        width: size,
+        height: size,
         errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 30, color: secondaryColor),
       ),
     );
@@ -112,8 +115,8 @@ if (snapshot.exists) {
         child: Image.file(
           file,
           fit: BoxFit.cover,
-          width: 55,
-          height: 55,
+          width: size,
+          height: size,
           errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 30, color: secondaryColor),
         ),
       );
@@ -127,8 +130,18 @@ if (snapshot.exists) {
 
   @override
   Widget build(BuildContext context) {
+    // Responsive sizing based on width (baseline ~390)
+    final double sw = MediaQuery.of(context).size.width;
+    double scale(double v) => v * (sw / 390).clamp(0.85, 1.35);
+    final double appTitleSize = scale(35);
+    final double appIconSize = scale(28);
+    final double menuIconSize = scale(30);
+    final double avatarRadius = scale(30);
+    final double avatarImageSize = avatarRadius * 1.9; // approximate fit within CircleAvatar
+    final double drawerIconSize = scale(30);
+
     return Scaffold(
-      appBar: _AppBar(context),
+      appBar: _AppBar(context, appTitleSize: appTitleSize, menuIconSize: menuIconSize, actionIconSize: appIconSize),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -137,6 +150,15 @@ if (snapshot.exists) {
             children: [
               PetSlider(),
                 const Divider(
+                thickness: 1,
+                color: Colors.grey,
+                indent: 20,
+                endIndent: 20,
+              ),
+              // Vaccine Reminders Section
+              const VaccineReminderSection(),
+              const SizedBox(height: 10),
+              const Divider(
                 thickness: 1,
                 color: Colors.grey,
                 indent: 20,
@@ -173,11 +195,28 @@ if (snapshot.exists) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 30,
+              radius: avatarRadius,
               backgroundColor: Colors.white,
               child: userProfileImage != null
-                  ? _buildProfileImage(userProfileImage!)
-                  : Icon(Icons.person, size: 30, color: secondaryColor),
+                  ? ClipOval(
+                      child: (userProfileImage!.startsWith('http')
+                          ? Image.network(
+                              userProfileImage!,
+                              width: avatarImageSize,
+                              height: avatarImageSize,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Icon(Icons.person, size: drawerIconSize, color: secondaryColor),
+                            )
+                          : (File(userProfileImage!).existsSync()
+                              ? Image.file(
+                                  File(userProfileImage!),
+                                  width: avatarImageSize,
+                                  height: avatarImageSize,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Icon(Icons.person, size: drawerIconSize, color: secondaryColor),
+                                )
+                              : Icon(Icons.person, size: drawerIconSize, color: secondaryColor))))
+                  : Icon(Icons.person, size: drawerIconSize, color: secondaryColor),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -415,14 +454,14 @@ if (snapshot.exists) {
     ),
   );
 } */
-  AppBar _AppBar(BuildContext context) {
+  AppBar _AppBar(BuildContext context, {required double appTitleSize, required double menuIconSize, required double actionIconSize}) {
     return AppBar(
       titleSpacing: 8,
       backgroundColor: secondaryColor,
       automaticallyImplyLeading: false,
       leading: Builder(
         builder: (context) => IconButton(
-          icon: const Icon(Icons.menu, size: 30),
+          icon: Icon(Icons.menu, size: menuIconSize),
           onPressed: () => Scaffold.of(context).openDrawer(),
           color: Colors.white.withValues(alpha: 0.8),
         ),
@@ -430,7 +469,7 @@ if (snapshot.exists) {
       title: Text(
         'PAWS',
         style: GoogleFonts.notoSerifDisplay(
-          fontSize: 35,
+          fontSize: appTitleSize,
           fontWeight: FontWeight.bold,
           fontStyle: FontStyle.italic,
           color: Colors.white.withValues(alpha: 0.9),
@@ -438,7 +477,7 @@ if (snapshot.exists) {
           ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.qr_code_scanner, size: 28),
+          icon: Icon(Icons.qr_code_scanner, size: actionIconSize),
           color: Colors.white.withValues(alpha: 0.9),
           tooltip: 'Scan Clinic QR Code',
           onPressed: () {

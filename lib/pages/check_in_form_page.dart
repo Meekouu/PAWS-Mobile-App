@@ -167,36 +167,190 @@ class _CheckInFormPageState extends State<CheckInFormPage> {
       return;
     }
 
-    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final user = FirebaseAuth.instance.currentUser;
+    final uid = user?.uid;
     if (uid == null) return;
 
     try {
       // Find the selected pet's details
       final selectedPet = userPets.firstWhere((pet) => pet.petID == selectedPetId);
 
-      // Prepare check-in data
-      final checkInData = {
-        'userId': uid,
-        'clientName': clientName,
-        'petId': selectedPetId,
-        'petName': selectedPet.name,
+      // Lookup or create client in web 'clients' collection
+      String? email = user?.email?.toLowerCase();
+      // Split owner name into first/last (fallbacks)
+      String firstName = clientName.trim();
+      String lastName = '';
+      if (firstName.contains(' ')) {
+        final parts = firstName.split(RegExp(r"\s+")).where((s) => s.isNotEmpty).toList();
+        firstName = parts.first;
+        lastName = parts.sublist(1).join(' ');
+      }
+
+      String clientDocId;
+      {
+        QuerySnapshot<Map<String, dynamic>>? existing;
+        if (email != null && email.isNotEmpty) {
+          existing = await FirebaseFirestore.instance
+              .collection('clients')
+              .where('email', isEqualTo: email)
+              .limit(1)
+              .get();
+        }
+        if (existing != null && existing.docs.isNotEmpty) {
+          clientDocId = existing.docs.first.id;
+        } else {
+          final clientDoc = await FirebaseFirestore.instance.collection('clients').add({
+            'firstName': firstName,
+            'lastName': lastName,
+            'email': email ?? null,
+            'phone': '',
+            'address': {
+              'street': '',
+              'city': '',
+              'state': '',
+              'zipCode': '',
+              'country': ''
+            },
+            'dateOfBirth': null,
+            'notes': '',
+            'isActive': true,
+            'createdAt': FieldValue.serverTimestamp(),
+            'updatedAt': FieldValue.serverTimestamp(),
+            'createdBy': uid,
+            'updatedBy': uid,
+            'animalCount': 0,
+          });
+          clientDocId = clientDoc.id;
+        }
+      }
+
+      // Ensure selected animal exists in web 'animals' for that client
+      String animalDocId;
+      {
+        final existing = await FirebaseFirestore.instance
+            .collection('animals')
+            .where('clientId', isEqualTo: clientDocId)
+            .where('name', isEqualTo: selectedPet.name)
+            .limit(1)
+            .get();
+        if (existing.docs.isNotEmpty) {
+          animalDocId = existing.docs.first.id;
+        } else {
+          DateTime? parsedDob;
+          try {
+            // Try common formats: dd/MM/yyyy or ISO
+            if (selectedPet.birthday != null && selectedPet.birthday.toString().isNotEmpty) {
+              try {
+                parsedDob = DateFormat('dd/MM/yyyy').parse(selectedPet.birthday);
+              } catch (_) {
+                parsedDob = DateTime.tryParse(selectedPet.birthday);
+              }
+            }
+          } catch (_) {}
+
+          final animalDoc = await FirebaseFirestore.instance.collection('animals').add({
+            'clientId': clientDocId,
+            'name': selectedPet.name,
+            'species': (selectedPet.type ?? '').toString().toLowerCase(),
+            'breed': (selectedPet.breed ?? '').toString(),
+            'color': '',
+            'sex': (selectedPet.sex ?? '').toString().isNotEmpty ? selectedPet.sex : 'unknown',
+            'dateOfBirth': parsedDob != null ? Timestamp.fromDate(parsedDob) : null,
+            'weight': null,
+            'microchipId': null,
+            'isSpayedNeutered': false,
+            'medicalHistory': [],
+            'vaccinations': [],
+            'allergies': [],
+            'medications': [],
+            'notes': '',
+            'isActive': true,
+            'isDeceased': false,
+            'createdAt': FieldValue.serverTimestamp(),
+            'updatedAt': FieldValue.serverTimestamp(),
+            'createdBy': uid,
+            'updatedBy': uid,
+            'clientName': '$firstName ${lastName}'.trim(),
+          });
+          animalDocId = animalDoc.id;
+          // Increment animalCount on client
+          await FirebaseFirestore.instance.collection('clients').doc(clientDocId).update({
+            'animalCount': FieldValue.increment(1),
+            'updatedAt': FieldValue.serverTimestamp(),
+            'updatedBy': uid,
+          });
+        }
+      }
+
+      // Map UI purpose labels to web enum keys
+      String mapPurpose(String? p) {
+        switch (p) {
+          case 'Routine Checkup':
+            return 'routine_checkup';
+          case 'Vaccination':
+            return 'vaccination';
+          case 'Emergency':
+            return 'emergency';
+          case 'Surgery':
+            return 'surgery';
+          case 'Grooming':
+            return 'grooming';
+          case 'Dental Cleaning':
+            return 'dental_cleaning';
+          case 'Follow up':
+            return 'follow_up';
+          case 'Consultation':
+            return 'consultation';
+          default:
+            return 'other';
+        }
+      }
+
+      // Convert duration label to minutes number
+      int? mapDurationToMinutes(String? d) {
+        if (d == null) return null;
+        if (d.endsWith('m')) {
+          return int.tryParse(d.replaceAll('m', ''));
+        }
+        if (d.endsWith('hr') || d.endsWith('hrs')) {
+          final n = d.replaceAll('hr', '').replaceAll('hrs', '');
+          final val = double.tryParse(n);
+          if (val != null) return (val * 60).round();
+        }
+        return null;
+      }
+
+      final now = DateTime.now();
+      final checkInTime = DateFormat('HH:mm').format(now);
+
+      // Prepare check-in data aligned with web schema
+      final checkInData = <String, dynamic>{
+        // Web-expected fields
+        'animalId': animalDocId,
+        'animalName': selectedPet.name,
+        'clientId': clientDocId,
+        'clientName': '$firstName ${lastName}'.trim(),
+        'checkInDate': FieldValue.serverTimestamp(),
+        'checkInTime': checkInTime,
+        'purpose': mapPurpose(selectedPurpose),
+        'status': 'checked_in',
+        'notes': additionalNotes.isNotEmpty ? additionalNotes : null,
+        'diagnosis': selectedPurpose == 'Routine Checkup' && diagnosisNotes.isNotEmpty ? diagnosisNotes : null,
+        'veterinarian': selectedVet,
+        'estimatedDuration': mapDurationToMinutes(selectedDuration),
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+        'createdBy': uid,
+
+        // Extra mobile-specific context (safe to keep)
         'petType': selectedPet.type,
         'clinicName': widget.clinicName,
         'qrCode': widget.qrCode,
-        'purpose': selectedPurpose,
-        'diagnosis': selectedPurpose == 'Routine Checkup' ? diagnosisNotes : null,
-        'assignedVet': selectedVet,
-        'estimatedDuration': selectedDuration,
         'scheduledTime': scheduledDateTime?.toIso8601String(),
-        'additionalNotes': additionalNotes.isNotEmpty ? additionalNotes : null,
-        'status': 'pending',
-        'createdAt': FieldValue.serverTimestamp(),
-      };
+      }..removeWhere((k, v) => v == null);
 
       // Save to Firestore
-      await FirebaseFirestore.instance
-          .collection('check_ins')
-          .add(checkInData);
+      await FirebaseFirestore.instance.collection('check_ins').add(checkInData);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

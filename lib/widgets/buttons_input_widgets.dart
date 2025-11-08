@@ -11,6 +11,7 @@ class LoginBtn1 extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? errorText;
   final Color? backgroundColor;
+  final bool fullWidth;
 
   const LoginBtn1({
     super.key,
@@ -23,6 +24,7 @@ class LoginBtn1 extends StatelessWidget {
     this.keyboardType,
     this.errorText,
     this.backgroundColor,
+    this.fullWidth = false,
   });
 
   @override
@@ -35,14 +37,7 @@ class LoginBtn1 extends StatelessWidget {
     final fontSize = (isLandscape ? screenHeight : screenWidth).clamp(320, 600) * 0.045;
     final maxWidth = screenWidth > 600 ? 500.0 : screenWidth * 0.9;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: Center(
-        child: ConstrainedBox(
-  constraints: BoxConstraints(
-    maxWidth: maxWidth,
-  ),
-            child: TextFormField(
+    final textField = TextFormField(
               controller: controller,
               obscureText: obscureText,
               validator: validator,
@@ -75,10 +70,26 @@ class LoginBtn1 extends StatelessWidget {
                 suffixIcon: icon,
                 suffixIconColor: black,
               ),
-            ),
-          ),
-        ),
+            );
+
+    if (fullWidth) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0),
+        child: textField,
       );
+    }
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: maxWidth,
+          ),
+          child: textField,
+        ),
+      ),
+    );
   }
 }
 
