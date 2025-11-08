@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\tools\flutter"
-export "FLUTTER_APPLICATION_PATH=C:\Users\Colt\Documents\GitHub\PAWS-Mobile-App"
+export "FLUTTER_ROOT=D:\Visual Studio Code\Flutter Web\flutter"
+export "FLUTTER_APPLICATION_PATH=C:\Users\Mico\Desktop\PAWS SYSTEM\clones\clone1\paws"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
