@@ -10,10 +10,14 @@ import 'package:paws/pages/pet_manager.dart';
 import 'package:paws/themes/themes.dart';
 import 'firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Initialize notifications and schedule refresh
+  await NotificationService().initialize();
+  await NotificationService().refreshSchedules();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,

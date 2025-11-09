@@ -58,6 +58,8 @@ dependencies:
   firebase_auth: ^4.17.8
   firebase_database: ^10.5.7
   cloud_firestore: ^4.17.5
+  flutter_local_notifications: 17.2.1
+  timezone: ^0.9.2
 
 dev_dependencies:
   lottie: ^2.7.0
@@ -128,3 +130,4 @@ flutter_native_splash:
   image: assets/images/paw-placeholder.png    
   android: true
   fullscreen: true  
+
