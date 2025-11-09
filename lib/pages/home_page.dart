@@ -3,12 +3,51 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paws/pages/news/news_card_carousel.dart';
+import 'package:paws/widgets/illness_alert_card.dart';
 import 'package:paws/pages/qr_scanner_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
 import 'package:paws/widgets/pet_slider.dart';
 import 'package:paws/widgets/bottomnav_bar.dart';
 import 'package:paws/widgets/vaccine_reminder_section.dart';
+
+// Top-level staggered item used to cascade render sections
+class _StaggerItem extends StatefulWidget {
+  final Widget child;
+  final Duration delay;
+  const _StaggerItem({required this.child, required this.delay});
+
+  @override
+  State<_StaggerItem> createState() => _StaggerItemState();
+}
+
+class _StaggerItemState extends State<_StaggerItem> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 350));
+  late final Animation<double> _opacity = CurvedAnimation(parent: _c, curve: Curves.easeOut);
+  late final Animation<Offset> _offset = Tween(begin: const Offset(0, 0.06), end: Offset.zero).animate(CurvedAnimation(parent: _c, curve: Curves.easeOutCubic));
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(widget.delay, () {
+      if (mounted) _c.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _opacity,
+      child: SlideTransition(position: _offset, child: widget.child),
+    );
+  }
+}
 
 Route createSlideRoute(Widget page) {
   return PageRouteBuilder(
@@ -48,43 +87,47 @@ class _HomePageState extends State<HomePage> {
 
   String? userProfileImage;
 
-Future<void> _loadUserInfo() async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    final snapshot = await FirestoreService()
-    .read(collectionPath: 'users', docId: user.uid);
+  Future<void> _loadUserInfo() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final snapshot = await FirestoreService()
+          .read(collectionPath: 'users', docId: user.uid);
 
-if (snapshot.exists) {
-  final data = snapshot.data() as Map<String, dynamic>;
-  final imagePath = data['ownerImagePath'];
-  String? validPath;
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        final imagePath = data['ownerImagePath'];
+        String? validPath;
 
-  if (imagePath != null && imagePath.toString().startsWith('/')) {
-    final file = File(imagePath);
-    if (await file.exists()) {
-      validPath = imagePath;
+        if (imagePath != null && imagePath.toString().startsWith('/')) {
+          final file = File(imagePath);
+          if (await file.exists()) {
+            validPath = imagePath;
+          }
+        }
+
+        if (!mounted) return;
+        setState(() {
+          userName = data['owner'] ?? 'No Name';
+          userEmail = data['email'] ?? user.email ?? 'No Email';
+          userProfileImage = validPath;
+        });
+      } else {
+        if (!mounted) return;
+        setState(() {
+          userName = 'User';
+          userEmail = user.email ?? '';
+          userProfileImage = null;
+        });
+      }
+    } else {
+      if (!mounted) return;
+      setState(() {
+        userName = 'User';
+        userEmail = '';
+        userProfileImage = null;
+      });
     }
   }
-
-  if (!mounted) return;
-  setState(() {
-    userName = data['owner'] ?? 'No Name';
-    userEmail = data['email'] ?? user.email ?? 'No Email';
-    userProfileImage = validPath;
-  });
-} else {
-  if (!mounted) return;
-  setState(() {
-    userName = 'User';
-    userEmail = user.email ?? '';
-    userProfileImage = null;
-  });
-}
-
-  }
-}
-
-
 
   void logOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
@@ -95,25 +138,13 @@ if (snapshot.exists) {
   }
 
   Widget _buildProfileImage(String imagePath) {
-  // Default size will be overridden by parent when needed
-  const double size = 55;
-  if (imagePath.startsWith('http')) {
-    // For future use if Firebase Storage added
-    return ClipOval(
-      child: Image.network(
-        imagePath,
-        fit: BoxFit.cover,
-        width: size,
-        height: size,
-        errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 30, color: secondaryColor),
-      ),
-    );
-  } else {
-    final file = File(imagePath);
-    if (file.existsSync()) {
+    // Default size will be overridden by parent when needed
+    const double size = 55;
+    if (imagePath.startsWith('http')) {
+      // For future use if Firebase Storage added
       return ClipOval(
-        child: Image.file(
-          file,
+        child: Image.network(
+          imagePath,
           fit: BoxFit.cover,
           width: size,
           height: size,
@@ -121,12 +152,22 @@ if (snapshot.exists) {
         ),
       );
     } else {
-      return const Icon(Icons.person, size: 30, color: secondaryColor);
+      final file = File(imagePath);
+      if (file.existsSync()) {
+        return ClipOval(
+          child: Image.file(
+            file,
+            fit: BoxFit.cover,
+            width: size,
+            height: size,
+            errorBuilder: (_, __, ___) => const Icon(Icons.person, size: 30, color: secondaryColor),
+          ),
+        );
+      } else {
+        return const Icon(Icons.person, size: 30, color: secondaryColor);
+      }
     }
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -141,34 +182,43 @@ if (snapshot.exists) {
     final double drawerIconSize = scale(30);
 
     return Scaffold(
-      appBar: _AppBar(context, appTitleSize: appTitleSize, menuIconSize: menuIconSize, actionIconSize: appIconSize),
+      appBar: buildHomeAppBar(context, appTitleSize: appTitleSize, menuIconSize: menuIconSize, actionIconSize: appIconSize),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PetSlider(),
-                const Divider(
+              _StaggerItem(delay: const Duration(milliseconds: 0), child: PetSlider()),
+              _StaggerItem(
+                delay: const Duration(milliseconds: 80),
+                child: const Divider(
                 thickness: 1,
                 color: Colors.grey,
                 indent: 20,
                 endIndent: 20,
               ),
-              // Vaccine Reminders Section
-              const VaccineReminderSection(),
-              const SizedBox(height: 10),
-              const Divider(
+              ),
+              _StaggerItem(delay: const Duration(milliseconds: 160), child: const VaccineReminderSection()),
+              _StaggerItem(delay: const Duration(milliseconds: 220), child: const SizedBox(height: 10)),
+              _StaggerItem(delay: const Duration(milliseconds: 260), child: const IllnessAlertCard()),
+              _StaggerItem(delay: const Duration(milliseconds: 320), child: const SizedBox(height: 10)),
+              _StaggerItem(
+                delay: const Duration(milliseconds: 360),
+                child: const Divider(
                 thickness: 1,
                 color: Colors.grey,
                 indent: 20,
                 endIndent: 20,
               ),
-              Padding(
+              ),
+              _StaggerItem(
+                delay: const Duration(milliseconds: 420),
+                child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              ),
-              NewsCardCarousel(),
-              const SizedBox(height: 30),
+              )),
+              _StaggerItem(delay: const Duration(milliseconds: 480), child: NewsCardCarousel()),
+              _StaggerItem(delay: const Duration(milliseconds: 540), child: const SizedBox(height: 30)),
             ],
           ),
         ),
@@ -340,6 +390,8 @@ if (snapshot.exists) {
 
 );
 }
+
+}
 //remove gallery for now
 /*
  Widget _galleryPreview() {
@@ -454,8 +506,8 @@ if (snapshot.exists) {
     ),
   );
 } */
-  AppBar _AppBar(BuildContext context, {required double appTitleSize, required double menuIconSize, required double actionIconSize}) {
-    return AppBar(
+PreferredSizeWidget buildHomeAppBar(BuildContext context, {required double appTitleSize, required double menuIconSize, required double actionIconSize}) {
+  return AppBar(
       titleSpacing: 8,
       backgroundColor: secondaryColor,
       automaticallyImplyLeading: false,
@@ -489,7 +541,4 @@ if (snapshot.exists) {
         ),
       ],
     );
-  }
 }
-
-

@@ -8,11 +8,13 @@ import 'add_vaccination_page.dart';
 class VaccineDetailsPage extends StatefulWidget {
   final String petName;
   final String petId;
+  final String? initialFilter; // 'all', 'overdue', 'due_soon', 'up_to_date'
 
   const VaccineDetailsPage({
     super.key,
     required this.petName,
     required this.petId,
+    this.initialFilter,
   });
 
   @override
@@ -28,14 +30,17 @@ class _VaccineDetailsPageState extends State<VaccineDetailsPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialFilter != null) {
+      _filterStatus = widget.initialFilter!;
+    }
     _loadVaccinations();
   }
 
   Future<void> _loadVaccinations() async {
     setState(() => _isLoading = true);
     try {
-      final allVaccinations = await _vaccineService.getAllUserPetVaccinations();
-      final petVaccinations = allVaccinations[widget.petName] ?? [];
+      // Load by petId to avoid name mismatches
+      final petVaccinations = await _vaccineService.getUserVaccinationsForPetId(widget.petId);
       
       if (mounted) {
         setState(() {
@@ -162,8 +167,9 @@ class _VaccineDetailsPageState extends State<VaccineDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Vaccine Name and Status Badge
+            // Header with Vaccine Name and Status Badge
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
@@ -174,38 +180,56 @@ class _VaccineDetailsPageState extends State<VaccineDetailsPage> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: statusColor.withOpacity(0.3),
-                      width: 1,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: statusColor, width: 1.5),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            size: 16,
+                            color: statusColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            statusLabel,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: statusColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        statusIcon,
-                        size: 16,
-                        color: statusColor,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        statusLabel,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: statusColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.edit, size: 22),
+                      color: secondaryColor,
+                      onPressed: () async {
+                        final updated = await showDialog<bool>(
+                          context: context,
+                          builder: (_) => AddVaccinationDialog(
+                            petName: widget.petName,
+                            petId: widget.petId,
+                            existingVaccine: vaccine,
+                          ),
+                        );
+                        if (updated == true) {
+                          _loadVaccinations();
+                        }
+                      },
+                      tooltip: 'Edit Vaccine',
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -237,12 +261,7 @@ class _VaccineDetailsPageState extends State<VaccineDetailsPage> {
               statusColor,
             ),
             const SizedBox(height: 8),
-            _buildDetailRow(
-              Icons.medical_services,
-              'Veterinarian',
-              vaccine.veterinarian,
-              Colors.grey,
-            ),
+            
             if (vaccine.batchNumber != null && vaccine.batchNumber!.isNotEmpty) ...[
               const SizedBox(height: 8),
               _buildDetailRow(
@@ -407,6 +426,22 @@ class _VaccineDetailsPageState extends State<VaccineDetailsPage> {
                 ),
               ],
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final added = await showDialog<bool>(
+            context: context,
+            builder: (_) => AddVaccinationDialog(
+              petName: widget.petName,
+              petId: widget.petId,
+            ),
+          );
+          if (added == true) {
+            _loadVaccinations();
+          }
+        },
+        backgroundColor: secondaryColor,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
 }

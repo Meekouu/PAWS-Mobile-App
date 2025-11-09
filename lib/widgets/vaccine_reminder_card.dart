@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../model/vaccine_model.dart';
@@ -9,11 +10,13 @@ import '../themes/themes.dart';
 class VaccineReminderCard extends StatefulWidget {
   final String petName;
   final String petId;
+  final String? petImagePath;
 
   const VaccineReminderCard({
     super.key,
     required this.petName,
     required this.petId,
+    this.petImagePath,
   });
 
   @override
@@ -110,25 +113,7 @@ class _VaccineReminderCardState extends State<VaccineReminderCard> with Automati
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.vaccines, color: Colors.grey, size: 24),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      widget.petName,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
+              _HeaderAvatar(name: widget.petName, imagePath: widget.petImagePath),
               const SizedBox(height: 12),
               Container(
                 width: double.infinity,
@@ -205,51 +190,8 @@ class _VaccineReminderCardState extends State<VaccineReminderCard> with Automati
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      Icons.vaccines,
-                      color: statusColor,
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Vaccine Reminders',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          widget.petName,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                    color: Colors.grey[400],
-                  ),
-                ],
-              ),
+              // Header with circular profile image and pet name
+              _HeaderAvatar(name: widget.petName, imagePath: widget.petImagePath),
               const SizedBox(height: 16),
               
               // Status Summary
@@ -356,9 +298,10 @@ class _VaccineReminderCardState extends State<VaccineReminderCard> with Automati
                 ),
               ],
 
-              // View All Button
+              // View All inside the card
               const SizedBox(height: 12),
-              Center(
+              Align(
+                alignment: Alignment.centerRight,
                 child: TextButton.icon(
                   onPressed: () {
                     Navigator.push(
@@ -372,7 +315,7 @@ class _VaccineReminderCardState extends State<VaccineReminderCard> with Automati
                     );
                   },
                   icon: const Icon(Icons.list_alt, size: 18),
-                  label: const Text('View All Vaccines'),
+                  label: const Text('See All'),
                   style: TextButton.styleFrom(
                     foregroundColor: secondaryColor,
                   ),
@@ -382,6 +325,51 @@ class _VaccineReminderCardState extends State<VaccineReminderCard> with Automati
           ),
         ),
       ),
+    );
+  }
+}
+
+class _HeaderAvatar extends StatelessWidget {
+  final String name;
+  final String? imagePath;
+  const _HeaderAvatar({required this.name, this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget avatar;
+    if (imagePath != null && imagePath!.isNotEmpty) {
+      final file = File(imagePath!);
+      if (file.existsSync()) {
+        avatar = CircleAvatar(
+          radius: 18,
+          backgroundImage: FileImage(file),
+        );
+      } else {
+        avatar = const CircleAvatar(
+          radius: 18,
+          backgroundColor: Color(0xFFEDE7F6),
+          child: Icon(Icons.pets, color: secondaryColor),
+        );
+      }
+    } else {
+      avatar = const CircleAvatar(
+        radius: 18,
+        backgroundColor: Color(0xFFEDE7F6),
+        child: Icon(Icons.pets, color: secondaryColor),
+      );
+    }
+
+    return Row(
+      children: [
+        avatar,
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            name,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
     );
   }
 }

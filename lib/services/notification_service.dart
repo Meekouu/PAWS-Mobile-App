@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -72,32 +73,46 @@ class NotificationService {
     final title = 'Vaccine reminder for $petName';
     final body = '${v.name} due on ${v.nextDueDate.month}/${v.nextDueDate.day}/${v.nextDueDate.year}';
     final when = _at9amLocal(v.nextDueDate);
-
-    await _fln.zonedSchedule(
-      id,
-      title,
-      body,
-      when,
-      _defaultDetails(),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.dateAndTime,
-    );
+    try {
+      await _fln.zonedSchedule(
+        id,
+        title,
+        body,
+        when,
+        _defaultDetails(),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.dateAndTime,
+      );
+    } on PlatformException catch (e) {
+      // Android 13+ without SCHEDULE_EXACT_ALARM: fall back to inexact
+      if (e.code == 'exact_alarms_not_permitted') {
+        await _fln.zonedSchedule(
+          id,
+          title,
+          body,
+          when,
+          _defaultDetails(),
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.dateAndTime,
+        );
+      } else {
+        rethrow;
+      }
+    }
   }
 
   Future<void> scheduleOverdueNow(String petName, Vaccination v) async {
     final id = (v.id.hashCode ^ 0xABCDEF).abs();
     final title = 'Overdue vaccine for $petName';
     final body = '${v.name} is overdue by ${v.daysUntilDue.abs()} day(s)';
-
-    await _fln.zonedSchedule(
+    // Show immediately (no exact alarm permission needed)
+    await _fln.show(
       id,
       title,
       body,
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
       _defaultDetails(),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 

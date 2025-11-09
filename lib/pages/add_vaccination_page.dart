@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../model/vaccine_model.dart';
 import '../services/vaccine_service.dart';
 import '../themes/themes.dart';
 
 class AddVaccinationDialog extends StatefulWidget {
   final String petName;
   final String petId;
-  const AddVaccinationDialog({super.key, required this.petName, required this.petId});
+  final Vaccination? existingVaccine; // If provided, we're editing
+  const AddVaccinationDialog({
+    super.key,
+    required this.petName,
+    required this.petId,
+    this.existingVaccine,
+  });
 
   @override
   State<AddVaccinationDialog> createState() => _AddVaccinationDialogState();
@@ -22,6 +29,19 @@ class _AddVaccinationDialogState extends State<AddVaccinationDialog> {
   bool _submitting = false;
 
   final _svc = VaccineService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill fields if editing
+    if (widget.existingVaccine != null) {
+      final v = widget.existingVaccine!;
+      _vaccineNameCtrl.text = v.name;
+      _dateGiven = v.date;
+      _nextDueDate = v.nextDueDate;
+      _batchCtrl.text = v.batchNumber ?? '';
+    }
+  }
 
   @override
   void dispose() {
@@ -57,22 +77,43 @@ class _AddVaccinationDialogState extends State<AddVaccinationDialog> {
       return;
     }
     setState(() => _submitting = true);
-    final ok = await _svc.addVaccinationForUserPetId(
-      petId: widget.petId,
-      petName: widget.petName,
-      vaccineName: _vaccineNameCtrl.text.trim(),
-      dateGiven: _dateGiven!,
-      nextDueDate: _nextDueDate!,
-      veterinarian: 'Mobile App',
-      batchNumber: _batchCtrl.text.trim().isEmpty ? null : _batchCtrl.text.trim(),
-    );
+    
+    final bool ok;
+    if (widget.existingVaccine != null) {
+      // Update existing vaccine
+      ok = await _svc.updateVaccinationForUserPetId(
+        petId: widget.petId,
+        vaccineId: widget.existingVaccine!.id,
+        vaccineName: _vaccineNameCtrl.text.trim(),
+        dateGiven: _dateGiven!,
+        nextDueDate: _nextDueDate!,
+        veterinarian: widget.existingVaccine!.veterinarian,
+        batchNumber: _batchCtrl.text.trim().isEmpty ? null : _batchCtrl.text.trim(),
+      );
+    } else {
+      // Add new vaccine
+      ok = await _svc.addVaccinationForUserPetId(
+        petId: widget.petId,
+        petName: widget.petName,
+        vaccineName: _vaccineNameCtrl.text.trim(),
+        dateGiven: _dateGiven!,
+        nextDueDate: _nextDueDate!,
+        veterinarian: 'Mobile App',
+        batchNumber: _batchCtrl.text.trim().isEmpty ? null : _batchCtrl.text.trim(),
+      );
+    }
+    
     setState(() => _submitting = false);
     if (!mounted) return;
     if (ok) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Vaccination saved')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(widget.existingVaccine != null ? 'Vaccination updated' : 'Vaccination saved')),
+      );
       Navigator.pop(context, true);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to save vaccination')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(widget.existingVaccine != null ? 'Failed to update vaccination' : 'Failed to save vaccination')),
+      );
     }
   }
 
@@ -167,9 +208,9 @@ class _AddVaccinationDialogState extends State<AddVaccinationDialog> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Add Vaccine Record',
-                          style: TextStyle(
+                        Text(
+                          widget.existingVaccine != null ? 'Edit Vaccine Record' : 'Add Vaccine Record',
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -243,9 +284,9 @@ class _AddVaccinationDialogState extends State<AddVaccinationDialog> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text(
-                                'Save Vaccination',
-                                style: TextStyle(
+                            : Text(
+                                widget.existingVaccine != null ? 'Update Vaccination' : 'Save Vaccination',
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),

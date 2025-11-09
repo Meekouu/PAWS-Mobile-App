@@ -201,6 +201,28 @@ class _LoginPageState extends State<LoginPage> {
         ),
 
         const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Don't have an account? "),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SignUpPage()),
+              ),
+              child: const Text(
+                'Signup now',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          child: Divider(height: 1),
+        ),
+        const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Text.rich(
@@ -232,26 +254,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
             textAlign: TextAlign.center,
           ),
-        ),
-        const SizedBox(height: 10),
-        const Text('Forgot Login Details? Get Help Logging in'),
-        const Divider(color: grey, indent: 20, endIndent: 20),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Don't have an account? "),
-            GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const SignUpPage()),
-              ),
-              child: const Text(
-                'Signup now',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
         ),
       ],
     );

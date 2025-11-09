@@ -7,7 +7,8 @@ class Animal{
    String sex;
    String imageCover;
    String imagePicture;
-   String petImagePath;
+   String petImagePath; // legacy local path or asset path
+   String petImageUrl;  // new: Firestore/Storage URL
 
   Animal({
     required this.petID,
@@ -18,7 +19,8 @@ class Animal{
     this.birthday = 'Unknown',
     this.imageCover = 'assets/images/dog1.jpeg',
     this.imagePicture = 'assets/images/cat1.jpeg',
-    this.petImagePath = '', 
+    this.petImagePath = '',
+    this.petImageUrl = '',
     });
 
   factory Animal.fromMap(String petId, Map<dynamic, dynamic> map) {
@@ -32,6 +34,7 @@ class Animal{
       imageCover: 'assets/images/dog1.jpeg',
       imagePicture: 'assets/images/cat1.jpeg',
       petImagePath: map['petImagePath'] ?? '',
+      petImageUrl: map['petImageUrl'] ?? '',
     );
   }
 }

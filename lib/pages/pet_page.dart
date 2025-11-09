@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:paws/model/animal_model.dart';
-import 'package:paws/pages/weight_tracker_page.dart';
+import 'package:paws/pages/vaccine_details_page.dart';
 import 'package:paws/themes/themes.dart';
 import 'package:paws/widgets/database_service.dart';
 
@@ -81,10 +82,27 @@ Future<void> _pickImage() async {
         petImageFile = File(picked.path);
       });
       if (uid != null && petId.isNotEmpty) {
+        String downloadUrl = '';
+        try {
+          final ref = FirebaseStorage.instance.ref()
+              .child('users')
+              .child(uid)
+              .child('pets')
+              .child(petId)
+              .child('profile.jpg');
+          await ref.putFile(File(picked.path));
+          downloadUrl = await ref.getDownloadURL();
+        } catch (e) {
+          debugPrint('Pet image upload failed: $e');
+        }
+
         await FirestoreService().update(
           collectionPath: 'users/$uid/pets',
           docId: petId,
-          data: {'petImagePath': picked.path},
+          data: {
+            'petImagePath': picked.path, // legacy fallback
+            'petImageUrl': downloadUrl,
+          },
         );
       }
     }
@@ -154,14 +172,42 @@ Future<void> _deletePetFromDatabase() async {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Delete Pet Profile'),
-          content: const Text('Are you sure you want to delete this pet profile?'),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          titlePadding: EdgeInsets.zero,
+          title: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: secondaryColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: Row(
+              children: const [
+                Icon(Icons.warning_amber_rounded, color: Colors.white),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Delete Pet Profile',
+                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          content: const Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Text('Are you sure you want to delete this pet profile?'),
+          ),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           actions: [
             TextButton(
               child: const Text('Cancel'),
               onPressed: () => Navigator.of(context).pop(false),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: secondaryColor, foregroundColor: Colors.white),
               child: const Text('Delete'),
               onPressed: () => Navigator.of(context).pop(true),
             ),
@@ -208,15 +254,18 @@ Future<void> _deletePetFromDatabase() async {
           const SizedBox(height: 100),
           _buildInfoCard(pet),
           const SizedBox(height: 20),
-          _buildListTile(Icons.folder_shared, "Medical Records"),
-          _buildListTile(Icons.local_pharmacy, "Prescriptions"),
           _buildListTile(
-            Icons.monitor_weight,
-            "Weight Tracker",
+            Icons.vaccines,
+            "Vaccine Information",
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => WeightTrackerPage()),
+                MaterialPageRoute(
+                  builder: (_) => VaccineDetailsPage(
+                    petName: pet.name,
+                    petId: pet.petID,
+                  ),
+                ),
               );
             },
           ),
@@ -237,12 +286,15 @@ Future<void> _deletePetFromDatabase() async {
       );
 
   Widget _buildProfileImage() {
+  final String url = animal?.petImageUrl ?? '';
   final String path = animal?.petImagePath ?? '';
 
   ImageProvider? imageProvider;
 
   if (petImageFile != null) {
     imageProvider = FileImage(petImageFile!);
+  } else if (url.isNotEmpty) {
+    imageProvider = NetworkImage(url);
   } else if (path.isNotEmpty && path.startsWith('/')) {
     imageProvider = FileImage(File(path));
   } else if (path.isNotEmpty) {
@@ -315,43 +367,123 @@ Future<void> _deletePetFromDatabase() async {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          titlePadding: EdgeInsets.zero,
+                          title: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: const BoxDecoration(
+                              color: secondaryColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            ),
+                            child: Row(
+                              children: const [
+                                Icon(Icons.edit, color: Colors.white),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    'Edit Pet Information',
+                                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          title: const Text('Edit Pet Information'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextField(
-                                controller: breedController,
-                                decoration: const InputDecoration(labelText: 'Breed'),
-                              ),
-                              TextField(
-                                controller: sexController,
-                                decoration: const InputDecoration(labelText: 'Sex'),
-                              ),
-                              TextFormField(
-                                controller: dobController,
-                                decoration: const InputDecoration(labelText: 'Date of Birth'),
-                                readOnly: true,
-                                onTap: () async {
-                                  final pickedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime.now(),
-                                  );
+                          content: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextFormField(
+                                  controller: breedController,
+                                  style: const TextStyle(fontSize: 14),
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                    hintText: 'Breed',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: Colors.black),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: Colors.black),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: secondaryColor, width: 2),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                TextFormField(
+                                  controller: sexController,
+                                  style: const TextStyle(fontSize: 14),
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                    hintText: 'Sex',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: Colors.black),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: Colors.black),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: secondaryColor, width: 2),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                TextFormField(
+                                  controller: dobController,
+                                  readOnly: true,
+                                  style: const TextStyle(fontSize: 14),
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                    hintText: 'Date of Birth',
+                                    suffixIcon: const Icon(Icons.calendar_today, size: 18, color: Colors.grey),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: Colors.black),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: Colors.black),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(40),
+                                      borderSide: const BorderSide(color: secondaryColor, width: 2),
+                                    ),
+                                  ),
+                                  onTap: () async {
+                                    final pickedDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime.now(),
+                                    );
 
-                                  if (pickedDate != null) {
-                                    final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
-                                                      "${pickedDate.month.toString().padLeft(2, '0')}/"
-                                                      "${pickedDate.year}";
-                                    setState(() => dobController.text = formatted);
-                                  }
-                                },
-                              ),
+                                    if (pickedDate != null) {
+                                      final formatted = "${pickedDate.day.toString().padLeft(2, '0')}/"
+                                                        "${pickedDate.month.toString().padLeft(2, '0')}/"
+                                                        "${pickedDate.year}";
+                                      setState(() => dobController.text = formatted);
+                                    }
+                                  },
+                                ),
 
-                            ],
+                              ],
+                            ),
                           ),
                           actions: [
                             TextButton(
@@ -359,6 +491,7 @@ Future<void> _deletePetFromDatabase() async {
                               child: const Text('Cancel'),
                             ),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(backgroundColor: secondaryColor, foregroundColor: Colors.white),
                               onPressed: () async {
                               final breed = breedController.text.trim();
                               final sex = sexController.text.trim();

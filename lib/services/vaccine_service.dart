@@ -47,6 +47,34 @@ class VaccineService {
     }
   }
 
+  Future<bool> updateVaccinationForUserPetId({
+    required String petId,
+    required String vaccineId,
+    required String vaccineName,
+    required DateTime dateGiven,
+    required DateTime nextDueDate,
+    String? veterinarian,
+    String? batchNumber,
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+    try {
+      await _petVaccinationsRef(user.uid, petId).doc(vaccineId).update({
+        'name': vaccineName,
+        'date': Timestamp.fromDate(dateGiven),
+        'nextDueDate': Timestamp.fromDate(nextDueDate),
+        'veterinarian': veterinarian ?? 'Mobile App',
+        'batchNumber': batchNumber,
+        'isUpToDate': nextDueDate.isAfter(DateTime.now()),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      return true;
+    } catch (e) {
+      print('Error updateVaccinationForUserPetId: $e');
+      return false;
+    }
+  }
+
   Future<List<Vaccination>> getUserVaccinationsForPetId(String petId) async {
     final user = _auth.currentUser;
     if (user == null) return [];
@@ -67,7 +95,8 @@ class VaccineService {
       final Map<String, List<Vaccination>> result = {};
       for (final p in pets.docs) {
         final data = p.data();
-        final name = (data['name'] ?? 'Unknown').toString();
+        // Use the correct field used in user pets docs
+        final name = (data['petName'] ?? data['name'] ?? 'Unknown').toString();
         final petId = p.id;
         final list = await getUserVaccinationsForPetId(petId);
         if (list.isNotEmpty) {

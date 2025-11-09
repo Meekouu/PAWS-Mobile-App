@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:paws/widgets/database_service.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
 
@@ -22,17 +23,39 @@ Future<void> showAddPetDialog(BuildContext context) async {
     builder: (context) {
       return StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Add Pet'),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.of(context).pop(),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          titlePadding: EdgeInsets.zero,
+          title: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Color(0xFF998FC7),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
               ),
-            ],
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.pets, color: Colors.white),
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Text(
+                    'Add Pet',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
           ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+          contentPadding: const EdgeInsets.all(20),
           content: Form(
             key: formKey,
             child: SingleChildScrollView(
@@ -67,36 +90,85 @@ Future<void> showAddPetDialog(BuildContext context) async {
                   ),
                   const SizedBox(height: 12),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: TextFormField(
                       controller: petNameController,
-                      decoration: const InputDecoration(labelText: 'Pet Name'),
-                      validator: (value) =>
-                          (value == null || value.trim().isEmpty) ? 'Please enter pet name' : null,
+                      validator: (value) => (value == null || value.trim().isEmpty) ? 'Required' : null,
+                      style: const TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                        hintText: 'Pet Name',
+                        hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Color(0xFF998FC7), width: 2),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: TextFormField(
                       controller: petBreedController,
-                      decoration: const InputDecoration(labelText: 'Breed'),
-                      validator: (value) =>
-                          (value == null || value.trim().isEmpty) ? 'Please enter breed' : null,
+                      validator: (value) => (value == null || value.trim().isEmpty) ? 'Required' : null,
+                      style: const TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                        hintText: 'Breed',
+                        hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Color(0xFF998FC7), width: 2),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: TextFormField(
                       controller: petBirthdayController,
                       readOnly: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Birthday (dd/mm/yyyy)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
-                        suffixIcon: Icon(Icons.calendar_today),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                        hintText: 'Birthday (dd/mm/yyyy)',
+                        hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                        suffixIcon: const Icon(Icons.calendar_today, size: 18, color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Color(0xFF998FC7), width: 2),
+                        ),
                       ),
                       onTap: () async {
                         final pickedDate = await showDatePicker(
@@ -119,26 +191,60 @@ Future<void> showAddPetDialog(BuildContext context) async {
                   ),
                   const SizedBox(height: 12),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: DropdownButtonFormField<String>(
                       value: petSex,
                       items: ['Male', 'Female']
                           .map((sex) => DropdownMenuItem(value: sex, child: Text(sex)))
                           .toList(),
                       onChanged: (val) => setState(() => petSex = val ?? petSex),
-                      decoration: const InputDecoration(labelText: 'Sex'),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Color(0xFF998FC7), width: 2),
+                        ),
+                        hintText: 'Sex',
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
                     child: DropdownButtonFormField<String>(
                       value: petType,
                       items: ['Canine', 'Feline', 'Other']
                           .map((type) => DropdownMenuItem(value: type, child: Text(type)))
                           .toList(),
                       onChanged: (val) => setState(() => petType = val ?? petType),
-                      decoration: const InputDecoration(labelText: 'Type'),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                          borderSide: const BorderSide(color: Color(0xFF998FC7), width: 2),
+                        ),
+                        hintText: 'Type',
+                      ),
                     ),
                   ),
                 ],
@@ -153,17 +259,39 @@ Future<void> showAddPetDialog(BuildContext context) async {
                 if (formKey.currentState!.validate()) {
                   final uid = FirebaseAuth.instance.currentUser?.uid;
                   if (uid != null) {
+                    final docId = const Uuid().v4();
+                    String downloadUrl = '';
+                    // Upload selected image to Firebase Storage if present
+                    if (petImageFile != null) {
+                      try {
+                        final ref = FirebaseStorage.instance.ref()
+                            .child('users')
+                            .child(uid)
+                            .child('pets')
+                            .child(docId)
+                            .child('profile.jpg');
+                        await ref.putFile(petImageFile!);
+                        downloadUrl = await ref.getDownloadURL();
+                      } catch (e) {
+                        // Fallback: continue without URL
+                        debugPrint('Image upload failed: $e');
+                      }
+                    }
+
                     final petData = {
                       'petName': petNameController.text.trim(),
                       'petBreed': petBreedController.text.trim(),
                       'petBirthday': petBirthdayController.text.trim(),
                       'petType': petType,
                       'petSex': petSex,
+                      // Keep legacy local path for backward compatibility
                       'petImagePath': petImageFile?.path ?? '',
+                      // New: Firestore/Storage-backed image URL
+                      'petImageUrl': downloadUrl,
                     };
                     await FirestoreService().create(
                       collectionPath: 'users/$uid/pets',
-                      docId: const Uuid().v4(),
+                      docId: docId,
                       data: petData,
                     );
                     if (context.mounted) Navigator.pop(context);

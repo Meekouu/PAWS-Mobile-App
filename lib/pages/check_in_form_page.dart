@@ -32,6 +32,9 @@ class _CheckInFormPageState extends State<CheckInFormPage> {
   DateTime? scheduledDateTime;
   String additionalNotes = '';
   String diagnosisNotes = '';
+  String? selectedDiagnosis;
+  List<String> diagnosisOptions = [];
+  bool loadingDiagnoses = true;
   
   // Data loading
   List<Animal> userPets = [];
@@ -68,6 +71,7 @@ class _CheckInFormPageState extends State<CheckInFormPage> {
   void initState() {
     super.initState();
     _loadData();
+    _loadDiagnosisOptions();
   }
 
   Future<void> _loadData() async {
@@ -517,15 +521,35 @@ class _CheckInFormPageState extends State<CheckInFormPage> {
                         // Conditional Diagnosis field for Routine Checkup
                         if (selectedPurpose == 'Routine Checkup') ...[
                           const SizedBox(height: 12),
-                          TextFormField(
-                            maxLines: 3,
-                            decoration: const InputDecoration(
-                              labelText: 'Diagnosis/Symptoms',
-                              border: OutlineInputBorder(),
-                              hintText: 'Describe symptoms or reason for checkup',
-                            ),
-                            onChanged: (value) => diagnosisNotes = value,
-                          ),
+                          _buildSectionTitle('Diagnosis/Symptoms *'),
+                          loadingDiagnoses
+                              ? const Center(child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: CircularProgressIndicator(color: secondaryColor),
+                                ))
+                              : DropdownButtonFormField<String>(
+                                  value: selectedDiagnosis,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Select diagnosis/symptoms',
+                                  ),
+                                  items: diagnosisOptions.map((d) => DropdownMenuItem(
+                                        value: d,
+                                        child: Text(d),
+                                      )).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedDiagnosis = value;
+                                      diagnosisNotes = value ?? '';
+                                    });
+                                  },
+                                  validator: (value) {
+                                    if (selectedPurpose == 'Routine Checkup' && (value == null || value.isEmpty)) {
+                                      return 'Please select a diagnosis';
+                                    }
+                                    return null;
+                                  },
+                                ),
                         ],
                         const SizedBox(height: 20),
 

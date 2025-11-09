@@ -50,46 +50,6 @@ class _VaccineReminderSectionState extends State<VaccineReminderSection> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Row(
-                    children: [
-                      Icon(Icons.vaccines, color: Colors.blue, size: 24),
-                      SizedBox(width: 8),
-                      Text(
-                        'Vaccine Reminders',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => AllVaccinesPage(animals: animals),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'See All',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
             // Compact summary tile
             FutureBuilder<Map<String, List<Vaccination>>>(
               future: VaccineService().getAllUserPetVaccinations(),
@@ -147,10 +107,10 @@ class _VaccineReminderSectionState extends State<VaccineReminderSection> {
                               child: const Icon(Icons.vaccines, color: Colors.blue, size: 24),
                             ),
                             const SizedBox(width: 12),
-                            const Expanded(
+                            Expanded(
                               child: Text(
                                 'Your Pets\' Vaccines',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ],
@@ -201,6 +161,26 @@ class _VaccineReminderSectionState extends State<VaccineReminderSection> {
                             ),
                           ),
                         ],
+
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AllVaccinesPage(animals: animals),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.list_alt, size: 18),
+                            label: const Text('See All'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: secondaryColor,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
