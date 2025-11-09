@@ -117,6 +117,37 @@ class _CheckInFormPageState extends State<CheckInFormPage> {
     }
   }
 
+  Future<void> _loadDiagnosisOptions() async {
+    try {
+      final snap = await FirebaseFirestore.instance
+          .collection('check_ins')
+          .where('diagnosis', isGreaterThan: '')
+          .orderBy('diagnosis')
+          .get();
+
+      final set = <String>{};
+      for (final doc in snap.docs) {
+        final raw = (doc.data()['diagnosis'] ?? '').toString().trim();
+        if (raw.isEmpty) continue;
+        set.add(raw);
+      }
+
+      if (mounted) {
+        setState(() {
+          diagnosisOptions = set.toList()..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+          loadingDiagnoses = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => loadingDiagnoses = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load diagnoses: $e')),
+        );
+      }
+    }
+  }
+
   Future<void> _selectDateTime() async {
     final date = await showDatePicker(
       context: context,
