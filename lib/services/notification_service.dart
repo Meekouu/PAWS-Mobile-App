@@ -16,6 +16,9 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _fln = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
+  static const String _channelId = 'vaccine_reminders_channel';
+  static const String _channelName = 'Vaccine Reminders';
+  static const String _channelDescription = 'Reminders for upcoming and overdue vaccinations';
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -48,6 +51,18 @@ class NotificationService {
     if (Platform.isAndroid) {
       final androidImpl = _fln.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
       await androidImpl?.requestNotificationsPermission(); // Android 13+
+
+      // Ensure the notification channel exists with high importance
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        _channelId,
+        _channelName,
+        description: _channelDescription,
+        importance: Importance.max,
+        playSound: true,
+        enableVibration: true,
+        showBadge: true,
+      );
+      await androidImpl?.createNotificationChannel(channel);
     }
 
     _initialized = true;
@@ -59,13 +74,15 @@ class NotificationService {
 
   NotificationDetails _defaultDetails({AndroidNotificationChannel? channel}) {
     const androidDetails = AndroidNotificationDetails(
-      'vaccine_reminders_channel',
-      'Vaccine Reminders',
-      channelDescription: 'Reminders for upcoming and overdue vaccinations',
+      _channelId,
+      _channelName,
+      channelDescription: _channelDescription,
       importance: Importance.max,
       priority: Priority.high,
       category: AndroidNotificationCategory.reminder,
       visibility: NotificationVisibility.public,
+      enableVibration: true,
+      playSound: true,
     );
 
     return const NotificationDetails(android: androidDetails);

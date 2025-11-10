@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:paws/auth/auth.dart';
 import 'package:paws/widgets/buttons_input_widgets.dart';
+import 'package:paws/pages/login_page.dart';
+import 'package:paws/themes/themes.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -14,67 +16,121 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final size = mediaQuery.size;
-    final isPortrait = mediaQuery.orientation == Orientation.portrait;
+    final mq = MediaQuery.of(context);
+    final size = mq.size;
+    final isPortrait = mq.orientation == Orientation.portrait;
 
-    final horizontalPadding = isPortrait ? size.width * 0.1 : size.width * 0.15;
-    final topPadding = isPortrait ? size.height * 0.05 : size.height * 0.02;
-    final spaceBetweenTextAndLogo = isPortrait ? size.height * 0.15 : size.height * 0.1;
-    final titleFontSize = isPortrait ? size.width * 0.08 : size.height * 0.08;
-
-    final aspectRatio = size.width / size.height;
-    final baseSize = isPortrait ? size.height : size.width;
-    final scaleFactor = (1 / aspectRatio).clamp(0.7, 1.3);
-    final logoSize = (baseSize * 1 * scaleFactor).clamp(150.0, 300.0);
+    final headerHeight = isPortrait ? size.height * 0.45 : size.height * 0.6;
+    final sidePadding = isPortrait ? 24.0 : 40.0;
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: mediaQuery.padding.bottom + 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: topPadding),
-              Padding(
-                padding: EdgeInsets.only(left: horizontalPadding),
-                child: Text(
+      backgroundColor: Colors.grey[100],
+      body: Stack(
+        children: [
+          Container(
+            height: headerHeight + mq.padding.top,
+            padding: EdgeInsets.only(top: mq.padding.top + 24, left: sidePadding, right: sidePadding),
+            decoration: const BoxDecoration(
+              color: secondaryColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
                   'PAWS',
                   style: GoogleFonts.notoSerifDisplay(
-                    fontSize: titleFontSize,
+                    color: Colors.white,
+                    fontSize: 42,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-              ),
-              SizedBox(height: spaceBetweenTextAndLogo),
-              Center(
-                child: SizedBox(
-                  height: logoSize,
-                  width: logoSize,
-                  child: Lottie.asset('assets/lottie/paws_animation.json'),
+                const SizedBox(height: 8),
+                Text(
+                  'Care, track, and stay on top of your pet\'s health.',
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: 14, fontWeight: FontWeight.w500),
                 ),
-              ),
-              SizedBox(height: isPortrait ? size.height * 0.1 : size.height * 0.05),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CTAButton(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const AuthPage()),
-                      ),
-                      text: 'Get Started',
-                    ),
-                    SizedBox(height: isPortrait ? size.height * 0.01 : size.height * 0.005),
-                    const Text('Terms & Conditions apply'),
-                  ],
+                const Spacer(),
+                Center(
+                  child: SizedBox(
+                    height: isPortrait ? 160 : 140,
+                    child: Lottie.asset('assets/lottie/paws_animation.json'),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+              ],
+            ),
           ),
-        ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(top: headerHeight - 40, left: sidePadding, right: sidePadding, bottom: mq.padding.bottom + 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: const [
+                            Icon(Icons.vaccines, color: secondaryColor),
+                            SizedBox(width: 8),
+                            Expanded(child: Text('Vaccination reminders, all in one place.')),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: const [
+                            Icon(Icons.pets, color: secondaryColor),
+                            SizedBox(width: 8),
+                            Expanded(child: Text('Manage multiple pets with profiles.')),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: const [
+                            Icon(Icons.qr_code, color: secondaryColor),
+                            SizedBox(width: 8),
+                            Expanded(child: Text('Fast check-ins via QR scanning.')),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  CTAButton(
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const AuthPage()),
+                    ),
+                    text: 'Get Started',
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                    ),
+                    child: const Text('I already have an account'),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text('Terms & Conditions apply'),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

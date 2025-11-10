@@ -498,31 +498,50 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: [
                       Text(
                         title,
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 24),
-                      content,
+                      const SizedBox(height: 16),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: content,
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-            ElevatedButton.icon(
-              onPressed: () {
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
                   final renderBox = context.findRenderObject() as RenderBox;
                   final offset = renderBox.localToGlobal(Offset.zero) + Offset(renderBox.size.width / 2, renderBox.size.height / 2);
                   _nextPage(originOffset: offset);
                 },
-              label: Text(_currentPage == 3 ? 'Finish' : 'Next'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _currentPage == 3 ? tertiaryColor : pageColors[
-                  (_currentPage + 1) < pageColors.length ? _currentPage + 1 : _currentPage
-                ],
-                foregroundColor: primaryColor,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: secondaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: Text(_currentPage == 3 ? 'Finish' : 'Next'),
               ),
             ),
           ],

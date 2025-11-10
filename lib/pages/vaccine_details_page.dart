@@ -162,14 +162,29 @@ class _VaccineDetailsPageState extends State<VaccineDetailsPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () async {
+          final updated = await showDialog<bool>(
+            context: context,
+            builder: (_) => AddVaccinationDialog(
+              petName: widget.petName,
+              petId: widget.petId,
+              existingVaccine: vaccine,
+            ),
+          );
+          if (updated == true) {
+            _loadVaccinations();
+          }
+        },
+        child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with Vaccine Name and Status Badge
+            // Header with Vaccine Name and Status Badge (wrap on small screens)
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(
@@ -180,56 +195,63 @@ class _VaccineDetailsPageState extends State<VaccineDetailsPage> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: statusColor, width: 1.5),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.circle,
-                            size: 16,
-                            color: statusColor,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            statusLabel,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                Flexible(
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    alignment: WrapAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: statusColor, width: 1.5),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.circle,
+                              size: 16,
                               color: statusColor,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Text(
+                              statusLabel,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: statusColor,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.edit, size: 22),
-                      color: secondaryColor,
-                      onPressed: () async {
-                        final updated = await showDialog<bool>(
-                          context: context,
-                          builder: (_) => AddVaccinationDialog(
-                            petName: widget.petName,
-                            petId: widget.petId,
-                            existingVaccine: vaccine,
-                          ),
-                        );
-                        if (updated == true) {
-                          _loadVaccinations();
-                        }
-                      },
-                      tooltip: 'Edit Vaccine',
-                    ),
-                  ],
+                      IconButton(
+                        icon: const Icon(Icons.edit, size: 20),
+                        color: secondaryColor,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () async {
+                          final updated = await showDialog<bool>(
+                            context: context,
+                            builder: (_) => AddVaccinationDialog(
+                              petName: widget.petName,
+                              petId: widget.petId,
+                              existingVaccine: vaccine,
+                            ),
+                          );
+                          if (updated == true) {
+                            _loadVaccinations();
+                          }
+                        },
+                        tooltip: 'Edit Vaccine',
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -273,6 +295,7 @@ class _VaccineDetailsPageState extends State<VaccineDetailsPage> {
             ],
           ],
         ),
+      ),
       ),
     );
   }

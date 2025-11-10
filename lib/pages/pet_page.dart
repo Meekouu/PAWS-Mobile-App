@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,12 +32,14 @@ class _PetPageState extends State<PetPage> {
 
   File? petImageFile;
   bool _isPickingImage = false;
+  Uint8List? _petImageBytes; // SDK-loaded bytes (App Check friendly)
   
 
   @override
   void initState() {
     super.initState();
     _fetchAnimal();
+    _loadPetImageFromStorage();
   }
   @override
   void dispose() {
@@ -67,6 +70,28 @@ class _PetPageState extends State<PetPage> {
     }
   }
 
+Future<void> _loadPetImageFromStorage() async {
+  try {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final petId = widget.petId;
+    if (uid == null || petId.isEmpty) return;
+    final ref = FirebaseStorage.instance.ref()
+        .child('users')
+        .child(uid)
+        .child('pets')
+        .child(petId)
+        .child('profile.jpg');
+    final data = await ref.getData(5 * 1024 * 1024);
+    if (mounted) {
+      setState(() {
+        _petImageBytes = data;
+      });
+    }
+  } catch (e) {
+    debugPrint('Load pet image bytes failed: $e');
+  }
+}
+
 Future<void> _pickImage() async {
   if (_isPickingImage) return;
   _isPickingImage = true;
@@ -92,6 +117,17 @@ Future<void> _pickImage() async {
               .child('profile.jpg');
           await ref.putFile(File(picked.path));
           downloadUrl = await ref.getDownloadURL();
+          // Also fetch bytes via SDK for App Check enforced environments
+          try {
+            final data = await ref.getData(5 * 1024 * 1024);
+            if (mounted) {
+              setState(() {
+                _petImageBytes = data;
+              });
+            }
+          } catch (e) {
+            debugPrint('Fetch pet bytes after upload failed: $e');
+          }
         } catch (e) {
           debugPrint('Pet image upload failed: $e');
         }
@@ -293,6 +329,8 @@ Future<void> _deletePetFromDatabase() async {
 
   if (petImageFile != null) {
     imageProvider = FileImage(petImageFile!);
+  } else if (_petImageBytes != null && _petImageBytes!.isNotEmpty) {
+    imageProvider = MemoryImage(_petImageBytes!);
   } else if (url.isNotEmpty) {
     imageProvider = NetworkImage(url);
   } else if (path.isNotEmpty && path.startsWith('/')) {

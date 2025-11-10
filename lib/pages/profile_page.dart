@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   File? profileImageFile;
   String? profileImageUrl;
   bool _isPickingImage = false;
+  Uint8List? _profileImageBytes; // SDK-loaded bytes (App Check friendly)
 
   final uid = FirebaseAuth.instance.currentUser?.uid;
 
@@ -44,6 +46,8 @@ class _ProfilePageState extends State<ProfilePage> {
     ownerController = TextEditingController();
     birthdayController = TextEditingController();
     loadUserData();
+    // Try loading from Storage directly (works with App Check)
+    _loadProfileImageFromStorage();
   }
   @override
   void dispose() {
@@ -75,6 +79,17 @@ Future<void> _pickImage() async {
               .child('profile.jpg');
           await ref.putFile(File(picked.path));
           downloadUrl = await ref.getDownloadURL();
+          // Also fetch bytes via SDK (for App Check enforced environments)
+          try {
+            final data = await ref.getData(5 * 1024 * 1024);
+            if (mounted) {
+              setState(() {
+                _profileImageBytes = data;
+              });
+            }
+          } catch (e) {
+            debugPrint('Fetch bytes after upload failed: $e');
+          }
         } catch (e) {
           debugPrint('User profile image upload failed: $e');
         }
@@ -100,6 +115,26 @@ Future<void> _pickImage() async {
     if (e.code != 'already_active') rethrow;
   } finally {
     _isPickingImage = false;
+  }
+}
+
+Future<void> _loadProfileImageFromStorage() async {
+  try {
+    final id = uid;
+    if (id == null) return;
+    final ref = FirebaseStorage.instance.ref()
+        .child('users')
+        .child(id)
+        .child('profile.jpg');
+    final data = await ref.getData(5 * 1024 * 1024);
+    if (mounted) {
+      setState(() {
+        _profileImageBytes = data;
+      });
+    }
+  } catch (e) {
+    // It's okay if it doesn't exist yet
+    debugPrint('Load profile image bytes failed: $e');
   }
 }
 
@@ -249,6 +284,8 @@ Widget build(BuildContext context) {
 
   if (profileImageFile != null) {
     imageProvider = FileImage(profileImageFile!);
+  } else if (_profileImageBytes != null && _profileImageBytes!.isNotEmpty) {
+    imageProvider = MemoryImage(_profileImageBytes!);
   } else if (profileImageUrl != null && profileImageUrl!.isNotEmpty) {
     imageProvider = NetworkImage(profileImageUrl!);
   }
