@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
@@ -32,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String country = '';
 
   File? profileImageFile;
+  String? profileImageUrl;
   bool _isPickingImage = false;
 
   final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -64,11 +66,34 @@ Future<void> _pickImage() async {
       });
 
       if (uid != null) {
+        String downloadUrl = '';
+        // Upload to Firebase Storage
+        try {
+          final ref = FirebaseStorage.instance.ref()
+              .child('users')
+              .child(uid!)
+              .child('profile.jpg');
+          await ref.putFile(File(picked.path));
+          downloadUrl = await ref.getDownloadURL();
+        } catch (e) {
+          debugPrint('User profile image upload failed: $e');
+        }
+
         await FirestoreService().update(
           collectionPath: 'users',
           docId: uid!,
-          data: {'ownerImagePath': picked.path},
+          data: {
+            'ownerImagePath': picked.path, // legacy fallback
+            'ownerImageUrl': downloadUrl, // new: Firebase Storage URL
+          },
         );
+        
+        // Update state with new URL
+        if (mounted && downloadUrl.isNotEmpty) {
+          setState(() {
+            profileImageUrl = downloadUrl;
+          });
+        }
       }
     }
   } on PlatformException catch (e) {
@@ -94,10 +119,22 @@ Future<void> loadUserData() async {
         birthday = data['ownerBirthday'] ?? 'No Birthday';
         country = data['ownerCountry'] ?? 'Country';
         selectedCountry = country;
-        profileImageFile = (data['ownerImagePath'] != null &&
-                data['ownerImagePath'].toString().startsWith('/'))
-            ? File(data['ownerImagePath'])
-            : null;
+        
+        // Prefer Firebase Storage URL, fallback to local path
+        final imageUrl = data['ownerImageUrl'];
+        final imagePath = data['ownerImagePath'];
+        
+        if (imageUrl != null && imageUrl.toString().isNotEmpty) {
+          // Use Firebase Storage URL - will be loaded via NetworkImage in build
+          profileImageUrl = imageUrl.toString();
+          profileImageFile = null; // Clear local file
+        } else if (imagePath != null && imagePath.toString().startsWith('/')) {
+          profileImageUrl = null;
+          profileImageFile = File(imagePath);
+        } else {
+          profileImageUrl = null;
+          profileImageFile = null;
+        }
 
         ownerController.text = owner;
         birthdayController.text = birthday;
@@ -212,6 +249,8 @@ Widget build(BuildContext context) {
 
   if (profileImageFile != null) {
     imageProvider = FileImage(profileImageFile!);
+  } else if (profileImageUrl != null && profileImageUrl!.isNotEmpty) {
+    imageProvider = NetworkImage(profileImageUrl!);
   }
 
   return Stack(

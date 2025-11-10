@@ -15,9 +15,18 @@ import 'services/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // Initialize notifications and schedule refresh
+  
+  // Initialize notifications (but don't block on refresh)
   await NotificationService().initialize();
-  await NotificationService().refreshSchedules();
+  
+  // Schedule refresh asynchronously after app starts (non-blocking)
+  // This prevents black screen on startup if user isn't logged in yet
+  Future.delayed(const Duration(seconds: 2), () {
+    NotificationService().refreshSchedules().catchError((e) {
+      debugPrint('Background notification refresh failed: $e');
+    });
+  });
+  
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,

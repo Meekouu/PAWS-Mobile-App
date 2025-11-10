@@ -395,8 +395,8 @@ class _CheckInFormPageState extends State<CheckInFormPage> {
           ),
         );
         
-        // Return to home or previous screen
-        Navigator.of(context).popUntil((route) => route.isFirst);
+        // Navigate back to home page
+        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
       }
     } catch (e) {
       if (mounted) {

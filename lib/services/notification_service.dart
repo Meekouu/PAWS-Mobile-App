@@ -20,10 +20,23 @@ class NotificationService {
   Future<void> initialize() async {
     if (_initialized) return;
 
-    // Timezone init
-    tz.initializeTimeZones();
-    final String timeZoneName = await tz.local.name;
-    tz.setLocalLocation(tz.getLocation(timeZoneName));
+    // Timezone init with error handling
+    try {
+      tz.initializeTimeZones();
+      // Use a safer approach to get timezone
+      final String timeZoneName = DateTime.now().timeZoneName;
+      try {
+        tz.setLocalLocation(tz.getLocation(timeZoneName));
+      } catch (e) {
+        // Fallback to UTC if timezone not found
+        debugPrint('Timezone $timeZoneName not found, using UTC: $e');
+        tz.setLocalLocation(tz.UTC);
+      }
+    } catch (e) {
+      debugPrint('Timezone initialization error: $e');
+      // Fallback to UTC
+      tz.setLocalLocation(tz.UTC);
+    }
 
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const initSettings = InitializationSettings(
